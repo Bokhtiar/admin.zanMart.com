@@ -1,4 +1,4 @@
-import * as Job from "../network/job.network";
+/* import * as Job from "../network/job.network";
 import * as Skill from "../network/skill.network";
 import * as Degree from "../network/degree.network";
 import * as Subject from "../network/subject.network";
@@ -36,4 +36,4 @@ export const NetworkServices = {
     Authentication,
     EducationBoard,
     Location,
-};
+}; */

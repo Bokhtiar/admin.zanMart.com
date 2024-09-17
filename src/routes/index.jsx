@@ -1,10 +1,13 @@
 import { getToken } from "../utils/helper"
 import { Navigate } from "react-router-dom"
-import { Dashboard } from '../components/dashboard'
-import { CategoryEdit } from "../pages/category/edit"
-import { CategoryList } from '../pages/category/index'
-import { CategoryCreate } from "../pages/category/create"
+
+
 import { DashboardLayout } from "../layouts/dashboard.layout"
+import Dashboard from "../pages/Dashboard/Dashboard"
+import Products from "../pages/Products/Products"
+import Inventory from "../pages/Inventory/Inventory"
+import Orders from "../pages/Orders/Orders"
+
 
 const appRoutes = [
   {
@@ -12,22 +15,21 @@ const appRoutes = [
     element: <DashboardLayout />,
     children: [
       { path: "*", element: <Navigate to="/404" /> },
-      { path: "", element: <Dashboard /> },
-
-      /** category */
-      { path: "category", element: <CategoryList /> },
-      { path: "category/create", element: <CategoryCreate /> },
-      { path: "category/edit/:id", element: <CategoryEdit /> },
+      { path: "", element: <Dashboard/> },
+      { path: "products", element: <Products></Products> },
+      { path: "inventory", element: <Inventory></Inventory> },
+      { path: "orders", element: <Orders></Orders> },
     ],
   },
 ]; 
 
 /* Generate permitted routes */
 export const permittedRoutes = () => {
-    const token = getToken();
-    if (token) {
-        return appRoutes;
-    }
+    // const token = getToken();
+    // if (token) {
+    //     return appRoutes;
+    // }
+    return appRoutes;
 
     return [];
 };

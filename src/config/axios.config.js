@@ -2,7 +2,7 @@ import axios from "axios";
 import { getToken } from "../utils/helper";
 
 //const apiUrl = "https://jobmedia-t8mk.onrender.com/api/v1";
-const apiUrl = "https://jobmedia-api.azurewebsites.net/api/"
+// const apiUrl = "https://jobmedia-api.azurewebsites.net/api/"
 //const apiUrl = "https://jobmedia-sanbox.azurewebsites.net/api";
 
 /* Publica/Common request config */
