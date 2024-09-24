@@ -22,15 +22,17 @@ export const Login = () => {
 
     const onSubmit = async (data) => {
         try {
+
             const payload = {
                 ...data,
                 user_type: "admin"
             }
+            // console.log(payload)
             setLoading(true)
             const response = await NetworkServices.Authentication.login(payload)
-            console.log("response", response);
+            // console.log("response", response);
             if (response.status === 200) {
-                setToken(response.data.access);
+                setToken(response.data.data.token);
                 navigate("/dashboard");
                 setLoading(false)
                 Toastify.Success("Login successfully done")
@@ -56,13 +58,13 @@ export const Login = () => {
                     {/* email */}
                     <div className="my-4">
                         <TextInput
-                            label="Phone Number"
-                            name="phone_number"
-                            type="number"
-                            placeholder="Phone Number"
+                            label="email"
+                            name="email"
+                            type="email"
+                            placeholder="Email"
                             control={control}
-                            error={errors.phone_number && errors.phone_number.message}
-                            rules={{ required: "Phone number is required" }}
+                            error={errors.email && errors.email.message}
+                            rules={{ required: "email is required" }}
                         />
                     </div>
                     {/* password */}
@@ -76,7 +78,7 @@ export const Login = () => {
                             rules={{ required: "Password is required" }}
                         />
                     </div>
-                    <Link to={'/registration'}>Create new accounts</Link>
+                    {/* <Link to={'/registration'}>Create new accounts</Link> */}
                     {/* submit button */}
                     <div className="my-4 flex justify-center">
                         <PrimaryButton loading={loading} name="Sign In"></PrimaryButton>
