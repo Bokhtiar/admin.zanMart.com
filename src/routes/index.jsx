@@ -25,11 +25,11 @@ const appRoutes = [
 
 /* Generate permitted routes */
 export const permittedRoutes = () => {
-    // const token = getToken();
-    // if (token) {
-    //     return appRoutes;
-    // }
-    return appRoutes;
+    const token = getToken();
+    if (token) {
+        return appRoutes;
+    }
+  
 
     return [];
 };
