@@ -1,7 +1,8 @@
 import {publicRequest} from '../config/axios.config'
 
 export const login = async (data) => {
-    return await publicRequest.post(`/account/jwt/create/`, data);
+    console.log(data,"welcome")
+    return await publicRequest.post(`login`, data);
 };
 
 export const registration = async (data) => {
