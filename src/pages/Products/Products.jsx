@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { publicRequest } from '../../config/axios.config';
+import { privateRequest } from '../../config/axios.config';
 import { getToken } from '../../utils/helper';
 
 
@@ -35,16 +35,17 @@ const Products = () => {
   });
 
 
-  // useEffect(() => {
-  //   // Fetch products from API
-  //   publicRequest.get('/products')
-  //     .then(response => {
-  //       setProducts(response.data);
-  //     })
-  //     .catch(error => {
-  //       console.error("Error fetching products:", error);
-  //     });
-  // }, []);
+  useEffect(() => {
+    // Fetch products from API
+    privateRequest.get('/admin/product')
+      .then(response => {
+        setProducts(response.data.data.data);
+        console.log(response.data.data.data)
+      })
+      .catch(error => {
+        console.error("Error fetching products:", error);
+      });
+  }, []);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -65,49 +66,40 @@ const Products = () => {
 
   const handleUpload = async (e) => {
     e.preventDefault();
-    console.log('............', getToken())
     if (!formData.title || !formData.sell_price) {
       alert("Please fill out all required fields.");
       return;
     }
-    // const {thumbnile_image,gellary_image,  ...others} = formData;
-    // console.log(others);
-    //   const newProduct = {
-    //      ...others,
-    //     thumbnile_image:  "path/to/thumbnail.jpg",
-    //     gellary_image:   "path/to/thumbnail.jpg",
 
-    //   };
-
-    //setProducts([...products, newProduct]);
-    const data = {
-      "brand_id": 1,
-      "buy_price": 142,
-      "category_id": 1,
-      "delivery_status": "online",
-      "description": "Dolore commodo nisi ",
-      "gellary_image": "path/to/thumbnail.jpg",
-      "is_refundable_product": true,
-      "is_refundable_product_day": 20,
-      "is_stock_qty_show": true,
-      "low_stock_quantity_warning": 552,
-      "metiral_of_product": "Et ut alias id id m",
-      "product_variant_id": 1,
-      "rating": 9,
-      "sell_price": 58,
-      "sku": "Sed ipsam et ut exer",
-      "slug": "Beatae molestiae ear",
-      "status": false,
-      "stock_qty": 600,
-      "tax_price": 400,
-      "thumbnile_image": "path/to/thumbnail.jpg",
-      "title": "Distinctio Minima a",
-      "unit_id": 1
+    const newData = {
+      slug: formData.slug,
+      title: formData.title,
+      category_id: Number(formData.category_id),
+      brand_id: Number(formData.brand_id),
+      description: formData.description,
+      sell_price: Number(formData.sell_price),
+      buy_price: Number(formData.buy_price),
+      rating: Number(formData.rating),
+      delivery_status: formData.delivery_status,
+      is_refundable_product: formData.is_refundable_product,
+      is_refundable_product_day: Number(formData.is_refundable_product_day),
+      stock_qty: Number(formData.stock_qty),
+      is_stock_qty_show: formData.is_stock_qty_show,
+      sku: formData.sku,
+      metiral_of_product: formData.metiral_of_product,
+      unit_id: Number(formData.unit_id),
+      low_stock_quantity_warning: Number(formData.low_stock_quantity_warning),
+      tax_price: Number(formData.tax_price),
+      status: formData.status,
+      thumbnile_image: 'path/hasan',
+      gellary_image: 'path/hasan',
+      product_variant_id: Number(formData.unit_id)
     }
+
     try {
       // Make API POST request
-      console.log(formData, "-------------------");
-      const response = await axios.post('http://127.0.0.1:8000/api/admin/product', data, {
+      console.log(newData, "-------------------");
+      const response = await axios.post('http://127.0.0.1:8000/api/admin/product', newData, {
         headers: {
           'Content-Type': "application/json",
           'Authorization': `Bearer ${getToken()}`
@@ -158,22 +150,71 @@ const Products = () => {
     });
   };
 
-  const handleDelete = (index) => {
-    const updatedProducts = products.filter((_, i) => i !== index);
-    setProducts(updatedProducts);
+  const handleDelete = async (id) => {
+    console.log(id)
+    const response = await privateRequest.delete(`admin/product/${id}`, {
+      headers: {
+        'Content-Type': "application/json",
+        "Authorization": `Bearer ${getToken()}`
+      }
+    })
+    console.log(response)
+    if (response.status == 200) {
+      const updatedProducts = products?.filter((item) => item.product_id !== id);
+      setProducts(updatedProducts);
+      console.log('Product deleted successfully');
+    } else {
+      console.log('Failed to delete product', response.status);
+    }
+
   };
 
-  const handleUpdate = (index) => {
-    const product = products[index];
+  const handleUpdate = async (id) => {
+    const product = products.find((item) => item.product_id === id);
+    console.log(product);
+  
+    // Set the form data with the product details
     setFormData({
       ...product,
-      thumbnile_image: '',
+      thumbnile_image: '',  // Reset or handle image fields
       gellary_image: '',
     });
+  
+    // Construct updated data for the API request
+    const updatedData = {
+      ...product,  // Use the existing product data
+      thumbnile_image: '',  // You may pass updated image data here
+      gellary_image: '',
+    };
+  
+    try {
+      // Send the PUT request with the updated product data
+      const response = await privateRequest.put(`admin/product/${id}`, updatedData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`, // Ensure token is correct
+        },
+      });
+  
+      if (response.status === 200) {
+        console.log('Product updated successfully', response.data);
+        // Update your products state if needed (optional)
+        const updatedProducts = products.map((item) =>
+          item.product_id === id ? response.data : item
+        );
+        setProducts(updatedProducts);
+      } else {
+        console.log('Failed to update product', response.status);
+      }
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  
+    // After the update, toggle modal and update state
     setIsUpdating(true);
     toggleModal();
   };
-
+  
   return (
     <div className="relative mt-10 p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -217,13 +258,13 @@ const Products = () => {
                 <td className="py-2 text-center px-4 h-full space-x-4">
                   <button
                     className="bg-yellow-500 text-white px-4 py-2 rounded"
-                    onClick={() => handleUpdate(index)}
+                    onClick={() => handleUpdate(product.product_id)}
                   >
                     Update
                   </button>
                   <button
                     className="bg-red-500 text-white px-4 py-2 rounded"
-                    onClick={() => handleDelete(index)}
+                    onClick={() => handleDelete(product.product_id)}
                   >
                     Delete
                   </button>
