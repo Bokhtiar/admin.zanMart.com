@@ -1,18 +1,46 @@
 import { Toastify } from "../components/toastify";
+// token set in cookie 
 
-
+const setCookie = (name, value, days) => {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 1 * 60 * 60 * 1000)); // Convert days to milliseconds
+    const expires = `expires=${date.toUTCString()}`;
+    document.cookie = `${name}=${value}; ${expires}; path=/; Secure; SameSite=Strict`;
+  };
+//   get token using cookie 
+  const getCookie = (name) => {
+    const cookieArr = document.cookie.split(';');
+    
+    for (let cookie of cookieArr) {
+      cookie = cookie.trim();
+      if (cookie.startsWith(`${name}=`)) {
+        return cookie.split('=')[1];
+      }
+    }
+    return null; // Return null if the cookie is not found
+  };
+//   remove token from cookie 
+  const removeCookie = (name) => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; Secure; SameSite=Strict`;
+  };
 export const getToken = () => {
-    return localStorage.getItem("token");
+   
+    // console.log(savedToken)
+    return  getCookie("token");
 }
+
+
 
 /* set token */
 export const setToken = (token) => {
-    return localStorage.setItem("token", token);
+    
+    return setCookie("token", token, 7);
+    // return localStorage.setItem("token", token);
 }
 
 /* remove token */
 export const removeToken = () => {
-    return localStorage.removeItem("token");
+    return removeCookie("token")
 };
 
 /* Global network error handeller */

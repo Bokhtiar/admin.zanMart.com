@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-
+import { Link,useNavigate } from 'react-router-dom';
+ 
+import {removeToken} from "../../utils/helper";
 const DashboardSidebar = () => {
     const [active, setActive] = useState('dashboard');
     const [isOpen, setIsOpen] = useState(true);
-
+ const router = useNavigate();
     const handleSidebar = (sidebar) => {
         setActive(sidebar);
         toggleSidebar();
+      
     };
 
     const toggleSidebar = () => {
@@ -89,6 +91,19 @@ const DashboardSidebar = () => {
                         </li>
                         <li className="mb-4">
                             <Link
+                                to="/dashboard/product-variant"
+                                onClick={() => handleSidebar('product-variant')}
+                                className={`${
+                                    active === 'product-variant'
+                                        ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
+                                        : 'text-lg px-5 py-2 hover:text-gray-400'
+                                }`}
+                            >
+                              Product Variant
+                            </Link>
+                        </li>
+                        <li className="mb-4">
+                            <Link
                                 to="/dashboard/customers"
                                 onClick={() => handleSidebar('customers')}
                                 className={`${
@@ -102,7 +117,10 @@ const DashboardSidebar = () => {
                         </li>
                         <li className="mb-4  text-rose-500">
                             <button   
-                             
+                            onClick={()=>{
+                                removeToken()
+                                router("/")
+                            }}
                             >
                                 Log out
                             </button>
