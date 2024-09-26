@@ -227,7 +227,7 @@ const Products = () => {
         </button>
       </div>
 
-      {products.length > 0 ? (
+      {products?.length > 0 ? (
         <table className="min-w-full bg-white">
           <thead>
             <tr>
