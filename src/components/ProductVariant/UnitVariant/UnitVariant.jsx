@@ -1,8 +1,8 @@
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { formatDate } from "../../../utils/formatedate";
-const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded,valueAdded , handleAdded}) => {
-  console.log(colorVariant);
+const UnitVariant = ({ unitvariant, handleDelete, setOpen, open ,setValueAdded,valueAdded , handleAdded}) => {
+  console.log(unitvariant);
   // date formatting system
   const handleChange = e=>{
       console.log(e.target.name);
@@ -19,13 +19,13 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
     <form onSubmit={handleAdded} className="space-y-4">
         <div>
             <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">
-                Color Name
+              Unit
             </label>
             <input
                 type="text"
                 id="color"
-                name="color"
-                placeholder="Enter your color name"
+                name="name"
+                placeholder="Enter Unit"
                 onChange={handleChange}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -46,7 +46,7 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
           ></div>
         </div>
       )}
-      {colorVariant?.length > 0 ? (
+      {unitvariant?.length > 0 ? (
         <table className="min-w-full bg-white">
           <thead>
             <tr>
@@ -71,9 +71,9 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
             </tr>
           </thead>
           <tbody>
-            {colorVariant.map((color, index) => (
+            {unitvariant.map((color, index) => (
               <tr key={color?.color_id} className="border-b-2">
-                <td className="py-2 text-center px-4">{color?.color_id}</td>
+                <td className="py-2 text-center px-4">{color?.unit_id}</td>
                 <td className="py-2 text-center px-4">{color?.name}</td>
                 <td className="py-2 text-center px-4">{color?.status}</td>
                 <td className="py-2 text-center px-4">
@@ -102,4 +102,4 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
   );
 };
 
-export default ColorVariant;
+export default UnitVariant;

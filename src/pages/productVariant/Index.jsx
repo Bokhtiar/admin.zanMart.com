@@ -4,6 +4,7 @@ import AttributeVariant from '../../components/ProductVariant/AttributeVariant/A
 import { privateRequest } from '../../config/axios.config';
 import { Toastify } from '../../components/toastify';
 import { FaPlus } from "react-icons/fa";
+import UnitVariant from '../../components/ProductVariant/UnitVariant/UnitVariant';
 const ProductVariant = () => {
     const [activeTab, setActiveTab] = useState( localStorage.getItem("tabItem")?localStorage.getItem("tabItem"): 'color');
     const [attributeValue,setAttributeValue] = useState([]);
@@ -21,8 +22,9 @@ const ProductVariant = () => {
             console.log(err );
         })
     },[activeTab])
-    // added ProductVariant 
+ console.log(attributeValue)
     const handleAdded = async(e)=>{
+        console.log(valueAdded)
         e.preventDefault();
         try { 
             const response = await privateRequest.post(`admin/${activeTab}`, valueAdded);
@@ -60,7 +62,9 @@ const ProductVariant = () => {
             case 'color':
                 return <ColorVariant  colorVariant={attributeValue} handleDelete={handleDelete} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
             case 'attribute':
-                return  <AttributeVariant open={open}/>;
+                return  <AttributeVariant attribute={attributeValue} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
+            case 'unit':
+                return  <UnitVariant unitvariant={attributeValue} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
             case 'size':
                 return <div>Size content goes here.</div>;
             default:
@@ -94,6 +98,14 @@ const ProductVariant = () => {
                         }`}
                     >
                         Attribute
+                    </button>
+                    <button
+                        onClick={() => handleTabItem('unit')}
+                        className={`px-3 py-1 rounded-lg text-white font-semibold text-base ${
+                            activeTab === 'unit' ? 'bg-blue-700' : 'bg-blue-500'
+                        }`}
+                    >
+                        unit
                     </button>
                     {/* <button
                         onClick={() => handleTabItem('size')}
