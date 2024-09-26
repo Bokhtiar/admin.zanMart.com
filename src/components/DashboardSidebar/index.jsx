@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link,useLocation,useNavigate, useParams } from 'react-router-dom';
  
 import {removeToken} from "../../utils/helper";
-const DashboardSidebar = () => {
-    const [active, setActive] = useState('dashboard');
+const DashboardSidebar = () => { 
     const [isOpen, setIsOpen] = useState(true);
  const router = useNavigate();
-    const handleSidebar = (sidebar) => {
-        setActive(sidebar);
+ const {pathname}  = useLocation();
+   console.log(pathname);
+    const handleSidebar = (sidebar) => { 
         toggleSidebar();
       
     };
@@ -40,9 +40,9 @@ const DashboardSidebar = () => {
                         <li className="mb-4">
                             <Link
                                 to="/dashboard"
-                                onClick={() => handleSidebar('dashboard')}
+                                // onClick={() => handleSidebar('dashboard')}
                                 className={`${
-                                    active === 'dashboard'
+                                    pathname === '/dashboard'
                                         ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
                                         : 'text-lg px-5 py-2 hover:text-gray-400'
                                 }`}
@@ -52,10 +52,9 @@ const DashboardSidebar = () => {
                         </li>
                         <li className="mb-4">
                             <Link
-                                to="/dashboard/orders"
-                                onClick={() => handleSidebar('orders')}
+                                to="/dashboard/orders" 
                                 className={`${
-                                    active === 'orders'
+                                    pathname === "/dashboard/orders"
                                         ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
                                         : 'text-lg px-5 py-2 hover:text-gray-400'
                                 }`}
@@ -68,7 +67,7 @@ const DashboardSidebar = () => {
                                 to="/dashboard/products"
                                 onClick={() => handleSidebar('products')}
                                 className={`${
-                                    active === 'products'
+                                    pathname === "/dashboard/products"
                                         ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
                                         : 'text-lg px-5 py-2 hover:text-gray-400'
                                 }`}
@@ -78,10 +77,23 @@ const DashboardSidebar = () => {
                         </li>
                         <li className="mb-4">
                             <Link
-                                to="/dashboard/inventory"
-                                onClick={() => handleSidebar('inventory')}
+                                to="/dashboard/post-product"
+                                onClick={() => handleSidebar('products')}
                                 className={`${
-                                    active === 'inventory'
+                                    pathname === "/dashboard/post-product"
+                                        ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
+                                        : 'text-lg px-5 py-2 hover:text-gray-400'
+                                }`}
+                            >
+                              Post Product
+                            </Link>
+                        </li>
+                        <li className="mb-4">
+                            <Link
+                                to="/dashboard/inventory"
+                                // onClick={() => handleSidebar('inventory')}
+                                className={`${
+                                    pathname === "/dashboard/inventory"
                                         ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
                                         : 'text-lg px-5 py-2 hover:text-gray-400'
                                 }`}
@@ -92,9 +104,9 @@ const DashboardSidebar = () => {
                         <li className="mb-4">
                             <Link
                                 to="/dashboard/product-variant"
-                                onClick={() => handleSidebar('product-variant')}
+                                // onClick={() => handleSidebar('product-variant')}
                                 className={`${
-                                    active === 'product-variant'
+                                    pathname === "/dashboard/product-variant"
                                         ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
                                         : 'text-lg px-5 py-2 hover:text-gray-400'
                                 }`}
@@ -102,19 +114,7 @@ const DashboardSidebar = () => {
                               Product Variant
                             </Link>
                         </li>
-                        <li className="mb-4">
-                            <Link
-                                to="/dashboard/customers"
-                                onClick={() => handleSidebar('customers')}
-                                className={`${
-                                    active === 'customers'
-                                        ? 'text-lg bg-blue-500 px-5 py-2 w-full rounded-lg'
-                                        : 'text-lg px-5 py-2 hover:text-gray-400'
-                                }`}
-                            >
-                                Customers
-                            </Link>
-                        </li>
+                         
                         <li className="mb-4  text-rose-500">
                             <button   
                             onClick={()=>{

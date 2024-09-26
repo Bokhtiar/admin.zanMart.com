@@ -8,6 +8,7 @@ import Products from "../pages/Products/Products"
 import Inventory from "../pages/Inventory/Inventory"
 import Orders from "../pages/Orders/Orders"
 import ProductVariant from "../pages/productVariant/Index"
+import PostProduct from "../pages/postProduct/Index"
 
 
 const appRoutes = [
@@ -18,6 +19,7 @@ const appRoutes = [
       { path: "*", element: <Navigate to="/404" /> },
       { path: "", element: <Dashboard/> },
       { path: "products", element: <Products></Products> },
+      { path: "post-product", element: <PostProduct/> },
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant/> },
