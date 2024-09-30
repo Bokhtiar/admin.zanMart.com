@@ -9,6 +9,12 @@ import Inventory from "../pages/Inventory/Inventory"
 import Orders from "../pages/Orders/Orders"
 import ProductVariant from "../pages/productVariant/Index"
 import PostProduct from "../pages/postProduct/Index"
+import Banner from "../pages/Banner/Index"
+import SingleBanner from "../pages/Banner/SingleBanner/SingleBanner"
+import Category from "../pages/category"
+import Color from "../pages/productVariant/Color/Color"
+import Brand from "../pages/productVariant/Brand/Brand"
+import Unit from "../pages/productVariant/Unit/Unit"
 
 
 const appRoutes = [
@@ -23,6 +29,12 @@ const appRoutes = [
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant/> },
+      { path: "banner", element: <Banner/> },
+      { path: "category", element: <Category/> },
+      { path: "banner/:id", element: <SingleBanner/> },
+      { path: "color", element: <Color/> },
+      { path: "brand", element: <Brand/> },
+      { path: "unit", element: <Unit/> },
     ],
   },
 ]; 

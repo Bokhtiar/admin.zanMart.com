@@ -4,7 +4,6 @@ import { getToken } from "../utils/helper";
 //const process.env.REACT_APP_API_ENDPOINT = "https://jobmedia-t8mk.onrender.com/api/v1";
  
 //const process.env.REACT_APP_API_ENDPOINT = "https://jobmedia-sanbox.azurewebsites.net/api";
-  console.log(process.env.REACT_APP_API_ENDPOINT);
 /* Publica/Common request config */
 //axios.defaults.headers.post["Content-Type"] = "application/json";
 //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
