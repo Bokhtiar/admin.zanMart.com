@@ -1,50 +1,43 @@
 import React from "react";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { formatDate } from "../../../utils/formatedate";
-const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded,valueAdded , handleAdded}) => {
+import VariantModal from "../VariantModal/VariantModal";
+import { FaRegEdit } from "react-icons/fa";
+const ColorVariant = ({
+  colorVariant,
+  handleDelete,
+  setOpen,
+  open,
+  setValueAdded,
+  valueAdded,
+  handleAdded,
+  handleUpdateAttribute,
+  setId,
+  id
+}) => {
   console.log(colorVariant);
   // date formatting system
-  const handleChange = e=>{
-      console.log(e.target.name);
-      setValueAdded({
-        ...valueAdded,
-        [e.target.name]:typeof e.target.type===Number ?Number(e.target.value):e.target.value
-      })
-  }
-   return (
+  const handleChange = (e) => {
+    console.log(e.target.name);
+    setValueAdded({
+      ...valueAdded,
+      [e.target.name]:
+        typeof e.target.type === Number
+          ? Number(e.target.value)
+          : e.target.value,
+    });
+  };
+  return (
     <div>
-      {open && (
-        <div className="fixed py-10 inset-0 flex max-h-screen items-center justify-center bg-black bg-opacity-50">
-         <div className="bg-white p-6 rounded-lg shadow-lg sm:w-78 md:w-[500px] overflow-y-auto max-h-full z-10">
-    <form onSubmit={handleAdded} className="space-y-4">
-        <div>
-            <label htmlFor="color" className="block text-gray-700 font-semibold mb-2">
-                Color Name
-            </label>
-            <input
-                type="text"
-                id="color"
-                name="color"
-                placeholder="Enter your color name"
-                onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-        </div>
-
-        <button
-            type="submit"
-            className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-            Submit
-        </button>
-    </form>
-</div>
-
-          <div
-            className="absolute bg-black opacity-5 w-full top-0 left-0 h-full z-5"
-            onClick={() => setOpen(false)}
-          ></div>
-        </div>
+      {open?.add && (
+        <VariantModal setOpen={setOpen}>
+          {" "}
+          <ColorForm
+                        
+                        handleAdded={handleAdded}
+                        handleChange={handleChange}
+                      />
+        </VariantModal>
       )}
       {colorVariant?.length > 0 ? (
         <table className="min-w-full bg-white">
@@ -84,6 +77,18 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
                   {formatDate(color?.updated_at)?.formate_date}{" "}
                 </td>
                 <td className="py-2 text-center px-4 h-full space-x-4">
+                
+                  <button
+                    onClick={() => {
+                      setOpen({
+                        add: false,
+                        update: true,
+                      });
+                      setId(color?.color_id);
+                    }}
+                  >
+                    <FaRegEdit />
+                  </button>
                   <button
                     className=" text-red-700 px-4 py-2 rounded"
                     onClick={() => handleDelete(color?.color_id)}
@@ -98,8 +103,51 @@ const ColorVariant = ({ colorVariant, handleDelete, setOpen, open ,setValueAdded
       ) : (
         <p>No products available.</p>
       )}
+      {open?.update && (
+                    <VariantModal setOpen={setOpen}>
+                      {/* update form declare here  */}
+                      <ColorForm
+                        color={colorVariant.find((item)=>item?.color_id===id)}
+                        handleAdded={handleUpdateAttribute}
+                        handleChange={handleChange}
+                      />
+                    </VariantModal>
+                  )}
     </div>
   );
 };
 
 export default ColorVariant;
+
+const ColorForm = ({ color = {}, handleAdded, handleChange }) => {
+  console.log('color',color);
+  return (
+    <form onSubmit={handleAdded} className="space-y-4">
+    <div>
+      <label
+        htmlFor="color"
+        className="block text-gray-700 font-semibold mb-2"
+      >
+        Color Name
+      </label>
+      <input
+        type="text"
+        id="color"
+        name="name"
+        defaultValue={color?.name}
+        placeholder="Enter your color name"
+        onChange={handleChange}
+        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    </div>
+
+    <button
+      type="submit" 
+      className="w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    >
+      Submit
+    </button>
+  </form>
+  )
+
+}
