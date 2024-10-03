@@ -5,36 +5,56 @@ import { privateRequest } from '../../config/axios.config';
 import { Toastify } from '../../components/toastify';
 import { FaPlus } from "react-icons/fa";
 import UnitVariant from '../../components/ProductVariant/UnitVariant/UnitVariant';
+import BrandVariant from '../../components/ProductVariant/BrandAttribute/BrandAttribute';
+import ProductVariantComponant from '../../components/ProductVariant/MainVariant/ProductVariant';
 const ProductVariant = () => {
     const [activeTab, setActiveTab] = useState( localStorage.getItem("tabItem")?localStorage.getItem("tabItem"): 'color');
     const [attributeValue,setAttributeValue] = useState([]);
     const [valueAdded,setValueAdded] = useState({});
-    const [open,setOpen] = useState(false);
-     // fetch all variant route 
-    useEffect(()=>{
-        privateRequest.get(`admin/${activeTab}`).then(res=>{
-             console.log(res);
+    console.log(valueAdded);
+    const [open,setOpen] = useState({
+        add:false,
+        update:false
+    });
+    const [id,setId] = useState(null);
+    const fetchColor = async()=>{
+        try {
+            const res = await privateRequest.get(`admin/${activeTab}` );
             if(res?.status===200 || res?.status===201){
                 setAttributeValue(res?.data?.data?.data);
             }
-        }).catch(err=>{
+        } catch (err) {
             Toastify.Error(err.message);
-            console.log(err );
-        })
+        }
+    }
+     // fetch all variant route 
+    useEffect(()=>{
+        fetchColor();
     },[activeTab])
- console.log(attributeValue)
+    // added attribute 
     const handleAdded = async(e)=>{
-        console.log(valueAdded)
         e.preventDefault();
         try { 
             const response = await privateRequest.post(`admin/${activeTab}`, valueAdded);
-            
+            if (response.status === 200 || response.status === 201) { 
+                fetchColor();
+                Toastify.Success(response?.data?.message)
+            } else { 
+              Toastify.Error("color not posted or update")
+            }
+          } catch (error) { 
+            Toastify.Error(error.message)
+          }
+    }
+    // update attribute 
+    const handleUpdateAttribute = async (e)=>{
+        e.preventDefault();
+        try { 
+            const response = await privateRequest.put(`admin/${activeTab}/${id}`, valueAdded);
             // Handle response
             if (response.status === 200 || response.status === 201) { 
                 // update value 
-                const extraAdded = attributeValue[0]?attributeValue[0]:{created_at:new Date(),updated_at:new Date(),color_id:1};
-                 const newConnection = {...extraAdded,color_id:extraAdded?.color_id+1,...valueAdded,};  
-                setAttributeValue([newConnection,...attributeValue])
+                fetchColor();
                 Toastify.Success(response?.data?.message)
             } else { 
               Toastify.Error("color not posted or update")
@@ -47,12 +67,13 @@ const ProductVariant = () => {
     const handleDelete=async(id)=>{
         try {
             const response = await privateRequest.delete(`admin/${activeTab}/${id}`)
-            console.log(response);
-            if(response?.data?.status){
-                Toastify.Success(response?.data?.data)
+            //  const filterDataAfterDelete= attributeValue.filter((color)=>color?.color_id!==id);
+            if(response?.status===200||response?.status===201){
+                // setAttributeValue(filterDataAfterDelete);
+                fetchColor();
+                Toastify.Success(response?.data?.message)
             }
         } catch (error) {
-            console.log(error.message);
             Toastify.Error(error.message)
         }
     }
@@ -60,11 +81,15 @@ const ProductVariant = () => {
     const renderTabContent = () => {
         switch (activeTab) {
             case 'color':
-                return <ColorVariant  colorVariant={attributeValue} handleDelete={handleDelete} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
+                return <ColorVariant  colorVariant={attributeValue} handleDelete={handleDelete} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded} handleUpdateAttribute={handleUpdateAttribute} setId={setId} id={id}/>;
             case 'attribute':
-                return  <AttributeVariant attribute={attributeValue} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
+                return  <AttributeVariant attribute={attributeValue} handleDelete={handleDelete} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded} handleUpdateAttribute={handleUpdateAttribute} setId={setId} id={id}/>;
             case 'unit':
-                return  <UnitVariant unitvariant={attributeValue} setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded}/>;
+                return  <UnitVariant unitvariant={attributeValue} handleDelete={handleDelete}  setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded} handleUpdateAttribute={handleUpdateAttribute} setId={setId} id={id}/>;
+            case 'brand':
+                return  <BrandVariant brandVariant={attributeValue} handleDelete={handleDelete}  setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded} handleUpdateAttribute={handleUpdateAttribute} setId={setId} id={id}/>;
+            case 'productvariant':
+                return  <ProductVariantComponant productVariant={attributeValue} handleDelete={handleDelete}  setOpen={setOpen} open={open} setValueAdded={setValueAdded} valueAdded={valueAdded} handleAdded={handleAdded} handleUpdateAttribute={handleUpdateAttribute} setId={setId} id={id}/>;
             case 'size':
                 return <div>Size content goes here.</div>;
             default:
@@ -77,7 +102,6 @@ const ProductVariant = () => {
        setActiveTab(value);
        localStorage.setItem("tabItem",value);
    }
-   console.log(valueAdded,"--------------");
     return (
         <div>
             <div className='shadow-lg py-5 flex justify-between gap-2'>
@@ -107,6 +131,21 @@ const ProductVariant = () => {
                     >
                         unit
                     </button>
+                    <button  onClick={() => handleTabItem('brand')}
+                        className={`px-3 py-1 rounded-lg text-white font-semibold text-base ${
+                            activeTab === 'brand' ? 'bg-blue-700' : 'bg-blue-500'
+                        }`}
+                    >
+                      Brand
+                    </button> 
+                    <button  onClick={() => handleTabItem('productvariant')}
+                        className={`px-3 py-1 rounded-lg text-white font-semibold text-base ${
+                            activeTab === 'productvariant' ? 'bg-blue-700' : 'bg-blue-500'
+                        }`}
+                    >
+                     Product Variant
+                    </button> 
+                      
                     {/* <button
                         onClick={() => handleTabItem('size')}
                         className={`px-3 py-1 rounded-lg text-white font-semibold text-base ${
@@ -116,7 +155,10 @@ const ProductVariant = () => {
                         Size
                     </button> */}
                 </div>
-                <button onClick={()=>setOpen(true)}>
+                <button onClick={()=>setOpen({
+                    add:true,
+                    update:false
+                })}>
                 <FaPlus />
                 </button>
             </div>

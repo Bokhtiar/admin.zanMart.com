@@ -22,9 +22,9 @@ export const DashboardNavbar = () => {
 
     return (
       <>
-        <div className="bg-base-100 sticky top-0 z-50">
+        <div className="bg-base-100 sticky top-0 z-50  ">
           <div className=" " style={gradientStyle}>
-            <div className="navbar  px-10">
+            <div className="navbar rounded-lg  px-10">
               {/* responsive navbar start */}
               <div className="navbar-start ">
                 <div className="dropdown">

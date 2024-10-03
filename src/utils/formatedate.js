@@ -5,8 +5,8 @@ export   const formatDate = (isoString) => {
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-based
     const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year
      return  {
-        day:`${dayOfWeek}`,
-        formate_date:`${days}-${month}-${year}`
+        day: isoString?`${dayOfWeek}`:'',
+        formate_date: isoString?`${days}-${month}-${year}`:''
        }
    
   };
