@@ -15,12 +15,10 @@ import Category from "../pages/category"
 import Color from "../pages/productVariant/Color/Color"
 import Brand from "../pages/productVariant/Brand/Brand"
 import Unit from "../pages/productVariant/Unit/Unit"
-<<<<<<< HEAD
+ 
 import { CategoryCreate } from "../pages/category/create"
 import { CategoryEdit } from "../pages/category/edit"
-=======
->>>>>>> 37ca9fd7d76798b75fa67e15ff9ace5e0739ed1a
-
+ 
 
 const appRoutes = [
   {
@@ -36,11 +34,8 @@ const appRoutes = [
       { path: "product-variant", element: <ProductVariant/> },
       { path: "banner", element: <Banner/> },
       { path: "category", element: <Category/> },
-<<<<<<< HEAD
       { path: "category/create", element: <CategoryCreate/> }, 
       { path: "category/edit/:id", element: <CategoryEdit/> },
-=======
->>>>>>> 37ca9fd7d76798b75fa67e15ff9ace5e0739ed1a
       { path: "banner/:id", element: <SingleBanner/> },
       { path: "color", element: <Color/> },
       { path: "brand", element: <Brand/> },

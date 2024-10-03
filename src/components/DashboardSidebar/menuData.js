@@ -12,15 +12,12 @@ export const menuData = [
     
 },
   {
-<<<<<<< HEAD
     title: "Category",
     icon: <RxDashboard />,
     path: "/dashboard/category",
     
 },
   {
-=======
->>>>>>> 37ca9fd7d76798b75fa67e15ff9ace5e0739ed1a
     title: "Product Variant",
     icon: <RiProductHuntLine />,
     childrens:[
