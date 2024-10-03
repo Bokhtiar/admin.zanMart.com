@@ -350,7 +350,7 @@ export const SearchableSelect = (props) => {
         name: props.name,
         control: props.control,
         rules: { ...props.rules },
-        defaultValue: props.defaultvalue,
+        defaultValue: props?.defaultvalue,
     });
 
     /* Search from API */
@@ -372,9 +372,9 @@ export const SearchableSelect = (props) => {
     return (
         <div>
             {props.error ? (
-                <p className="text-sm mb-1 text-danger">{props.error}</p>
+                <p className="text-sm mb-1 text-danger">{props?.error}</p>
             ) : (
-                <p className="text-sm mb-1 text-gray-500">{props.label}</p>
+                <p className="text-sm mb-1 text-gray-500">{props?.label}</p>
             )}
 
             <AsyncSelect
@@ -383,7 +383,7 @@ export const SearchableSelect = (props) => {
                 onBlur={onBlur} // notify when input is touched/blur
                 value={value} // input value
                 name={props.name} // send down the input name
-                styles={customStyles(props.error)}
+                styles={customStyles(props?.error)}
                 onChange={handleSelect}
                 loadOptions={searchOptions}
                 isClearable={props.isClearable}

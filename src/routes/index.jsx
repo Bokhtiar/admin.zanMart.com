@@ -15,7 +15,10 @@ import Category from "../pages/category"
 import Color from "../pages/productVariant/Color/Color"
 import Brand from "../pages/productVariant/Brand/Brand"
 import Unit from "../pages/productVariant/Unit/Unit"
-
+ 
+import { CategoryCreate } from "../pages/category/create"
+import { CategoryEdit } from "../pages/category/edit"
+ 
 
 const appRoutes = [
   {
@@ -31,6 +34,8 @@ const appRoutes = [
       { path: "product-variant", element: <ProductVariant/> },
       { path: "banner", element: <Banner/> },
       { path: "category", element: <Category/> },
+      { path: "category/create", element: <CategoryCreate/> }, 
+      { path: "category/edit/:id", element: <CategoryEdit/> },
       { path: "banner/:id", element: <SingleBanner/> },
       { path: "color", element: <Color/> },
       { path: "brand", element: <Brand/> },

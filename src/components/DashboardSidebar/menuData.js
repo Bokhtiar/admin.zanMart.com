@@ -12,6 +12,12 @@ export const menuData = [
     
 },
   {
+    title: "Category",
+    icon: <RxDashboard />,
+    path: "/dashboard/category",
+    
+},
+  {
     title: "Product Variant",
     icon: <RiProductHuntLine />,
     childrens:[
