@@ -43,7 +43,7 @@ export const ColorEdit = () => {
       const response = await NetworkServices.Color.update(id, payload);
       // console.log("res", response);
       if (response.status === 200) {
-        // navigate("/dashboard/color");
+        navigate("/dashboard/color");
         return Toastify.Success(response.data.message);
       }
     } catch (error) {
@@ -51,10 +51,11 @@ export const ColorEdit = () => {
       networkErrorHandeller(error);
     }
   };
-
+ 
   useEffect(() => {
-    fetchData();
-  }, []); 
+   fetchData();
+  }, []);  
+
   return (
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">

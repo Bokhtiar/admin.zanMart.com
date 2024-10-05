@@ -4,7 +4,7 @@ import { RiProductHuntLine } from "react-icons/ri";
 import { TbBrandApplePodcast } from "react-icons/tb";
 import { FaUnity } from "react-icons/fa";
 import { CgAttribution } from "react-icons/cg";
-import { MdOutlineProductionQuantityLimits,MdBrandingWatermark  } from "react-icons/md";
+import { MdOutlineProductionQuantityLimits,MdBrandingWatermark,MdSettingsAccessibility  } from "react-icons/md";
 
 export const menuData = [
   {
@@ -31,6 +31,7 @@ export const menuData = [
     path: "/dashboard/product",
     
 },
+  
   {
     title: "Product Variant",
     icon: <RiProductHuntLine />,
@@ -62,7 +63,12 @@ export const menuData = [
     ]
     
 },
- 
+{
+  title: "WebSetting",
+  icon: <MdSettingsAccessibility />,
+  path: "/dashboard/web-setting",
+  
+},
   {
     title: "Dashboard",
     icon: <RxDashboard />,
