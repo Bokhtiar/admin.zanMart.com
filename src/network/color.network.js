@@ -12,20 +12,20 @@ export const store = async(data) => {
 
 /* resource show */
 export const show = async(id) => {
-    return await privateRequest.get(`/admin/category/${id}`)
+    return await privateRequest.get(`/admin/color/${id}`)
 }
 
 /* reosurce update */
 export const update = async(id, data) => {
-    return await privateRequest.put(`/admin/category/${id}`, data)
+    return await privateRequest.put(`/admin/color/${id}`, data)
 }
 
 /* resource destory */
 export const destroy = async (id) => {
-    return await privateRequest.delete(`/admin/category/${id}`)
+    return await privateRequest.delete(`/admin/color/${id}`)
 }
 
-/** category list */
-export const categoryList = async () => {
-    return await privateRequest.get(`/admin/category/`);
+/** color list */
+export const colorList = async () => {
+    return await privateRequest.get(`/admin/color/`);
 };

@@ -7,25 +7,25 @@ export const index = async (page, perPage) => {
 
 /* resource store */
 export const store = async(data) => {
-    return await privateRequest.post('/admin/color/', data)
+    return await privateRequest.post('/admin/unit/', data)
 }
 
 /* resource show */
 export const show = async(id) => {
-    return await privateRequest.get(`/admin/category/${id}`)
+    return await privateRequest.get(`/admin/unit/${id}`)
 }
 
 /* reosurce update */
 export const update = async(id, data) => {
-    return await privateRequest.put(`/admin/category/${id}`, data)
+    return await privateRequest.put(`/admin/unit/${id}`, data)
 }
 
 /* resource destory */
 export const destroy = async (id) => {
-    return await privateRequest.delete(`/admin/category/${id}`)
+    return await privateRequest.delete(`/admin/unit/${id}`)
 }
 
-/** category list */
-export const categoryList = async () => {
-    return await privateRequest.get(`/admin/category/`);
+/** unit list */
+export const unitList = async () => {
+    return await privateRequest.get(`/admin/unit/`);
 };
