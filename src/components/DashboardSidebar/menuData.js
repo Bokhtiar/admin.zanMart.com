@@ -4,6 +4,8 @@ import { RiProductHuntLine } from "react-icons/ri";
 import { TbBrandApplePodcast } from "react-icons/tb";
 import { FaUnity } from "react-icons/fa";
 import { CgAttribution } from "react-icons/cg";
+import { MdOutlineProductionQuantityLimits,MdBrandingWatermark  } from "react-icons/md";
+
 export const menuData = [
   {
     title: "Dashboard",
@@ -18,6 +20,18 @@ export const menuData = [
     
 },
   {
+    title: "Brand",
+    icon: <MdBrandingWatermark />,
+    path: "/dashboard/brand",
+    
+},
+  {
+    title: "Product",
+    icon: <MdOutlineProductionQuantityLimits />,
+    path: "/dashboard/product",
+    
+},
+  {
     title: "Product Variant",
     icon: <RiProductHuntLine />,
     childrens:[
@@ -25,12 +39,6 @@ export const menuData = [
             title: "Color",
             icon: <IoColorPaletteOutline />,
             path: "/dashboard/color",
-            
-        },
-        {
-            title: "Brand",
-            icon: <TbBrandApplePodcast />,
-            path: "/dashboard/brand",
             
         },
         {
@@ -43,7 +51,7 @@ export const menuData = [
             title: "Attribute",
             icon: <CgAttribution />,
             path: "/dashboard/attribute",
-            
+                
         },
         {
             title: "Product Variant",
