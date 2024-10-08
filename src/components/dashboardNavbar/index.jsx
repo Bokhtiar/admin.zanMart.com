@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { removeToken } from '../../utils/helper'
 import { IoIosNotifications } from "react-icons/io";
-
+import logo from  '../../assets/image/logo.png'
 
 export const DashboardNavbar = () => {
     const navigate = useNavigate()
@@ -178,7 +178,7 @@ export const DashboardNavbar = () => {
                     height={16}
                     width={60}
                     className="d-block border  rounded-md"
-                    src="https://jobmedia.com.bd/images/assets/logo.png"
+                    src= {logo}
                     alt=""
                   />
                 </Link>

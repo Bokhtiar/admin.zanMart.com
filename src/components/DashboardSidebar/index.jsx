@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { menuData } from "./menuData";
 import SidebarItem from "./SidebarItem";
-
+import logo from "../../assets/image/logo.png"
 const DashboardSidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,7 +38,7 @@ const DashboardSidebar = () => {
         </button>
 
         <div className="flex justify-center items-center gap-2">
-          <img src="../../../public/favicon.ico" alt="logo..." className="" />
+          <img src={logo} alt="logo..." className=" w-16 h-16 object-fill" />
           <h1 className="text-3xl font-bold text-center italic">ZANMART</h1>
         </div>
         <nav>

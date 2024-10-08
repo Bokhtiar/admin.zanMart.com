@@ -5,7 +5,10 @@ import * as Unit from "../network/unit.network";
 import * as Product from "../network/product.network";
 import * as Brand from "../network/brand.network";
 import * as WebSetting from "../network/websetting.network";
-
+import * as Banner from "../network/banner.network";
+import * as Attribute from "../network/attribute.network";
+import * as ProductVariant from "../network/productVariant.network";
+ 
 export const NetworkServices = {
   Brand,
   Category,
@@ -14,4 +17,7 @@ export const NetworkServices = {
   Product,
   WebSetting,
   Authentication,
+  Banner,
+  Attribute,
+  ProductVariant
 };
