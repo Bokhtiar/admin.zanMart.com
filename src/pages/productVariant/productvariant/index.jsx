@@ -56,20 +56,42 @@ const ProductVariant = () => {
   };
   const columns = [
     {
-      name: "productVariant ID",
-      cell: (row) => row?.productVariant_id,
+      name: "ProductVariant ID",
+      cell: (row) => row?.product_variant_id,
     },
 
     {
-      name: "productVariant Name",
-      cell: (row) => row?.name,
+      name: "Product ID",
+      cell: (row) => row?.product_id,
     },
+    
+    {
+      name: "Color ID",
+      cell: (row) => row?.color_id,
+    },
+    {
+      name: "Attribute ID",
+      cell: (row) => row?.attribute_id,
+    },
+    {
+      name: "Product_qty",
+      cell: (row) => row?.product_qty,
+    },
+    {
+      name: "Product weight",
+      cell: (row) => row?.weight,
+    },
+    {
+      name: "Product price",
+      cell: (row) => row?.price,
+    },
+
 
     {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-1">
-          <Link to={`/dashboard/productVariant/edit/${row?.productVariant_id}`}>
+          <Link to={`/dashboard/product-variant/edit/${row?.productVariant_id}`}>
             <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
               edit
             </span>
@@ -78,7 +100,7 @@ const ProductVariant = () => {
           <span>
             <span
               className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
-              onClick={() => destroy(row?.productVariant_id)}
+              onClick={() => destroy(row?.product_variant_id)}
             >
               delete
             </span>
