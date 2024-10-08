@@ -22,8 +22,7 @@ export const CategoryCreate = () => {
   const {
     control,
     register,
-    handleSubmit,
-    watch,
+    handleSubmit, 
     setValue,
 
     formState: { errors },

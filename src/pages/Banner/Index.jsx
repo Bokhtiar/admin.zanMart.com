@@ -1,365 +1,214 @@
-import React, { useEffect, useState } from "react";
-
-import { privateRequest } from "../../config/axios.config";
-import { Toastify } from "../../components/toastify";
-import { FaPlus, FaRegEdit } from "react-icons/fa";
-
-import { RiDeleteBin6Line } from "react-icons/ri";
-
-import { formatDate } from "../../utils/formatedate";
-import VariantModal from "../../components/ProductVariant/VariantModal/VariantModal";
+import React, { useCallback, useEffect, useState } from "react";
+import DataTable from "react-data-table-component";
+import { NetworkServices } from "../../network";
+import { networkErrorHandeller } from "../../utils/helper";
+import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
+import { Toastify } from "../../components/toastify"; 
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 const Banner = () => {
-  const [bannerValue, setBannerValue] = useState([]);
-  const [name, setName] = useState("");
-  const [image, setImage] = useState(null);
-
-  const [open, setOpen] = useState({
-    add: false,
-    update: false,
-  });
-  const [id, setId] = useState(null);
-  const fetchBanner = async () => {
-    try {
-      const res = await privateRequest.get(`admin/banner`);
-      console.log(res?.data?.data, "res-------->");
-      if (res?.status === 200 || res?.status === 201) {
-        setBannerValue(res?.data?.data);
-      }
-    } catch (err) {
-      Toastify.Error(err.message);
-    }
-  };
-  // fetch all variant route
-  useEffect(() => {
-    fetchBanner();
-  }, []);
-  // added attribute
-  const handleAdded = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-
-    formData.append("image", image); // Append the file (if updated)
-    formData.append("name", name);
-    try {
-      const response = await privateRequest.post(`admin/banner`, formData);
-      if (response.status === 200 || response.status === 201) {
-        fetchBanner();
-        Toastify.Success(response?.data?.message);
-      } else {
-        Toastify.Error("banner not posted or update");
-      }
-    } catch (error) {
-      Toastify.Error(error.message);
-    }
-  };
-  // update attribute
-  const handleUpdateAttribute = async (e) => {
-    e.preventDefault();
-    console.log(name, "----------->");
-    const formData = new FormData();
-
-    formData.append("image", image);
-
-    // Append the file (if updated)
-    formData.append("name", name);
-    console.log(formData.get("name"));
-
-    try {
-      const response = await privateRequest.put(
-        `admin/banner/${id}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+  const [loading, setLoading] = useState(false);
+  const [bannerData, setbannerData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [lastPage, setLastPage] = useState(1);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState(null);
+  // fetch banner data
+  const fetchData = useCallback(
+    async (banner) => {
+      try {
+        setLoading(true);
+        const response = await NetworkServices.Banner.index(currentPage);
+        console.log(response);
+        if (response?.status === 200 || response?.status === 201) {
+          setbannerData(response?.data?.data);
+          setCurrentPage(response?.data?.current_page);
+          setLastPage(response?.data?.last_page);
+          setNextPageUrl(response?.data?.next_page_url);
+          setPrevPageUrl(response?.data?.prev_page_url);
+          setLoading(false);
         }
-      );
-      console.log(response, "sdfsdfsdf");
-      // Handle response
-      if (response.status === 200 || response.status === 201) {
-        // update value
-        fetchBanner();
-        Toastify.Success(response?.data?.message);
-      } else {
-        Toastify.Error("banner not posted or update");
+      } catch (error) {
+        if (error) {
+          setLoading(false);
+          networkErrorHandeller(error);
+        }
       }
-    } catch (error) {
-      console.log(error);
-      Toastify.Error(error.message);
-    }
-  };
-  // delete specific item
-  const handleDelete = async (id) => {
+    },
+    [currentPage]
+  );
+  useEffect(() => {
+    fetchData();
+  }, [currentPage]);
+
+  // delete data
+  const destroy = async (id) => {
     try {
-      const response = await privateRequest.delete(`admin/banner/${id}`);
-      if (response?.status === 200 || response?.status === 201) {
-        fetchBanner();
-        Toastify.Success(response?.data?.message);
+      const response = await NetworkServices.Banner.destroy(id);
+      if (response.status === 200 || response?.status === 201) {
+        fetchData();
+        return Toastify.Info("banner Deleted");
       }
     } catch (error) {
-      Toastify.Error(error.message);
+      networkErrorHandeller(error);
     }
   };
-  const handleNameChange = (e) => {
-    setName(e.target.value); // Store the entered name
-  };
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]); // Store the selected file
-  };
-  const [modalOpen,setModalOpen]=useState(false);
+  const columns = [
+    {
+      name: "Web-Setting ID",
+      cell: (row) => row?.banner_id,
+    },
+
+    {
+      name: "Title",
+      cell: (row) => row?.name,
+    },
+    {
+      name: "Logo",
+      cell: (row) => (
+        <div> 
+          <img
+            className="w-40 h-20 border rounded-full"
+            src={`${process.env.REACT_APP_BASE_API}${row?.image}`}
+            alt="loading"
+          />
+        </div>
+      ),
+    },
+     
+
+    {
+      name: "Action",
+      cell: (row) => (
+        <div className="flex gap-1">
+          <Link to={`/dashboard/banner/edit/${row?.banner_id}`}>
+            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
+              edit
+            </span>
+          </Link>
+
+          <span>
+            <span
+              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+              onClick={() => destroy(row?.banner_id)}
+            >
+              delete
+            </span>
+          </span>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div>
-      {open?.add && (
-        <VariantModal setOpen={setOpen}>
-          {/* update form declare here  */}
-          <BannerForm
-            // banner={bannerValue.find((item)=>item?.banner_id===id)}
-            handleSubmit={handleAdded}
-            handleImageChange={handleImageChange}
-            handleNameChange={handleNameChange}
-          />
-         
-        </VariantModal>
-      )}
-   {
-    modalOpen &&  <div className="fixed py-10 inset-0 flex max-h-screen items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg sm:w-78 md:w-[500px] overflow-y-auto max-h-full z-10">
-    <BannerProductForm />
-    </div>
-    <div
-      className="absolute bg-black opacity-5 w-full top-0 left-0 h-full z-5"
-      onClick={() => setModalOpen(false)}
-    ></div>
-  </div> 
-   }
-      <div className="shadow-lg py-5 flex justify-between gap-2 px-2">
-        <div>
-          <span className="text-xl font-bold">Banner</span>
-        </div>
-        <button
-          onClick={() =>
-            setModalOpen(true)
-          }
-        >
-          Banner way
-        </button>
-        <button
-          onClick={() =>
-            setOpen({
-              add: true,
-              update: false,
-            })
-          }
-        >
-          <FaPlus />
-        </button>
-        
+    <section>
+      <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
+        <h2 className=" font-semibold text-xl">Banner List</h2>
+        <Link to="/dashboard/banner/create">
+          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+            add
+          </span>
+        </Link>
       </div>
-      <div className="shadow-lg py-5 flex justify-between gap-2 mt-3 ">
-        <div className="flex  gap-2 w-full">
-          {bannerValue?.length > 0 ? (
-            <table className="min-w-full  w-full">
-              <thead>
-                <tr>
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Banner ID
-                  </th>
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Image
-                  </th>
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Name
-                  </th>
 
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Created Date
-                  </th>
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Update Date
-                  </th>
-                  <th className="py-2 text-center px-4 border-b-4 border-gray-200">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {bannerValue.map((banner, index) => (
-                  <tr key={banner?.banner_id} className="border-b-2">
-                    <td className="py-2 text-center px-4">
-                      {banner?.banner_id}
-                    </td>
-                    <td className="py-2 text-center px-4">
-                      <img
-                        src={`${process.env.REACT_APP_BASE_API}${banner?.image}`}
-                        className="h-16 w-16"
-                        alt="loading"
-                      />
-                    </td>
-                    <td className="py-2 text-center px-4">{banner?.name}</td>
-
-                    <td className="py-2 text-center px-4">
-                      {formatDate(banner?.created_at)?.formate_date}{" "}
-                    </td>
-                    <td className="py-2 text-center px-4">
-                      {" "}
-                      {formatDate(banner?.updated_at)?.formate_date}{" "}
-                    </td>
-                    <td className="py-2 text-center px-4 h-full space-x-4">
-                      <button
-                        onClick={() => {
-                          setOpen({
-                            add: false,
-                            update: true,
-                          });
-                          setId(banner?.banner_id);
-                        }}
-                      >
-                        <FaRegEdit />
-                      </button>
-                      <button
-                        className=" text-red-700 px-4 py-2 rounded"
-                        onClick={() => handleDelete(banner?.banner_id)}
-                      >
-                        <RiDeleteBin6Line />
-                      </button>
-                      <Link to={`/dashboard/banner/${banner?.banner_id}`}>Detail</Link>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <p>No products available.</p>
-          )}
-        </div>
-      </div>
-      {open?.update && (
-        <VariantModal setOpen={setOpen}>
-          {/* update form declare here  */}
-          <BannerForm
-            banner={bannerValue.find((item) => item?.banner_id === id)}
-            handleSubmit={handleUpdateAttribute}
-            handleImageChange={handleImageChange}
-            handleNameChange={handleNameChange}
+      {loading ? (
+        <SkeletonTable />
+      ) : (
+        <>
+          <DataTable columns={columns} data={bannerData}   />
+          <Pagination
+          
+            nextPageUrl={nextPageUrl}
+            setCurrentPage={setCurrentPage}
+            prevPageUrl={prevPageUrl}
+            lastPage={lastPage}
+            currentPage={currentPage}
           />
-        </VariantModal>
+        </>
       )}
-    </div>
+    </section>
   );
 };
 
 export default Banner;
-
-const BannerForm = ({
-  banner = {},
-  handleSubmit,
-  handleNameChange,
-  handleImageChange,
+const Pagination = ({
+  nextPageUrl,
+  setCurrentPage,
+  prevPageUrl,
+  lastPage,
+  currentPage,
 }) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      <h1 className="font-bold text-xl my-3">Banner </h1>
-      <div>
-        <label>Image:</label>
-        <input
-          type="file"
-          onChange={handleImageChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          defaultValue={banner?.name}
-          onChange={handleNameChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <button
-        type="submit"
-        className=" my-3 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Submit
-      </button>
-    </form>
-  );
-};
-
-const BannerProductForm = () => {
-  const [bannerId, setBannerId] = useState("");
-  const [productIds, setProductIds] = useState("");
-
-  // Handle change for banner_id
-  const handleBannerIdChange = (e) => {
-    setBannerId(e.target.value);
-  };
-
-  // Handle change for product_ids as a comma-separated string
-  const handleProductIdsChange = (e) => {
-    setProductIds(e.target.value);
-  };
-
-  // Handle form submission
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Split the productIds string by commas and convert to numbers
-    const productIdArray = productIds
-      .split(",")
-      .map((id) => Number(id.trim()))
-      .filter((id) => !isNaN(id));
-    console.log(productIdArray);
-    const formData = {
-      banner_id: Number(bannerId), // Convert bannerId to a number
-      product_id: productIdArray, // Array of product IDs
-    };
-
-    try {
-      const response = await privateRequest.post(
-        "admin/banner-product",
-        formData
-      );
-      if (response.status === 200 || response.status === 201) {
-        Toastify.Success(response?.data?.message);
-      } else {
-        Toastify.Error("banner not posted or update");
-      }
-    } catch (error) {
-      Toastify.Error(error.message);
+  const handleNext = () => {
+    if (nextPageUrl) {
+      setCurrentPage((prevPage) => prevPage + 1);
     }
   };
 
+  const handlePrev = () => {
+    if (prevPageUrl) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
+  };
+  // pagination store
+  useEffect(() => {
+    sessionStorage.setItem("currentPage", currentPage);
+  }, [currentPage]);
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label>Banner ID:</label>
-        <input
-          type="number"
-          value={bannerId}
-          onChange={handleBannerIdChange}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
+    <>
+      <div className="flex justify-end items-center gap-2 my-3">
+        <button
+          onClick={() => {
+            setCurrentPage(1);
+          }}
+          disabled={!prevPageUrl}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !prevPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          <FaAngleDoubleLeft />
+        </button>
+        <button
+          onClick={handlePrev}
+          disabled={!prevPageUrl}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !prevPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          <IoIosArrowBack />
+        </button>
+        <span className="text-gray-700">
+          Page {currentPage} of {lastPage}
+        </span>
+        <button
+          onClick={handleNext}
+          disabled={!nextPageUrl}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !nextPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          <IoIosArrowForward />
+        </button>
+        <button
+          onClick={() => {
+            setCurrentPage(lastPage);
+          }}
+          disabled={!nextPageUrl}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !nextPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
+        >
+          <FaAngleDoubleRight />
+        </button>
       </div>
-      <div>
-        <label>Product IDs (comma separated):</label>
-        <input
-          type="text"
-          value={productIds}
-          onChange={handleProductIdsChange}
-          placeholder="e.g. 1, 2, 3"
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          required
-        />
-      </div>
-      <button
-        type="submit"
-        className=" my-3 w-full bg-blue-500 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      >
-        Submit
-      </button>
-    </form>
+    </>
   );
 };

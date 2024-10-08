@@ -1,33 +1,28 @@
- 
 import React, { useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { NetworkServices } from "../../network";
-import { networkErrorHandeller } from "../../utils/helper";
-import { SkeletonTable } from "../../components/loading/skeleton-table";
+import { NetworkServices } from "../../../network";
+import { networkErrorHandeller } from "../../../utils/helper";
+import { SkeletonTable } from "../../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
-import { Toastify } from "../../components/toastify";
+import { Toastify } from "../../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
-const Category = () => {
+const ProductVariant = () => {
   const [loading, setLoading] = useState(false);
-  const [categoryData, setCategoryData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(
-    sessionStorage.getItem("currentPage")
-      ? Number(sessionStorage?.getItem("currentPage"))
-      : 1
-  );
+  const [productVariantData, setproductVariantData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
-  // fetch category data
+  // fetch productVariant data
   const fetchData = useCallback(
-    async (category) => {
+    async (productVariant) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Category.index(currentPage);
+        const response = await NetworkServices.ProductVariant.index(currentPage); 
         if (response?.status === 200 || response?.status === 201) {
-          setCategoryData(response?.data?.data?.data);
+          setproductVariantData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
           setLastPage(response?.data?.data?.last_page);
           setNextPageUrl(response?.data?.data?.next_page_url);
@@ -50,10 +45,10 @@ const Category = () => {
   // delete data
   const destroy = async (id) => {
     try {
-      const response = await NetworkServices.Category.destroy(id);
+      const response = await NetworkServices.ProductVariant.destroy(id);
       if (response.status === 200 || response?.status === 201) {
         fetchData();
-        return Toastify.Info("Category Deleted");
+        return Toastify.Info("productVariant Deleted");
       }
     } catch (error) {
       networkErrorHandeller(error);
@@ -61,20 +56,20 @@ const Category = () => {
   };
   const columns = [
     {
-      name: "Category ID",
-      cell: (row) => row?.category_id,
+      name: "productVariant ID",
+      cell: (row) => row?.productVariant_id,
     },
 
     {
-      name: "Category Name",
-      cell: (row) => row?.category_name,
+      name: "productVariant Name",
+      cell: (row) => row?.name,
     },
 
     {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-1">
-          <Link to={`/dashboard/category/edit/${row?.category_id}`}>
+          <Link to={`/dashboard/productVariant/edit/${row?.productVariant_id}`}>
             <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
               edit
             </span>
@@ -83,7 +78,7 @@ const Category = () => {
           <span>
             <span
               className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
-              onClick={() => destroy(row?.category_id)}
+              onClick={() => destroy(row?.productVariant_id)}
             >
               delete
             </span>
@@ -92,31 +87,12 @@ const Category = () => {
       ),
     },
   ];
-  const [selectedIds, setSelectedIds] = useState([]);
 
-  const handleSelectedRowsChange = (state) => {
-    // Extract only the category_id from selected rows
-    const ids = state.selectedRows.map(row => row.category_id);
-    setSelectedIds(ids);
-    console.log("Selected IDs: ", ids);
-  };
-  const addedHomePageCategory = async () => {
-    try {
-      const response = await NetworkServices.Category.homepagecategory({category_id:selectedIds});
-      if (response.status === 200 || response?.status === 201) {
-        // fetchData();
-        return Toastify.Info("Category Deleted");
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-    }
-  };
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <button onClick={()=>addedHomePageCategory()}>add me sdfsd</button>
-        <h2 className=" font-semibold text-xl">Category List</h2>
-        <Link to="/dashboard/category/create">
+        <h2 className=" font-semibold text-xl">productVariant List</h2>
+        <Link to="/dashboard/productVariant/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             add
           </span>
@@ -127,7 +103,7 @@ const Category = () => {
         <SkeletonTable />
       ) : (
         <>
-          <DataTable selectableRows columns={columns} data={categoryData}   onSelectedRowsChange={handleSelectedRowsChange} />
+          <DataTable columns={columns} data={productVariantData} />
           <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}
@@ -141,7 +117,7 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default ProductVariant;
 const Pagination = ({
   nextPageUrl,
   setCurrentPage,
@@ -222,4 +198,3 @@ const Pagination = ({
     </>
   );
 };
- 
