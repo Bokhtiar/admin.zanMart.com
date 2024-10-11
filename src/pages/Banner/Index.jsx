@@ -56,7 +56,7 @@ const Banner = () => {
   };
   const columns = [
     {
-      name: "Web-Setting ID",
+      name: "Banner ID",
       cell: (row) => row?.banner_id,
     },
 
@@ -65,11 +65,11 @@ const Banner = () => {
       cell: (row) => row?.name,
     },
     {
-      name: "Logo",
+      name: "Banner Image",
       cell: (row) => (
         <div> 
           <img
-            className="w-40 h-20 border rounded-full"
+            className="w-40 h-20 border rounded-lg"
             src={`${process.env.REACT_APP_BASE_API}${row?.image}`}
             alt="loading"
           />

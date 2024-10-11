@@ -50,13 +50,15 @@ export const BannerEdit = () => {
       setButtonLoading(true);
          console.log(dat);
       const formData = new FormData();
-      formData.append("name", data?.name);
+      formData.append("name", dat?.name);
+      formData.append("image", singleImage);
       formData.append("_method", "PUT");
       
     //   formData.append("image",  singleImage );
       const response = await NetworkServices.Banner.update(id,formData);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate('/dashboard/banner')
+        console.log(response)
         setButtonLoading(false);
         return Toastify.Success("banner Created.");
       }

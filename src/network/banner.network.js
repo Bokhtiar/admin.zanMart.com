@@ -17,7 +17,6 @@ export const show = async(id) => {
 
 /* reosurce update */
 export const update = async(id, data) => {
-    console.log(data.get("name"),id,"<--------------------------->");
     return await privateRequest.post(`/admin/banner/${id}`, data)
 }
 

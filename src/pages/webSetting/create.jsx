@@ -49,7 +49,7 @@ export const WebSettingCreate = () => {
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/web-setting");
         setButtonLoading(false);
-        return Toastify.Success("Color Created.");
+        return Toastify.Success("Web setting Created.");
       }
     } catch (error) {
       setButtonLoading(false);
@@ -60,7 +60,7 @@ export const WebSettingCreate = () => {
   return (
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
-        <h2 className=" font-semibold text-xl">Color Create</h2>
+        <h2 className=" font-semibold text-xl">Create Web setting</h2>
         <Link to="/dashboard/web-setting">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             list
@@ -77,10 +77,10 @@ export const WebSettingCreate = () => {
                 label="Tittle"
                 name="title"
                 type="text"
-                placeholder="Enter Color name"
+                placeholder="Enter  name"
                 control={control}
                 error={errors.name && errors.name.message}
-                rules={{ required: "Color Name is required" }}
+                rules={{ required: " Name is required" }}
               />
             </div>
             {/* email  */}

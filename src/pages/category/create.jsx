@@ -60,6 +60,7 @@ export const CategoryCreate = () => {
       };
       console.log(payload);
       const response = await NetworkServices.Category.store(payload); 
+      console.log(response)
       if (response && (response.status === 201 || response?.status===200)) {
         navigate('/dashboard/category') 
         setButtonLoading(false);

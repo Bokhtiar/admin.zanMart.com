@@ -57,12 +57,12 @@ const Attribute = () => {
   };
   const columns = [
     {
-      name: "attribute ID",
+      name: "Attribute ID",
       cell: (row) => row?.attribute_id,
     },
 
     {
-      name: "attribute Name",
+      name: "Attribute Name",
       cell: (row) => row?.name,
     },
 
@@ -92,7 +92,7 @@ const Attribute = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <h2 className=" font-semibold text-xl">attribute List</h2>
+        <h2 className=" font-semibold text-xl">Attribute List</h2>
         <Link to="/dashboard/attribute/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             add
