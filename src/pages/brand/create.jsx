@@ -42,7 +42,7 @@ export const BrandCreate = () => {
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
         <h2 className=" font-semibold text-xl">Brand Create</h2>
-        <Link to="/dashboard/category">
+        <Link to="/dashboard/brand">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             list
           </span>

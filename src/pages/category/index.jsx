@@ -26,6 +26,7 @@ const Category = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Category.index(currentPage);
+        console.log(response)
         if (response?.status === 200 || response?.status === 201) {
           setCategoryData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -114,7 +115,7 @@ const Category = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <button onClick={()=>addedHomePageCategory()}>add me sdfsd</button>
+        <button onClick={()=>addedHomePageCategory()}>add Category Home Page</button>
         <h2 className=" font-semibold text-xl">Category List</h2>
         <Link to="/dashboard/category/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">

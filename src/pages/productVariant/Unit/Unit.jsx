@@ -70,7 +70,7 @@ const Unit = () => {
   };
   const columns = [
     {
-      name: "unit ID",
+      name: "Unit ID",
       selector: (row) => row?.unit_id,
     },
     {
@@ -144,7 +144,7 @@ const Unit = () => {
             />
           </VariantModal>
         )}
-        <div className="  flex justify-end items-center py-2 px-3 gap-2   ">
+        <div className="  flex justify-between items-center py-2 px-3 gap-2   ">
           <input
             type="search"
             className="  px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -155,7 +155,7 @@ const Unit = () => {
             className="bg-blue-700 py-2 rounded-lg px-2 text-white font-bold"
             onClick={() => setAddedToggle(true)}
           >
-            Add unit
+            + Add Unit
           </button>
         </div>
         <DataTable

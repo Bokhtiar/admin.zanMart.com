@@ -29,6 +29,9 @@ import Attribute from "../pages/productVariant/attribute";
 import AttributeCreate from "../pages/productVariant/attribute/create";
 import AttributeEdit from "../pages/productVariant/attribute/edit";
 import ProductVariant from "../pages/productVariant/productvariant";
+import ProductVariantCreate from "../pages/productVariant/productvariant/create";
+import EditProductVariant from "../pages/productVariant/productvariant/edit";
+
  
 const appRoutes = [
   {
@@ -43,6 +46,8 @@ const appRoutes = [
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },
+      { path: "product-variant/create", element: <ProductVariantCreate /> },
+      { path: "product-variant/edit/:id", element: <EditProductVariant /> },
       { path: "banner", element: <Banner /> },
       { path: "banner/create", element: <BannerCreate /> },
       { path: "banner/edit/:id", element: <BannerEdit /> },
@@ -61,6 +66,7 @@ const appRoutes = [
       { path: "web-setting", element: <WebSetting /> },
       { path: "web-setting/create", element: <WebSettingCreate /> },
       { path: "web-setting/edit/:id", element: <WebSettingEdit /> 
+    
            
 
       },

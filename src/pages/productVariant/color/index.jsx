@@ -57,12 +57,12 @@ const Color = () => {
   };
   const columns = [
     {
-      name: "color ID",
+      name: "Color ID",
       cell: (row) => row?.color_id,
     },
 
     {
-      name: "color Name",
+      name: "Color Name",
       cell: (row) => row?.name,
     },
 
@@ -92,7 +92,7 @@ const Color = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <h2 className=" font-semibold text-xl">color List</h2>
+        <h2 className=" font-semibold text-xl">Color List</h2>
         <Link to="/dashboard/color/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             add

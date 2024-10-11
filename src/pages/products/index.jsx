@@ -34,6 +34,7 @@ const Product = () => {
           setLoading(false);
         }
       } catch (error) {
+        console.log(error)
         if (error) {
           setLoading(false);
           networkErrorHandeller(error);

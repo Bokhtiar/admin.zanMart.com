@@ -20,7 +20,7 @@ const ProductVariant = () => {
     async (productVariant) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.ProductVariant.index(currentPage); 
+        const response = await NetworkServices.ProductVariant.index(currentPage);
         if (response?.status === 200 || response?.status === 201) {
           setproductVariantData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -64,7 +64,7 @@ const ProductVariant = () => {
       name: "Product ID",
       cell: (row) => row?.product_id,
     },
-    
+
     {
       name: "Color ID",
       cell: (row) => row?.color_id,
@@ -91,7 +91,7 @@ const ProductVariant = () => {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-1">
-          <Link to={`/dashboard/product-variant/edit/${row?.productVariant_id}`}>
+          <Link to={`/dashboard/product-variant/edit/${row?.product_variant_id}`}>
             <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
               edit
             </span>
@@ -113,8 +113,8 @@ const ProductVariant = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <h2 className=" font-semibold text-xl">productVariant List</h2>
-        <Link to="/dashboard/productVariant/create">
+        <h2 className=" font-semibold text-xl">ProductVariant List</h2>
+        <Link to="/dashboard/product-variant/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             add
           </span>
@@ -170,22 +170,20 @@ const Pagination = ({
             setCurrentPage(1);
           }}
           disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !prevPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!prevPageUrl
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
           <FaAngleDoubleLeft />
         </button>
         <button
           onClick={handlePrev}
           disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !prevPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!prevPageUrl
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
           <IoIosArrowBack />
         </button>
@@ -195,11 +193,10 @@ const Pagination = ({
         <button
           onClick={handleNext}
           disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !nextPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!nextPageUrl
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
           <IoIosArrowForward />
         </button>
@@ -208,11 +205,10 @@ const Pagination = ({
             setCurrentPage(lastPage);
           }}
           disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !nextPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!nextPageUrl
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-blue-500 hover:bg-blue-600"
+            }`}
         >
           <FaAngleDoubleRight />
         </button>

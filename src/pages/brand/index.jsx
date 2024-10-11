@@ -92,7 +92,7 @@ const Brand = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-        <h2 className=" font-semibold text-xl">brand List</h2>
+        <h2 className=" font-semibold text-xl">Brand List</h2>
         <Link to="/dashboard/brand/create">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             add
