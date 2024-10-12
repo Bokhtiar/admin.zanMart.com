@@ -1,35 +1,42 @@
+ 
 import React, { useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { NetworkServices } from "../../network";
-import { networkErrorHandeller } from "../../utils/helper";
-import { SkeletonTable } from "../../components/loading/skeleton-table";
-import { Link } from "react-router-dom";
-import { Toastify } from "../../components/toastify"; 
+import { NetworkServices } from "../../../network";
+import { networkErrorHandeller } from "../../../utils/helper";
+import { SkeletonTable } from "../../../components/loading/skeleton-table";
+import {   Link, useNavigate, useParams } from "react-router-dom";
+import { Toastify } from "../../../components/toastify";
+
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
-const Banner = () => {
+import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa"; 
+const BannerWayProductCreate = () => {
+    const {id} = useParams();
+    const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [bannerData, setbannerData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [productData, setProductData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(
+      1
+  );
   const [lastPage, setLastPage] = useState(1);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
-  // fetch banner data
+  // fetch product data
   const fetchData = useCallback(
-    async (banner) => {
+    async (product) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Banner.index(currentPage);
+        const response = await NetworkServices.Product.index(currentPage);
         console.log(response);
         if (response?.status === 200 || response?.status === 201) {
-          setbannerData(response?.data?.data);
-          setCurrentPage(response?.data?.current_page);
-          setLastPage(response?.data?.last_page);
-          setNextPageUrl(response?.data?.next_page_url);
-          setPrevPageUrl(response?.data?.prev_page_url);
+          setProductData(response?.data?.data);
+          setCurrentPage(response?.data?.data?.current_page);
+          setLastPage(response?.data?.data?.last_page);
+          setNextPageUrl(response?.data?.data?.next_page_url);
+          setPrevPageUrl(response?.data?.data?.prev_page_url);
           setLoading(false);
         }
       } catch (error) {
+        console.log(error)
         if (error) {
           setLoading(false);
           networkErrorHandeller(error);
@@ -40,94 +47,48 @@ const Banner = () => {
   );
   useEffect(() => {
     fetchData();
-  }, [ ]);
+  }, []);
 
-  // delete data
-  const destroy = async (id) => {
-    try {
-      const response = await NetworkServices.Banner.destroy(id); 
-      if (response.status === 200 || response?.status === 201) {
-        fetchData();
-        return Toastify.Info(response?.data?.message);
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-    }
-  };
+ 
   const columns = [
     {
-      name: "Banner ID",
-      cell: (row) => row?.banner_id,
+      name: "Product ID",
+      cell: (row) => row?.product_id,
     },
 
     {
-      name: "Title",
-      cell: (row) => row?.name,
+      name: "Product Name",
+      cell: (row) => row?.title,
     },
-    {
-      name: "Banner Image",
-      cell: (row) => (
-        <div> 
-          <img
-            className="w-40 h-20 border rounded-lg"
-            src={`${process.env.REACT_APP_BASE_API}${row?.image}`}
-            alt="loading"
-          />
-        </div>
-      ),
-    },
-     
 
-    {
-      name: "Banner Way Product",
-      cell: (row) => (
-        <div className="flex gap-1">
-          <Link to={`/dashboard/banner/featured/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm  ">
-             Add  
-            </span>
-          </Link>
+    
+  ]; 
+  const [selectedIds,setSelectedIds] = useState([]);
+  const handleSelectedRowsChanged = (state) => { 
+    const ids = state.selectedRows.map(row => row.category_id);
+    setSelectedIds(ids);
 
-          <span>
-          <Link to={`/dashboard/banner/banner-product/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm  ">
-             show
-            </span>
-          </Link>
-          </span>
-        </div>
-      ),
-    },
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="flex gap-1">
-          <Link to={`/dashboard/banner/edit/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
-            </span>
-          </Link>
-
-          <span>
-            <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
-              onClick={() => destroy(row?.banner_id)}
-            >
-              delete
-            </span>
-          </span>
-        </div>
-      ),
-    },
-  ];
-
+  }
+  const handleAddedBannerWaysToProduct =async ()=>{
+    try {
+        const response = await NetworkServices.Banner.homepagebannerproduct({banner_id:id, product_id:selectedIds});
+        console.log(response);
+        if (response.status === 200 || response?.status === 201) {
+          // fetchData();
+          navigate(`/dashboard/banner/banner-product/${id}`); 
+          return Toastify.Info(response?.data?.message);
+        }
+      } catch (error) {
+        networkErrorHandeller(error);
+      }
+  }
   return (
     <section>
-      <div className="flex justify-between shadow-md p-2 my-5 rounded-md">
-        <h2 className=" font-semibold text-xl">Banner List</h2>
-        <Link to="/dashboard/banner/create">
+      <div className="flex justify-between shadow-md p-2  rounded-md">
+        <h2 className=" font-semibold text-xl">Product List</h2>
+        <Link to="/dashboard/banner">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
-            add
+            list
           </span>
         </Link>
       </div>
@@ -136,21 +97,24 @@ const Banner = () => {
         <SkeletonTable />
       ) : (
         <>
-          <DataTable columns={columns} data={bannerData}   />
-          <Pagination
+          <DataTable onSelectedRowsChange={handleSelectedRowsChanged} selectableRows pagination columns={columns} data={productData} />
+          {/* <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}
             prevPageUrl={prevPageUrl}
             lastPage={lastPage}
             currentPage={currentPage}
-          />
+          /> */}
         </>
-      )}
+      )}  
+      <div className="my-3 flex justify-center">
+      <button className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-400" onClick={()=>handleAddedBannerWaysToProduct()}>Add Banner Ways To Product </button>
+      </div>
     </section>
   );
 };
 
-export default Banner;
+export default BannerWayProductCreate;
 const Pagination = ({
   nextPageUrl,
   setCurrentPage,
@@ -231,3 +195,4 @@ const Pagination = ({
     </>
   );
 };
+ 

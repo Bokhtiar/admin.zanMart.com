@@ -31,6 +31,8 @@ import AttributeEdit from "../pages/productVariant/attribute/edit";
 import ProductVariant from "../pages/productVariant/productvariant";
 import ProductVariantCreate from "../pages/productVariant/productvariant/create";
 import EditProductVariant from "../pages/productVariant/productvariant/edit";
+import BannerWayProduct from "../pages/banner/banner-way-product";
+import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
 
  
 const appRoutes = [
@@ -51,6 +53,8 @@ const appRoutes = [
       { path: "banner", element: <Banner /> },
       { path: "banner/create", element: <BannerCreate /> },
       { path: "banner/edit/:id", element: <BannerEdit /> },
+      { path: "banner/banner-product/:id", element: <BannerWayProduct /> },
+      { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
       { path: "category", element: <Category /> },
       { path: "category/create", element: <CategoryCreate /> },
       { path: "category/edit/:id", element: <CategoryEdit /> }, 

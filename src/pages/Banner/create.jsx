@@ -3,22 +3,23 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import {   useState } from "react";
+import { useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
-import {
-   
-  TextInput,
-} from "../../components/input";
- 
+import { FaCamera } from "react-icons/fa";
+import { TextInput } from "../../components/input";
+
 export const BannerCreate = () => {
-  const navigate = useNavigate(); 
-  const [buttonLoading, setButtonLoading] = useState(false); 
-  
+  const navigate = useNavigate();
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [singleImage, setSingleImage] = useState(null);
+  const [showSingleImage, setShowSingleImage] = useState(null);
+  // uploadProgress 
   const handleSingleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSingleImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setShowSingleImage(imageUrl);
     }
   };
   const {
@@ -31,16 +32,16 @@ export const BannerCreate = () => {
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
-         
+
       const formData = new FormData();
       formData.append("name", data.name);
-      
+
       formData.append("image", singleImage);
-      const response = await NetworkServices.Banner.store(formData);
+      const response = await NetworkServices.Banner.store(formData); 
       if (response && (response.status === 201 || response?.status === 200)) {
-        navigate('/dashboard/banner')
+        navigate("/dashboard/banner");
         setButtonLoading(false);
-        return Toastify.Success("banner Created.");
+        return Toastify.Success(response?.data?.message);
       }
     } catch (error) {
       setButtonLoading(false);
@@ -50,8 +51,8 @@ export const BannerCreate = () => {
 
   return (
     <>
-      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
-        <h2 className=" font-semibold text-xl">banner Create</h2>
+      <section className="flex justify-between shadow-md p-2   rounded-md bg-white my-3">
+        <h2 className=" font-semibold text-xl">Banner Create</h2>
         <Link to="/dashboard/banner">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             list
@@ -59,33 +60,58 @@ export const BannerCreate = () => {
         </Link>
       </section>
 
-      <section className="shadow-md my-5 p-4 px-6">
-        <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
+      <section className="shadow-md my-2  ">
+        <form className="" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 lg:mb-2">
             <TextInput
-              label="Banner Name"
+              label="Banner Title"
               name="name"
               type="text"
-              placeholder="Enter banner name"
+              placeholder="Enter banner title"
               control={control}
               error={errors.name && errors.name.message}
-              rules={{ required: "banner Name is required" }}
+              rules={{ required: "Banner title is required" }}
             />
           </div>
-          <div className="mb-6 lg:mb-2 w-full">
-              <p className="text-sm mb-1 text-gray-500">
-                Logo
-                <span className="text-red-500">*</span>
-              </p>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleSingleImageChange}
-                className="cursor-pointer w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300"
-              />
+          <div className="mb-6 lg:mb-2 w-full ">
+            <p className="text-sm mb-1 text-gray-500">Banner Image</p>
+            <div className="flex flex-col items-center cursor-pointer">
+              <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSingleImageChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+                {singleImage ? (
+                  <img
+                    src={showSingleImage}
+                    alt="Uploaded"
+                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+                  />
+                ) : (
+                  <div>
+                  
+                    <span className="text-gray-500 ">
+                      <FaCamera className="text-black opacity-100    text-3xl  " />
+                    </span>
+                  </div>
+                )}
+              </label>
+
+              {/* Optional: Display file name or upload button */}
+              {singleImage && (
+                <button
+                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                  onClick={() => setSingleImage(null)}
+                >
+                  Remove Image
+                </button>
+              )}
             </div>
+          </div>
           {/* submit button */}
-          <div className="my-4 flex justify-center">
+          <div className="my-4 pb-4 flex justify-center">
             <PrimaryButton
               loading={buttonLoading}
               name="Banner create"
