@@ -9,6 +9,14 @@ export const index = async (page, perPage) => {
 export const store = async(data) => {
     return await privateRequest.post('/admin/banner/', data)
 }
+// banner ways to product 
+export const homepagebannerproduct = async(data) => {
+    return await privateRequest.post('/admin/banner-product', data)
+}
+// banner ways to product 
+export const homepagebannershowproduct = async(id) => {
+    return await privateRequest.get(`/admin/banner-product/${id}`)
+}
 
 /* resource show */
 export const show = async(id) => {

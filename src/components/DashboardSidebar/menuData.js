@@ -20,6 +20,7 @@ export const menuData = [
     title: "Banner",
     icon: <RxDashboard />,
     path: "/dashboard/banner",
+   
   },
   {
     title: "Category",
