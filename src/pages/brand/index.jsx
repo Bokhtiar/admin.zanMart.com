@@ -21,7 +21,7 @@ const Brand = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Brand.index(currentPage);
-        console.log(response);
+      
         if (response?.status === 200 || response?.status === 201) {
           setbrandData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

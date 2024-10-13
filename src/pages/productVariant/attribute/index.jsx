@@ -21,7 +21,7 @@ const Attribute = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Attribute.index(currentPage);
-        console.log(response);
+  
         if (response?.status === 200 || response?.status === 201) {
           setattributeData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

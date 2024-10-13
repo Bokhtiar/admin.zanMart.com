@@ -36,16 +36,16 @@ const OTP = () => {
 
         try {
             const existRegisterData = JSON.parse(localStorage.getItem('job-media-registration-data-admin'))
-            console.log("exis", existRegisterData);
+     
             const response = await NetworkServices.Authentication.otpVarification(existRegisterData, otp)
-            console.log("response otp", response);
+         
             if (response) {
                 setToken(response.data.access)
                 Toastify.Success("OTP varification successfully done")
                 navigate("/dashboard");
             }
         } catch (error) {
-            console.log('error', error);
+           
             networkErrorHandeller(error)
         }
     };

@@ -43,9 +43,9 @@ const AttributeEdit = () => {
         ...dat,
         unit_id: unitId ? unitId : data?.unit_id,
       }; 
-      console.log(payload);
+ 
       const response = await NetworkServices.Attribute.update(id, payload);
-      // console.log("res", response);
+ 
       if (response.status === 200) {
         navigate("/dashboard/attribute");
         return Toastify.Success(response.data.message);
@@ -65,7 +65,7 @@ const AttributeEdit = () => {
     try {
       setLoading(true);
       const response = await NetworkServices.Unit.index();
-      console.log(response);
+  
       if (response?.status === 200 || response?.status === 201) {
         setUnitData(response?.data?.data?.data);
         setLoading(false);

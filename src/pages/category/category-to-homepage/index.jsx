@@ -1,16 +1,15 @@
  
 import React, { useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { NetworkServices } from "../../network";
-import { networkErrorHandeller } from "../../utils/helper";
-import { SkeletonTable } from "../../components/loading/skeleton-table";
-import { Link, useNavigate } from "react-router-dom";
-import { Toastify } from "../../components/toastify";
+import { NetworkServices } from "../../../network";
+import { networkErrorHandeller } from "../../../utils/helper";
+import { SkeletonTable } from "../../../components/loading/skeleton-table";
+import { Link } from "react-router-dom";
+import { Toastify } from "../../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
-const Category = () => {
-  const navigate = useNavigate();
+const CategoryHomepage = () => {
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
   const [currentPage, setCurrentPage] = useState(
@@ -26,10 +25,10 @@ const Category = () => {
     async (category) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Category.index(currentPage);
-        console.log(response,"category");
+        const response = await NetworkServices.Category.homepagecategoryshow(currentPage);
+    
         if (response?.status === 200 || response?.status === 201) {
-          setCategoryData(response?.data?.data?.data);
+          setCategoryData(response?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
           setLastPage(response?.data?.data?.last_page);
           setNextPageUrl(response?.data?.data?.next_page_url);
@@ -49,18 +48,7 @@ const Category = () => {
     fetchData();
   }, []);
 
-  // delete data
-  const destroy = async (id) => {
-    try {
-      const response = await NetworkServices.Category.destroy(id);
-      if (response.status === 200 || response?.status === 201) {
-        fetchData();
-        return Toastify.Info("Category Deleted");
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-    }
-  };
+  
   const columns = [
     {
       name: "Category ID",
@@ -71,73 +59,26 @@ const Category = () => {
       name: "Category Name",
       cell: (row) => row?.category_name,
     },
-
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="flex gap-1">
-          <Link to={`/dashboard/category/edit/${row?.category_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
-            </span>
-          </Link>
-
-          <span>
-            <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
-              onClick={() => destroy(row?.category_id)}
-            >
-              delete
-            </span>
-          </span>
-        </div>
-      ),
-    },
-  ];
-  const [selectedIds, setSelectedIds] = useState([]);
-
-  const handleSelectedRowsChange = (state) => {
-    // Extract only the category_id from selected rows
-    const ids = state.selectedRows.map(row => row.category_id);
-    setSelectedIds(ids);
  
-  };
-  const addedHomePageCategory = async () => {
-    try {
-      const response = await NetworkServices.Category.homepagecategory({category_id:selectedIds});
-      
-      if (response.status === 200 || response?.status === 201) {
-        // fetchData();
-        navigate('/dashboard/category/homepage')
-        return Toastify.Info(response?.data?.message);
-      }
-    } catch (error) {
-      networkErrorHandeller(error);
-    }
-  };
+  ];
+ 
+  
   return (
     <section>
-      <div className="flex justify-between shadow-md p-2 my-3 rounded-md">
-      
-        <h2 className=" font-semibold text-xl">Category List</h2>
-        <div className="flex items-center gap-3">
-        <button onClick={()=>addedHomePageCategory()} className="bg-green-500 text-white btn btn-sm  ">Add Homepage</button>
-        <Link to="/dashboard/category/homepage"   className="bg-green-500 text-white btn btn-sm  ">Show Homepage</Link>
-        <Link to="/dashboard/category/create">
+      <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
+         <h2 className=" font-semibold text-xl">Category List</h2>
+        <Link to="/dashboard/category">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
-            add
+            list
           </span>
         </Link>
-        </div>
-
-       
       </div>
 
       {loading ? (
         <SkeletonTable />
       ) : (
         <>
-          <DataTable selectableRows columns={columns} data={categoryData}   onSelectedRowsChange={handleSelectedRowsChange} />
+          <DataTable   columns={columns} data={categoryData}    />
           <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}
@@ -151,7 +92,7 @@ const Category = () => {
   );
 };
 
-export default Category;
+export default CategoryHomepage;
 const Pagination = ({
   nextPageUrl,
   setCurrentPage,

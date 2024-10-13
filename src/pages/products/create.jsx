@@ -49,7 +49,7 @@ export const ProductCreate = () => {
     try {
       setLoading(true);
       const response = await NetworkServices.Category.index();
-      console.log(response);
+    
       if (response?.status === 200 || response?.status === 201) {
         setCategoryData(response?.data?.data?.data);
         setLoading(false);
@@ -86,7 +86,7 @@ export const ProductCreate = () => {
         formData.append(`gallery_image[${index}]`, image); // Append multiple images
       });
       const response = await NetworkServices.Product.store(formData);
-      console.log(response);
+ 
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/product");
         setButtonLoading(false);

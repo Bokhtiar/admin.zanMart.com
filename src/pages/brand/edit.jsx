@@ -25,7 +25,7 @@ export const BrandEdit = () => {
   const fetchData = useCallback(async () => {
     try {
       const response = await NetworkServices.Brand.show(id);
-      console.log(response);
+     
       if (response.status === 200) {
         setData(response.data.data);
       }
@@ -42,7 +42,7 @@ export const BrandEdit = () => {
         ...data,
       };
       const response = await NetworkServices.Brand.update(id, payload);
-      // console.log("res", response);
+ 
       if (response.status === 200) {
         navigate("/dashboard/brand");
         return Toastify.Success(response.data.message);

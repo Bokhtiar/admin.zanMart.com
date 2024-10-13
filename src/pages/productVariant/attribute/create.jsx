@@ -44,7 +44,7 @@ const AttributeCreate = () => {
     try {
       setLoading(true);
       const response = await NetworkServices.Unit.index();
-      console.log(response);
+    
       if (response?.status === 200 || response?.status === 201) {
         setUnitData(response?.data?.data?.data);
         setLoading(false);

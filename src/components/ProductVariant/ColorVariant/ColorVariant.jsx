@@ -15,10 +15,10 @@ const ColorVariant = ({
   setId,
   id
 }) => {
-  console.log(colorVariant);
+  
   // date formatting system
   const handleChange = (e) => {
-    console.log(e.target.name);
+   
     setValueAdded({
       ...valueAdded,
       [e.target.name]:
@@ -120,7 +120,7 @@ const ColorVariant = ({
 export default ColorVariant;
 
 const ColorForm = ({ color = {}, handleAdded, handleChange }) => {
-  console.log('color',color);
+   
   return (
     <form onSubmit={handleAdded} className="space-y-4">
     <div>

@@ -25,8 +25,8 @@ const BannerWayProductCreate = () => {
     async (product) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Product.index(currentPage);
-        console.log(response);
+        const response = await NetworkServices.Product.index();
+   
         if (response?.status === 200 || response?.status === 201) {
           setProductData(response?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -36,7 +36,7 @@ const BannerWayProductCreate = () => {
           setLoading(false);
         }
       } catch (error) {
-        console.log(error)
+       
         if (error) {
           setLoading(false);
           networkErrorHandeller(error);
@@ -72,7 +72,7 @@ const BannerWayProductCreate = () => {
   const handleAddedBannerWaysToProduct =async ()=>{
     try {
         const response = await NetworkServices.Banner.homepagebannerproduct({banner_id:id, product_id:selectedIds});
-        console.log(response);
+       
         if (response.status === 200 || response?.status === 201) {
           // fetchData();
           navigate(`/dashboard/banner/banner-product/${id}`); 

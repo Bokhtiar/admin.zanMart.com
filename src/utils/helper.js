@@ -25,7 +25,7 @@ const setCookie = (name, value, days) => {
   };
 export const getToken = () => {
    
-    // console.log(savedToken)
+    
     return  getCookie("token");
 }
 
@@ -45,7 +45,7 @@ export const removeToken = () => {
 
 /* Global network error handeller */
 export const networkErrorHandeller = (error) => {
-    console.log("error", error);
+    
     if (
         error &&
         error.response &&

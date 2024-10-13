@@ -49,13 +49,13 @@ useEffect( ()=>{
 const fetchProducts= async()=>{
     try {
         const ProductResponse = await NetworkServices.Product.index();
-        console.log(ProductResponse)
+     
         if(ProductResponse.status==200){
             setProducts(ProductResponse?.data?.data)
         }
         
     } catch (error) {
-        console.log(error)
+  
        
 }
 
