@@ -14,10 +14,10 @@ const UnitVariant = ({
   setId,
   id
 }) => {
-  console.log(unitvariant);
+ 
   // date formatting system
   const handleChange = (e) => {
-    console.log(e.target.name);
+   
     setValueAdded({
       ...valueAdded,
       [e.target.name]:
@@ -111,7 +111,7 @@ const UnitVariant = ({
 
 export default UnitVariant;
 const UnitForm = ({unit={},handleAdded,handleChange})=>{
-  console.log(unit,"SDfsdfsdunit");
+ 
   return(
     <form onSubmit={handleAdded} className="space-y-4">
     <div>

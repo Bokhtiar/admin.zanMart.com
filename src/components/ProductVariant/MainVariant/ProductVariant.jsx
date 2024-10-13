@@ -15,7 +15,7 @@ const ProductVariantComponant = ({
   setId,
   id,
 }) => {
-//   console.log(productVariant);
+ 
   // date formatting system
   const [formData, setFormData] = useState([
     {
@@ -45,9 +45,9 @@ const ProductVariantComponant = ({
     setValueAdded(updatedFormData);
   };
   const handleUpdateChange = (index,e) => {
-    console.log(e.target.name);
+ 
     const value = productVariant.find(item=>item.product_variant_id===id);
-    console.log(value);
+ 
     setValueAdded({
       ...value ,
       [e.target.name]: Number(e.target.value)
@@ -176,7 +176,7 @@ const MultiProductPostForm = ({
   formData,
   handleInputChange,
 }) => {
-    console.log(formData,"---------------->");
+ 
   return (
     <form onSubmit={handleSubmit}>
       {formData.map((product, index) => (
@@ -251,7 +251,7 @@ const ProductVariantForm = ({
   handleAdded,
   handleChange,
 }) => {
-  console.log("product_variant", product_variant);
+ 
   return (
     <form onSubmit={handleAdded} className="space-y-4">
       <div>

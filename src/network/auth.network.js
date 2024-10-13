@@ -1,7 +1,7 @@
 import {publicRequest} from '../config/axios.config'
 
 export const login = async (data) => {
-    console.log(data,"welcome")
+    
     return await publicRequest.post(`login`, data);
 };
 

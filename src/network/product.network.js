@@ -2,7 +2,7 @@ import { privateRequest } from '../config/axios.config'
 
 /* list of resource */
 export const index = async (page, perPage) => {
-    return await privateRequest.get(`/admin/product?page=${page}&page_size=${perPage}`);
+    return await privateRequest.get(`/admin/product`);
 };
 
 /* resource store */

@@ -25,7 +25,7 @@ const Unit = () => {
   useEffect(() => {
     setLoading(true);
     fetchApi(`admin/unit?page=${currentPage}`).then((res) => {
-      console.log(res);
+    
       setunitValue(res?.data?.data?.data);
       if (res?.data?.success) {
         setLoading(false);
@@ -225,7 +225,7 @@ const Unit = () => {
 
 export default Unit;
 const UnitForm = ({ unit = {}, handleAdded, addedunitValue }) => {
-  console.log("unit", unit);
+ 
   return (
     <form onSubmit={handleAdded} className="space-y-4">
       <div>

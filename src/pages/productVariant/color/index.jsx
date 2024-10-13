@@ -21,7 +21,7 @@ const Color = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Color.index(currentPage);
-        console.log(response);
+      
         if (response?.status === 200 || response?.status === 201) {
           setcolorData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

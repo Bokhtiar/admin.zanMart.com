@@ -14,7 +14,7 @@ const BannerWayProduct = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Banner.homepagebannershowproduct(id);
-        console.log(response);
+        
         if (response?.status === 200 || response?.status === 201) {
           setbannerData(response?.data?.data ); 
           setLoading(false);

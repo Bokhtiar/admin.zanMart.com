@@ -5,7 +5,7 @@ import { getToken } from "../utils/helper";
  
 //const process.env.REACT_APP_API_ENDPOINT = "https://jobmedia-sanbox.azurewebsites.net/api";
 /* Publica/Common request config */
-//axios.defaults.headers.post["Content-Type"] = "application/json";
+// axios.defaults.headers.post["Content-Type"] = "application/json";
 //axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
 
 const publicRequest = axios.create({
@@ -25,7 +25,7 @@ publicRequest.interceptors.request.use(
         return config;
     },
     (err) => {
-        console.log(err);
+      
         Promise.reject(err);
     }
 );
@@ -44,7 +44,7 @@ publicRequest.interceptors.request.use(
 //         return config;
 //     },
 //     (err) => {
-//         console.log(err);
+ 
 //         Promise.reject(err);
 //     }
 // );
@@ -61,7 +61,7 @@ privateRequest.interceptors.request.use(
         return config;
     },
     (err) => {
-        console.log(err);
+       
         Promise.reject(err);
     }
 );

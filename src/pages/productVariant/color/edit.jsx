@@ -41,7 +41,7 @@ export const ColorEdit = () => {
         ...data,
       };
       const response = await NetworkServices.Color.update(id, payload);
-      // console.log("res", response);
+ 
       if (response.status === 200) {
         navigate("/dashboard/color");
         return Toastify.Success(response.data.message);

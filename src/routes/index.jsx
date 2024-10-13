@@ -4,8 +4,7 @@ import { Navigate } from "react-router-dom";
 import { DashboardLayout } from "../layouts/dashboard.layout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Inventory from "../pages/Inventory/Inventory";
-import Orders from "../pages/Orders/Orders"; 
-import PostProduct from "../pages/postProduct/Index"; 
+import Orders from "../pages/Orders/Orders";  
 import Category from "../pages/category";
 import Unit from "../pages/productVariant/Unit/Unit";
 
@@ -33,6 +32,7 @@ import ProductVariantCreate from "../pages/productVariant/productvariant/create"
 import EditProductVariant from "../pages/productVariant/productvariant/edit";
 import BannerWayProduct from "../pages/banner/banner-way-product";
 import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
+import CategoryHomepage from "../pages/category/category-to-homepage";
 
  
 const appRoutes = [
@@ -43,8 +43,7 @@ const appRoutes = [
       { path: "*", element: <Navigate to="/404" /> },
       { path: "", element: <Dashboard /> },
       { path: "product", element: <Product></Product> },
-      { path: "product/create", element: <ProductCreate /> },
-      { path: "post-product", element: <PostProduct /> },
+      { path: "product/create", element: <ProductCreate /> }, 
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },
@@ -58,6 +57,7 @@ const appRoutes = [
       { path: "category", element: <Category /> },
       { path: "category/create", element: <CategoryCreate /> },
       { path: "category/edit/:id", element: <CategoryEdit /> }, 
+      { path: "category/homepage", element: <CategoryHomepage /> }, 
       { path: "brand", element: <Brand /> },
       { path: "brand/create", element: <BrandCreate /> },
       { path: "brand/edit/:id", element: <BrandEdit /> },

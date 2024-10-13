@@ -30,6 +30,10 @@ export const categoryList = async () => {
     return await privateRequest.get(`/admin/category/`);
 };
 // hompage category list 
+export const homepagecategoryshow = async() => {
+    return await privateRequest.get('/admin/home-page-category')
+}
+// hompage category list 
 export const homepagecategory = async(data) => {
     return await privateRequest.post('/admin/home-page-category/', data)
 }

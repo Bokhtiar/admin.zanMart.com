@@ -23,8 +23,7 @@ const AttributeVariant = ({
         e.target.type === "number" ? Number(e.target.value) : e.target.value,
     });
   };
-  console.log(attribute);
-
+ 
   return (
     <div>
       {open?.add && (

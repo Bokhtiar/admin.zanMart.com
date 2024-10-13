@@ -31,7 +31,7 @@ export const WebSettingEdit = () => {
   };
   const onSubmit = async (data) => {
     try {
-        console.log(data);
+      
       setButtonLoading(true);
        
       const formData = new FormData();

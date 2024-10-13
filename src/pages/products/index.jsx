@@ -23,8 +23,8 @@ const Product = () => {
     async (product) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Product.index(currentPage);
-        console.log(response);
+        const response = await NetworkServices.Product.index(currentPage,10);
+         console.log(response,"product");
         if (response?.status === 200 || response?.status === 201) {
           setProductData(response?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -34,7 +34,7 @@ const Product = () => {
           setLoading(false);
         }
       } catch (error) {
-        console.log(error)
+     
         if (error) {
           setLoading(false);
           networkErrorHandeller(error);
@@ -51,13 +51,13 @@ const Product = () => {
   const destroy = async (id) => {
     try {
       const response = await NetworkServices.Product.destroy(id);
-      console.log(response);
+     
       if (response.status === 200 || response?.status === 201) {
         fetchData();
         return Toastify.Info("product Deleted");
       }
     } catch (error) {
-      console.log(error);
+    
       networkErrorHandeller(error);
     }
   };

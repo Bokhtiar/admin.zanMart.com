@@ -29,7 +29,7 @@ export const Register = () => {
                 re_password: data?.password
             }
             const response = await NetworkServices.Authentication.registration(payload)
-            console.log("load", response);
+       
             localStorage.setItem("job-media-registration-data-admin", JSON.stringify(payload))
             if (response) {
                 navigate("/otp");

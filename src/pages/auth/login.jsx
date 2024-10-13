@@ -27,10 +27,10 @@ export const Login = () => {
                 ...data,
                 user_type: "admin"
             }
-            // console.log(payload)
+          
             setLoading(true)
             const response = await NetworkServices.Authentication.login(payload)
-            // console.log("response", response);
+         
             if (response.status === 200) {
                 setToken(response.data.data.token);
                 navigate("/dashboard");
