@@ -33,6 +33,7 @@ import EditProductVariant from "../pages/productVariant/productvariant/edit";
 import BannerWayProduct from "../pages/banner/banner-way-product";
 import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
 import CategoryHomepage from "../pages/category/category-to-homepage";
+import { ProductEdit } from "../pages/products/edit";
 
  
 const appRoutes = [
@@ -44,6 +45,7 @@ const appRoutes = [
       { path: "", element: <Dashboard /> },
       { path: "product", element: <Product></Product> },
       { path: "product/create", element: <ProductCreate /> }, 
+      { path: "product/edit/:id", element: <ProductEdit /> }, 
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },
@@ -71,8 +73,7 @@ const appRoutes = [
       { path: "web-setting/create", element: <WebSettingCreate /> },
       { path: "web-setting/edit/:id", element: <WebSettingEdit /> 
     
-           
-
+        
       },
       { path: "unit", element: <Unit /> },
     ],

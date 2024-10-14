@@ -28,7 +28,7 @@ const BannerWayProductCreate = () => {
         const response = await NetworkServices.Product.index();
    
         if (response?.status === 200 || response?.status === 201) {
-          setProductData(response?.data?.data);
+          setProductData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
           setLastPage(response?.data?.data?.last_page);
           setNextPageUrl(response?.data?.data?.next_page_url);

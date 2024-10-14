@@ -21,30 +21,36 @@ const ProductVariantEdit = () => {
   const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
- 
+
   const [allAttributes, setAllAttributes] = useState([]);
   const [productVariantData, setProductVariantData] = useState({});
 
-    //  table data columns list
-    const columns = [
-    
-        {
-          name: "Product ID",
-          cell: (row) => <div className="flex gap-5">
-          <input className="cursor-pointer" type="checkbox" onChange={()=>setSelectedProduct(row?.product_id)} checked={row?.product_id == selectedProduct}/>
-       <span>  { row?.product_id}</span>
-       </div> 
-        },
-       
-        {
-          name: "Product Name",
-          cell: (row) => row?.title,
-        },
-      ];
+  //  table data columns list
+  const columns = [
+    {
+      name: "Product ID",
+      cell: (row) => (
+        <div className="flex gap-5">
+          <input
+            className="cursor-pointer"
+            type="checkbox"
+            onChange={() => setSelectedProduct(row?.product_id)}
+            checked={row?.product_id == selectedProduct}
+          />
+          <span> {row?.product_id}</span>
+        </div>
+      ),
+    },
+
+    {
+      name: "Product Name",
+      cell: (row) => row?.title,
+    },
+  ];
   // Fetch products, colors, attri=butes, and units from the APIs
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
         const colorResponse = await NetworkServices.Color.index();
         const attributeResponse = await NetworkServices.Attribute.index();
@@ -65,8 +71,8 @@ const ProductVariantEdit = () => {
       }
     };
     fetchData();
-  }, []); 
-//   fetch product 
+  }, []);
+  //   fetch product
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -74,13 +80,11 @@ const ProductVariantEdit = () => {
         if (ProductResponse.status === 200) {
           setProducts(ProductResponse?.data?.data?.data);
         }
-      } catch (error) {
-
-      }
+      } catch (error) {}
     };
     fetchProducts();
-  }, [ ]);
-//   submit product variant as edit 
+  }, []);
+  //   submit product variant as edit
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
@@ -101,8 +105,8 @@ const ProductVariantEdit = () => {
           price: Number(price) || Number(productVariantData?.price),
           product_variant_id: Number(id),
         },
-      ]; 
-      const response = await NetworkServices.ProductVariant.update(id, payload); 
+      ];
+      const response = await NetworkServices.ProductVariant.update(id, payload);
       if (response.status == 200 || response.status == 201) {
         // navigate("/dashboard/product-variant");
         Toastify.Success("Product varaint create successfully.");
@@ -112,13 +116,13 @@ const ProductVariantEdit = () => {
     }
   };
 
-//  fetch product variant 
+  //  fetch product variant
   const fetchProductVariants = useCallback(async () => {
     try {
       const response = await NetworkServices.ProductVariant.show(id);
       if (response.status === 200) {
         // setAddedVariant(response?.data?.data)
-        setSelectedProduct(response?.data?.data?.product_id)
+        setSelectedProduct(response?.data?.data?.product_id);
         setProductVariantData(response?.data?.data);
       }
     } catch (error) {
@@ -128,7 +132,7 @@ const ProductVariantEdit = () => {
   useEffect(() => {
     fetchProductVariants();
   }, []);
-//    global exist value check function 
+  //    global exist value check function
   const defaultVariantFuntion = (key = [], filterName) => {
     const result = key?.find(
       (item) => item?.[filterName] === productVariantData?.[filterName]
@@ -165,13 +169,11 @@ const ProductVariantEdit = () => {
             {/* Product Select Dropdown */}
             <div className="mb-4 ">
               <DataTable
-                
                 columns={columns}
                 data={products}
                 pagination
                 fixedHeader
                 fixedHeaderScrollHeight="300px" // or any height you prefer
-               
               />
             </div>
 
@@ -257,7 +259,7 @@ const ProductVariantEdit = () => {
                   value={selectedAttribute}
                   onChange={(e) => setSelectedAttribute(e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  disabled={attributes?.length?false:true}
+                  disabled={attributes?.length ? false : true}
                 >
                   <option
                     value={
@@ -352,10 +354,8 @@ const ProductVariantEdit = () => {
               >
                 Submit
               </button>
-             
             </div>
           </form>
-        
         </div>
       )}
     </>
@@ -363,4 +363,3 @@ const ProductVariantEdit = () => {
 };
 
 export default ProductVariantEdit;
- 
