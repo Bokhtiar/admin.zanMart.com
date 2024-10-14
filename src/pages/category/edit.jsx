@@ -2,37 +2,47 @@ import { useParams } from "react-router-dom";
 import { TextInput } from "../../components/input";
 import { Toastify } from "../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
-import { useForm  } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
+import { FaCamera } from "react-icons/fa";
 
 export const CategoryEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState();
+  const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
 
   const [selectedunitIds, setSelectedunitIds] = useState([]);
   const [unitData, setUnitData] = useState([]);
-  // form submit 
+  const [singleImage, setSingleImage] = useState(null);
+  const [updateBannerImage, setUpdateBannerImage] = useState(null);
+  const handleSingleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setUpdateBannerImage(file);
+      const imageUrl = URL.createObjectURL(file);
+      setSingleImage(imageUrl);
+    }
+  };
+  // form submit
   const {
-    control,
+ 
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
 
-  /* reosure show */
+  /* category single data show reosure show */
   const fetchData = useCallback(async () => {
     try {
       const response = await NetworkServices.Category.show(id);
-    
       if (response.status === 200) {
-        setSelectedunitIds(response?.data?.data?.units)
+        setSelectedunitIds(response?.data?.data?.units);
         setData(response.data.data);
       }
     } catch (error) {
@@ -43,15 +53,14 @@ export const CategoryEdit = () => {
   /* submit reosurce */
   const onSubmit = async (data) => {
     try {
-      // setLoading(true);
-      console.log(data,selectedunitIds);
-      const ids = selectedunitIds.map(id =>id.unit_id) 
+      const ids = selectedunitIds.map((id) => id.unit_id);
       const formData = new FormData();
       formData.append("category_name", data?.category_name);
       data?.parent_id && formData.append("parent_id", data?.parent_id);
-      formData.append('is_unit',JSON.stringify(ids));
+      formData.append("is_unit", JSON.stringify(ids));
       data?.is_color && formData.append("is_color", data?.is_color);
-      // singleImage && formData.append("thumbnail", singleImage);
+      formData.append("_method", "PUT");
+      singleImage && formData.append("thumbnail", updateBannerImage);
       const response = await NetworkServices.Category.update(id, formData);
       if (response.status === 200) {
         navigate("/dashboard/category");
@@ -62,7 +71,7 @@ export const CategoryEdit = () => {
       networkErrorHandeller(error);
     }
   };
-  // fetch unit data 
+  // fetch unit data
   const fetchDataForUnit = useCallback(async (category) => {
     try {
       // setLoading(true);
@@ -81,17 +90,27 @@ export const CategoryEdit = () => {
     fetchData();
     fetchDataForUnit();
   }, []);
-  // unit seletected area 
-  const handleCheckboxChange = (unitId) => { 
-    // filter here 
-      const filter = selectedunitIds?.find(item=>item?.unit_id===unitId);
-      if(filter){
-        setSelectedunitIds(selectedunitIds?.filter(item=>item?.unit_id!==unitId));
-      }else{
-        setSelectedunitIds([...selectedunitIds, {unit_id:unitId, name:filter?.name}]);
-      }
+  // unit seletected area
+  const handleCheckboxChange = (unitId) => {
+    // filter here
+    const filter = selectedunitIds?.find((item) => item?.unit_id === unitId);
+    if (filter) {
+      setSelectedunitIds(
+        selectedunitIds?.filter((item) => item?.unit_id !== unitId)
+      );
+    } else {
+      setSelectedunitIds([
+        ...selectedunitIds,
+        { unit_id: unitId, name: filter?.name },
+      ]);
+    }
     // setSelectedunitIds([]);
-  };  
+  };
+  useEffect(()=>{
+    setValue("name",data?.category?.category_name||'');
+    setValue("is_color",data?.category?.is_color?1:0);
+  },[data,setValue])
+  console.log(data);
   return (
     <>
       <section className="flex justify-between shadow-md p-2 my-3 rounded-md bg-white mb-3">
@@ -116,19 +135,81 @@ export const CategoryEdit = () => {
                 </div>
               </div>
               {/* category name */}
-              <TextInput
-                label="Category Name"
-                name="category_name"
-                type="text"
-                placeholder="Enter category name"
-                control={control}
-                error={errors.name && errors.name.message}
-                defaultvalue={data ? data?.category_name : "s"}
-                rules={{ required: "Category name is required" }}
-              />
+              <div className="mb-6 lg:mb-2">
+                {errors?.name ? (
+                  <span className="text-red-500 text-sm">
+                    {errors?.name?.message}
+                  </span>
+                ) : (
+                  <span className="  text-sm">Category Title</span>
+                )}
+                <input
+                  type="text"
+                  value={data?.category?.category_name || ""}
+                  {...register("category_name", {
+                    required: {
+                      value: true,
+                      message: "Banner Title is required",
+                    },
+                    validate: (value) =>
+                      value.trim() !== "" || "Title is required", // Optional validation to ensure non-empty
+                  })}
+                  onChange={(e) => {
+                    setData({
+                      ...data,
+                      category:{
+                        ...data.category,
+                        category_name: e.target.value,
+                      }  
+                    });
+                  }}
+                  placeholder="Enter your name"
+                  className={`  w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${
+                    errors?.name ? "border-red-500" : "border-gray-300"
+                  } rounded-md`}
+                />
+              </div>
             </div>
-          {/* unit ids  */}
-          <div className="mb-6 lg:mb-2">
+            {/* here i make image field 
+             */}
+            {/* banner image upload area  */}
+          <div className="mb-6 lg:mb-2 w-full">
+          <p className="text-sm mb-1 text-gray-500">
+                Banner Image 
+              </p>
+            <div className="flex flex-col items-center">
+             
+              <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleSingleImageChange}
+                  className="absolute inset-0 opacity-0 cursor-pointer"
+                />
+                {singleImage ? (
+                  <img
+                    src={singleImage}
+                    alt="Uploaded"
+                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+                  />
+                ) : (
+                  <div>
+                    <img
+                      src={`${process.env.REACT_APP_BASE_API}${data?.category?.thumbnail}`}
+                      alt="Uploaded"
+                      className="absolute inset-0 w-full h-full object-cover rounded-md opacity-50"
+                    />
+                    <span className="text-gray-500 ">
+                      <FaCamera className="text-black opacity-100 bg-gray-300 p-1 text-3xl  " />
+                    </span>
+                  </div>
+                )}
+              </label>
+ 
+            </div>
+          </div>
+            {/* unit ids  */}
+            <div className="mb-6 lg:mb-2">
               <p>Unit IDs</p>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 ">
                 {unitData.map((unit) => (
@@ -138,8 +219,10 @@ export const CategoryEdit = () => {
                         <input
                           type="checkbox"
                           // checked={selectedunitIds.includes(unit?.unit_id)}
-                            // checked={unit?.some((item)=>item.unit_id==unit?.unit_id)} // Handle checkbox selection
-                            checked={selectedunitIds.some((item)=>item?.unit_id==unit?.unit_id)} // Handle checkbox selection
+                          // checked={unit?.some((item)=>item.unit_id==unit?.unit_id)} // Handle checkbox selection
+                          checked={selectedunitIds.some(
+                            (item) => item?.unit_id == unit?.unit_id
+                          )} // Handle checkbox selection
                           // checked={selectedunitIds.includes(unit?.unit_id)} // Handle checkbox selection
                           onChange={() => handleCheckboxChange(unit?.unit_id)} // Handle checkbox selection
                           className="cursor-pointer"
@@ -150,6 +233,22 @@ export const CategoryEdit = () => {
                   </div>
                 ))}
               </div>
+            </div>
+            {/* is coloer  */}
+            <div className="mb-6 lg:mb-2">
+              <p>Is Color?</p>
+              <input
+                type="checkbox"
+                {...register("checkbox")}
+                   checked={data?.category?.is_color}
+                onChange={()=>setData({
+                  ...data,
+                  category:{
+                    ...data.category,
+                     is_color:data?.category?.is_color?0:1,
+                  }  
+                })}
+              />
             </div>
             {/* submit button */}
             <div className="my-4 flex justify-center">

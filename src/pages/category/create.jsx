@@ -82,7 +82,7 @@ export const CategoryCreate = () => {
         return Toastify.Success("Category Created.");
       }
     } catch (error) {
-      console.log(error);
+      
       setButtonLoading(false);
       networkErrorHandeller(error);
     }

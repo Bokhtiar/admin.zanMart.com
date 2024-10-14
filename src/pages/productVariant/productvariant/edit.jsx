@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import DataTable from "react-data-table-component";
+import { networkErrorHandeller } from "../../../utils/helper";
 
 const ProductVariantEdit = () => {
   const { id } = useParams();
@@ -35,7 +36,6 @@ const ProductVariantEdit = () => {
        </div> 
         },
        
-    
         {
           name: "Product Name",
           cell: (row) => row?.title,
@@ -60,7 +60,7 @@ const ProductVariantEdit = () => {
           setLoading(false);
         }
       } catch (error) {
-        
+        networkErrorHandeller(error);
         setLoading(false);
       }
     };
