@@ -26,7 +26,7 @@ const Product = () => {
         const response = await NetworkServices.Product.index(currentPage,10);
          console.log(response,"product");
         if (response?.status === 200 || response?.status === 201) {
-          setProductData(response?.data?.data);
+          setProductData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
           setLastPage(response?.data?.data?.last_page);
           setNextPageUrl(response?.data?.data?.next_page_url);

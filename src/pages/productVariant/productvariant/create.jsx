@@ -9,6 +9,7 @@ const ProductForm = () => {
     const [products, setProducts] = useState([]);
     const [colors, setColors] = useState([]);
     const [attributes, setAttributes] = useState([]);
+    const [allAttributes, setAllAttributes] = useState([]);
     const [unit, setUnit] = useState([]);
     const navigate = useNavigate()
     const [selectedProduct, setSelectedProduct] = useState('');
@@ -19,24 +20,21 @@ const ProductForm = () => {
     const [weight, setWeight] = useState('');
     const [price, setPrice] = useState('');
     const [loading, setLoading] = useState(false)
-    const [addedVariant, setAddedVariant] = useState([])
-    // Fetch products, colors, attri=butes, and units from the APIs
+    const [addedVariant, setAddedVariant] = useState([])  
     useEffect(() => {
         const fetchData = async () => {
-            setLoading(true)
+            setLoading(false)
             try {
-             
                 const colorResponse = await NetworkServices.Color.index();
                 const attributeResponse = await NetworkServices.Attribute.index();
-                const unitResponse = await NetworkServices.Unit.index();
+                const unitResponse = await NetworkServices.Unit.index(); 
                 if (colorResponse?.status === 200 && attributeResponse?.status === 200 && unitResponse?.status === 200 ) {
                     setColors(colorResponse?.data?.data?.data);
-                    setAttributes(attributeResponse?.data?.data?.data);
+                    setAllAttributes(attributeResponse?.data?.data?.data);
                     setUnit(unitResponse?.data?.data?.data)
                     setLoading(false)
                 }
-            } catch (error) {
-                console.error('Error fetching data:', error);
+            } catch (error) { 
                 setLoading(false)
             }
         };
@@ -46,17 +44,14 @@ const ProductForm = () => {
 useEffect( ()=>{
 const fetchProducts= async()=>{
     try {
-        const ProductResponse = await NetworkServices.Product.index();
-   
-        if(ProductResponse.status==200){
-            setProducts(ProductResponse?.data?.data)
+        const ProductResponse = await NetworkServices.Product.index(); 
+        if(ProductResponse.status===200){
+            setProducts(ProductResponse?.data?.data?.data)
         }
         
     } catch (error) {
-         
-       
+       Toastify.Error(error)
 }
-
 }
 fetchProducts() 
 },[ddd])
@@ -87,8 +82,6 @@ fetchProducts()
             name: "Product Name",
             cell: (row) => row?.title,
         },
-
-
     ];
     const handelAllVariant = () => {
         const data = {
@@ -111,6 +104,17 @@ fetchProducts()
         setWeight('')
 
     }
+    const handleAttributeChange = (e)=>{
+        if(!selectedUnit){
+            Toastify.Error("please select unit");
+            return;
+        }
+        setSelectedAttribute(e.target.value)
+    } 
+  const handleUnitChangeForAttribute=(e)=>{
+    setSelectedUnit(e.target.value) 
+   setAttributes(allAttributes.filter(attribute=>attribute?.unit?.unit_id===Number(e.target.value))); 
+  } 
     return (
         <>
             {loading ? <SkeletonForm /> : <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -160,40 +164,19 @@ fetchProducts()
                             </select>
                         </div>
 
-                        {/* Attribute Select Dropdown */}
-                        <div className="flex-1">
-                            <label htmlFor="attribute" className="block text-sm font-medium text-gray-700 mb-1">
-                                Select Attribute
-                            </label>
-                            <select
-                                id="attribute"
-                                value={selectedAttribute}
-                                onChange={(e) => setSelectedAttribute(e.target.value)}
-                                className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
-                                <option value="">Select Attribute</option>
-                                {attributes?.map((attribute) => (
-                                    <option key={attribute?.id} value={attribute?.attribute_id}>
-                                        {attribute?.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-
-                    {/* Row for Unit and Quantity */}
-                    <div className="flex mb-4 gap-4">
-                        {/* Unit Select Dropdown */}
-                        <div className="flex-1">
+                       
+                         {/* Unit Select Dropdown */}
+                         <div className="flex-1">
                             <label htmlFor="unit" className="block text-sm font-medium text-gray-700 mb-1">
                                 Select Unit
                             </label>
                             <select
                                 id="unit"
                                 value={selectedUnit}
-                                onChange={(e) => setSelectedUnit(e.target.value)}
+                                onChange={handleUnitChangeForAttribute }
                                 className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                            >
+                           
+                        >
                                 <option value="">Select Unit</option>
                                 {unit?.map((itm) => (
                                     <option key={itm?.id} value={itm?.unit_id}>
@@ -203,6 +186,30 @@ fetchProducts()
                             </select>
                         </div>
 
+                    </div>
+
+                    {/* Row for Unit and Quantity */}
+                    <div className="flex mb-4 gap-4">
+                        {/* Attribute Select Dropdown */}
+                        <div className="flex-1">
+                            <label htmlFor="attribute" className="block text-sm font-medium text-gray-700 mb-1">
+                                Select Attribute
+                            </label>
+                            <select
+                                id="attribute"
+                                value={selectedAttribute}
+                                onChange={ handleAttributeChange }
+                                className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                             disabled={attributes?.length?false:true}
+                           >
+                                <option value="">Select Attribute</option>
+                                {attributes?.map((attribute) => (
+                                    <option key={attribute?.id} value={attribute?.attribute_id}>
+                                        {attribute?.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         {/* Quantity Input */}
                         <div className="flex-1">
                             <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
@@ -255,7 +262,7 @@ fetchProducts()
                     {/* Submit Button */}
                     <div className='flex gap-4'>
                         <span onClick={handelAllVariant}
-                            className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="cursor-pointer flex justify-center w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
                             Add
                         </span>
