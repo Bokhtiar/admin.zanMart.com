@@ -71,6 +71,12 @@ const Product = () => {
       name: "Product Name",
       cell: (row) => row?.title,
     },
+    {
+      name: "Descriptions",
+      cell: (row) =><div  dangerouslySetInnerHTML={{ __html: row?.description }}>
+
+      </div>
+    },
 
     {
       name: "Action",

@@ -5,6 +5,7 @@ import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
+import 'react-quill/dist/quill.snow.css';
 import {
   SearchableSelect,
   SingleSelect,
@@ -12,6 +13,7 @@ import {
   TextInput,
 } from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
+import ReactQuill from "react-quill";
 
 export const ProductCreate = () => {
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ export const ProductCreate = () => {
     control,
     register,
     handleSubmit,
-    watch,
+    
     setValue,
 
     formState: { errors },
@@ -97,7 +99,9 @@ export const ProductCreate = () => {
       networkErrorHandeller(error);
     }
   };
-
+  const handleQuillChange = (content) => {
+    setValue('description', content); // Update form state
+  };
   return (
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
@@ -228,14 +232,17 @@ export const ProductCreate = () => {
             {/* description field  */}
 
             <div className="mb-6 lg:mb-2">
-              <TextAreaInput
-                label="Description"
-                name="description"
-                placeholder="Enter Description "
-                control={control}
-                error={errors.name && errors.name.message}
-                rules={{ required: "Category Name is required" }}
-              />
+            <div className="quill-wrapper rounded-lg border border-gray-300">
+        <ReactQuill
+          
+          onChange={handleQuillChange}
+          placeholder="Write your description..."
+          className="w-full overflow-y-auto h-72"
+        />
+        {errors?.description && (
+          <p className="text-red-500 mt-1">{errors.description.message}</p>
+        )}
+      </div>
             </div>
             {/* image area coide  */}
             <div className="flex flex-col md:flex-row gap-3">
