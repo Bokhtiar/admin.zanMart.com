@@ -32,11 +32,9 @@ export const BannerCreate = () => {
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
-
       const formData = new FormData();
       formData.append("name", data.name);
-
-      formData.append("image", singleImage);
+      formData.append("image", singleImage); 
       const response = await NetworkServices.Banner.store(formData); 
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/banner");
@@ -98,16 +96,7 @@ export const BannerCreate = () => {
                   </div>
                 )}
               </label>
-
-              {/* Optional: Display file name or upload button */}
-              {singleImage && (
-                <button
-                  className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-                  onClick={() => setSingleImage(null)}
-                >
-                  Remove Image
-                </button>
-              )}
+ 
             </div>
           </div>
           {/* submit button */}
