@@ -72,14 +72,10 @@ export const CategoryCreate = () => {
       const formData = new FormData();
       formData.append("category_name", data?.category_name);
       data?.parent_id && formData.append("parent_id", data?.parent_id);
-      // selectedunitIds &&   selectedunitIds.forEach((category, index) => {
-      //   formData.append(`is_unit`, category);
-      // }); 
       formData.append('is_unit',JSON.stringify( selectedunitIds));
       data?.is_color && formData.append("is_color", data?.is_color);
       singleImage && formData.append("thumbnail", singleImage);
-      const response = await NetworkServices.Category.store(formData);
-      console.log(response);
+      const response = await NetworkServices.Category.store(formData); 
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/category");
         setButtonLoading(false);

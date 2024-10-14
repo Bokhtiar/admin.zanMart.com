@@ -30,8 +30,9 @@ export const CategoryEdit = () => {
   const fetchData = useCallback(async () => {
     try {
       const response = await NetworkServices.Category.show(id);
-
+    
       if (response.status === 200) {
+        setSelectedunitIds(response?.data?.data?.units)
         setData(response.data.data);
       }
     } catch (error) {
@@ -42,12 +43,16 @@ export const CategoryEdit = () => {
   /* submit reosurce */
   const onSubmit = async (data) => {
     try {
-      setLoading(true);
-      const payload = {
-        ...data,
-      };
-      const response = await NetworkServices.Category.update(id, payload);
-
+      // setLoading(true);
+      console.log(data,selectedunitIds);
+      const ids = selectedunitIds.map(id =>id.unit_id) 
+      const formData = new FormData();
+      formData.append("category_name", data?.category_name);
+      data?.parent_id && formData.append("parent_id", data?.parent_id);
+      formData.append('is_unit',JSON.stringify(ids));
+      data?.is_color && formData.append("is_color", data?.is_color);
+      // singleImage && formData.append("thumbnail", singleImage);
+      const response = await NetworkServices.Category.update(id, formData);
       if (response.status === 200) {
         navigate("/dashboard/category");
         return Toastify.Success(response.data.message);
@@ -60,9 +65,8 @@ export const CategoryEdit = () => {
   // fetch unit data 
   const fetchDataForUnit = useCallback(async (category) => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response = await NetworkServices.Unit.index();
-
       if (response?.status === 200 || response?.status === 201) {
         setUnitData(response?.data?.data?.data);
         setLoading(false);
@@ -78,19 +82,16 @@ export const CategoryEdit = () => {
     fetchDataForUnit();
   }, []);
   // unit seletected area 
-  const handleCheckboxChange = (unitId) => {
-    setSelectedunitIds((prevSelected) => {
-      if (prevSelected.includes(unitId)) {
-        // If the unit ID is already selected, remove it
-        return prevSelected.filter((id) => id !== unitId);
-      } else {
-        // If the unit ID is not selected, add it
-        return [...prevSelected, unitId];
+  const handleCheckboxChange = (unitId) => { 
+    // filter here 
+      const filter = selectedunitIds?.find(item=>item?.unit_id===unitId);
+      if(filter){
+        setSelectedunitIds(selectedunitIds?.filter(item=>item?.unit_id!==unitId));
+      }else{
+        setSelectedunitIds([...selectedunitIds, {unit_id:unitId, name:filter?.name}]);
       }
-    });
-  };
-
- 
+    // setSelectedunitIds([]);
+  };  
   return (
     <>
       <section className="flex justify-between shadow-md p-2 my-3 rounded-md bg-white mb-3">
@@ -136,7 +137,10 @@ export const CategoryEdit = () => {
                       <div className="flex gap-2 items-center">
                         <input
                           type="checkbox"
-                          checked={selectedunitIds.includes(unit?.unit_id)}
+                          // checked={selectedunitIds.includes(unit?.unit_id)}
+                            // checked={unit?.some((item)=>item.unit_id==unit?.unit_id)} // Handle checkbox selection
+                            checked={selectedunitIds.some((item)=>item?.unit_id==unit?.unit_id)} // Handle checkbox selection
+                          // checked={selectedunitIds.includes(unit?.unit_id)} // Handle checkbox selection
                           onChange={() => handleCheckboxChange(unit?.unit_id)} // Handle checkbox selection
                           className="cursor-pointer"
                         />
