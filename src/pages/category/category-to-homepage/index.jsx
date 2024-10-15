@@ -26,7 +26,7 @@ const CategoryHomepage = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Category.homepagecategoryshow(currentPage);
-    
+          console.log(response?.data?.data);
         if (response?.status === 200 || response?.status === 201) {
           setCategoryData(response?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

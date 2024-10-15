@@ -43,7 +43,7 @@ const BannerWayProductCreate = () => {
         }
       }
     },
-    [currentPage]
+    []
   );
   useEffect(() => {
     fetchData();

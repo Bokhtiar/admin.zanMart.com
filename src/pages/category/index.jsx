@@ -9,7 +9,9 @@ import { Toastify } from "../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { CategoryUtilsFunction } from "./components/hooks";
 const Category = () => {
+  const {column}  = CategoryUtilsFunction();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
@@ -21,13 +23,13 @@ const Category = () => {
   const [lastPage, setLastPage] = useState(1);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
   // fetch category data
   const fetchData = useCallback(
     async (category) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Category.index(currentPage);
-        console.log(response,"category");
+        const response = await NetworkServices.Category.index(currentPage);  
         if (response?.status === 200 || response?.status === 201) {
           setCategoryData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -53,48 +55,41 @@ const Category = () => {
   const destroy = async (id) => {
     try {
       const response = await NetworkServices.Category.destroy(id);
+      console.log(response?.data?.data?.data);
       if (response.status === 200 || response?.status === 201) {
         fetchData();
-        return Toastify.Info("Category Deleted");
+        return Toastify.Info(response?.data?.message);
       }
     } catch (error) {
       networkErrorHandeller(error);
     }
   };
+  // columns for table 
   const columns = [
-    {
-      name: "Category ID",
-      cell: (row) => row?.category_id,
-    },
-
-    {
-      name: "Category Name",
-      cell: (row) => row?.category_name,
-    },
-
-    {
-      name: "Action",
-      cell: (row) => (
-        <div className="flex gap-1">
-          <Link to={`/dashboard/category/edit/${row?.category_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
-            </span>
-          </Link>
-
-          <span>
-            <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
-              onClick={() => destroy(row?.category_id)}
-            >
-              delete
+       ...column,
+       {
+        name: "Action",
+        cell: (row) => (
+          <span className="flex gap-1">
+            <Link to={`/dashboard/category/edit/${row?.category_id}`}>
+              <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
+                edit
+              </span>
+            </Link>
+  
+            <span>
+              <span
+                className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+                onClick={() => destroy(row?.category_id)}
+              >
+                delete
+              </span>
             </span>
           </span>
-        </div>
-      ),
-    },
-  ];
-  const [selectedIds, setSelectedIds] = useState([]);
+        ),
+      },
+         
+      ]
 
   const handleSelectedRowsChange = (state) => {
     // Extract only the category_id from selected rows
