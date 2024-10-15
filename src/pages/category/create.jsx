@@ -3,17 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect,  useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
-import {
-  SearchableSelect,
-  SingleSelect,
-  TextAreaInput,
-  TextInput,
-} from "../../components/input";
+import { TextInput } from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import { FaCamera } from "react-icons/fa";
-
+import Select, { components } from 'react-select';
+import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
 export const CategoryCreate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -22,6 +18,7 @@ export const CategoryCreate = () => {
   const [unitData, setUnitData] = useState([]);
   const [singleImage, setSingleImage] = useState(null);
   const [showSingleImage, setShowSingleImage] = useState(null);
+  const [categoryList,setCategoryList] = useState([]);
   // uploadProgress
   const handleSingleImageChange = (e) => {
     const file = e.target.files[0];
@@ -37,18 +34,16 @@ export const CategoryCreate = () => {
     register,
     handleSubmit,
     setValue,
-
     formState: { errors },
   } = useForm({
     defaultValues: {
       checkbox: 0, // Initial value set to 0
     },
   });
-  /* submit reosurce */
-
+    //  unit data fetch function 
   const fetchDataForUnit = useCallback(async (category) => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const response = await NetworkServices.Unit.index();
 
       if (response?.status === 200 || response?.status === 201) {
@@ -62,10 +57,10 @@ export const CategoryCreate = () => {
     }
   }, []);
   useEffect(() => {
+    // call unit fetch function 
     fetchDataForUnit();
   }, []);
-  // submit functionality for the category
-  console.log(selectedunitIds,"selected unit ids");
+  // submit functionality for the category 
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
@@ -82,12 +77,11 @@ export const CategoryCreate = () => {
         return Toastify.Success("Category Created.");
       }
     } catch (error) {
-      
       setButtonLoading(false);
       networkErrorHandeller(error);
     }
   };
-
+  // unit id multple and unselected selected function here 
   const handleCheckboxChange = (unitId) => {
     setSelectedunitIds((prevSelected) => {
       if (prevSelected.includes(unitId)) {
@@ -99,7 +93,30 @@ export const CategoryCreate = () => {
       }
     });
   };
-
+  
+  // fetch category list here 
+  const  fetchCategoryList = async ()=>{
+    try {
+      const response = await NetworkServices.Category.index();
+      if (response?.status === 200 || response?.status === 201) {
+         const result  = response?.data?.data?.data;
+        //  setCategoryList(result);
+         const data = result.map(item=>{
+          return{
+            label: item?.category_name,
+            value: item?.category_id,
+           ...item
+          }
+         })
+         setCategoryList(data); 
+      }
+   } catch (error) {
+      networkErrorHandeller(error)
+   }
+  }
+  useEffect(()=>{
+     fetchCategoryList();
+  },[])
   return (
     <>
       <section className="flex justify-between shadow-md p-2 my-3 rounded-md bg-white mb-3">
@@ -117,16 +134,19 @@ export const CategoryCreate = () => {
         <section className="shadow-md my-5 p-2">
           <form className="" onSubmit={handleSubmit(onSubmit)}>
             {/* category name */}
-            <div className="mb-14">
+           
               <div className="mb-6 lg:mb-2  relative">
                 <label>Parent Category </label>
-
+                  
                 <SearchDropdownWithSingle
-                  register={register}
-                  setValue={setValue}
+                   options={categoryList}
+                   handleChange={(e)=>{
+                    console.log(e);
+                    setValue('parent_id', e?.category_id);
+                   }}
                 />
               </div>
-            </div>
+           
             <div className="mb-6 lg:mb-2">
               <TextInput
                 label="Category Name"
@@ -205,122 +225,5 @@ export const CategoryCreate = () => {
         </section>
       )}
     </>
-  );
-};
-
-const SearchDropdownWithSingle = ({ register, setValue }) => {
-  const [searchText, setSearchText] = useState({});
-  const [filteredOptions, setFilteredOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  // Filter options based on user input
-  //   const handleSearch = (e) => {
-  //     const value = e.target.value;
-  //     setSearchText(value);
-
-  //     // Filter options by the search text
-  //     const filtered = options.filter((option) =>
-  //       option.toLowerCase().includes(value.toLowerCase())
-  //     );
-
-  //     setFilteredOptions(filtered);
-  //   };
-
-  // Handle selection from dropdown
-  const handleOptionSelect = (option) => {
-    setOpen(true);
-    setSelectedOption(option);
-    setSearchText(option);
-    setValue("parent_id", option?.category_id);
-    // Set search text to selected option
-    // setFilteredOptions([]); // Clear dropdown after selection
-  };
-
-  // fetch category data
-  const fetchData = useCallback(async (category) => {
-    try {
-      //   setLoading(true);
-      const response = await NetworkServices.Category.index();
-      if (response?.status === 200 || response?.status === 201) {
-        setFilteredOptions(response?.data?.data?.data);
-        // setLoading(false);
-      }
-    } catch (error) {
-      if (error) {
-        networkErrorHandeller(error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const [isOpen, setIsOpen] = useState(false); // Track if the div is open
-  const divRef = useRef(null); // Reference to the div element
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIsOpen(false); // Close the div if click is outside
-        setOpen(false);
-      }
-    };
-
-    // Attach the event listener to the document
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [divRef]);
-  return (
-    <div className="absolute w-full z-50">
-      <input
-        type="text"
-        value={searchText?.category_name}
-        onFocus={() => setOpen(true)}
-        // onBlur={()=>setOpen(false)}
-        placeholder="Select your item"
-        readOnly
-        className={`w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 cursor-pointer `}
-      />
-
-      {/* Display filtered options in a dropdown */}
-      {open && (
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            border: "1px solid #ccc",
-          }}
-          ref={divRef}
-        >
-          <input
-            type="text"
-            // value={searchText}
-            // onSearch={handleSearch}
-            placeholder="Search your "
-            className="w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 "
-          />
-          {filteredOptions.map((option, index) => (
-            <li
-              key={index}
-              onClick={() => handleOptionSelect(option)}
-              style={{
-                padding: "8px",
-                cursor: "pointer",
-                backgroundColor: "#f8f8f8",
-                borderBottom: "1px solid #ddd",
-              }}
-            >
-              {option?.category_name}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 };

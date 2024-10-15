@@ -9,6 +9,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import { FaCamera } from "react-icons/fa";
+import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
 
 export const CategoryEdit = () => {
   const { id } = useParams();
@@ -20,6 +21,7 @@ export const CategoryEdit = () => {
   const [unitData, setUnitData] = useState([]);
   const [singleImage, setSingleImage] = useState(null);
   const [updateBannerImage, setUpdateBannerImage] = useState(null);
+  const [categoryList, setCategoryList] = useState([]);
   const handleSingleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -30,13 +32,31 @@ export const CategoryEdit = () => {
   };
   // form submit
   const {
- 
     register,
     handleSubmit,
     setValue,
     formState: { errors },
   } = useForm();
-
+  // fetch all category
+  const fetchCategoryList = async () => {
+    try {
+      const response = await NetworkServices.Category.index();
+      if (response?.status === 200 || response?.status === 201) {
+        const result = response?.data?.data?.data;
+        //  setCategoryList(result);
+        const data = result.map((item) => {
+          return {
+            label: item?.category_name,
+            value: item?.category_id,
+            ...item,
+          };
+        });
+        setCategoryList(data);
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+    }
+  };
   /* category single data show reosure show */
   const fetchData = useCallback(async () => {
     try {
@@ -74,7 +94,7 @@ export const CategoryEdit = () => {
   // fetch unit data
   const fetchDataForUnit = useCallback(async (category) => {
     try {
-      // setLoading(true);
+      setLoading(true);
       const response = await NetworkServices.Unit.index();
       if (response?.status === 200 || response?.status === 201) {
         setUnitData(response?.data?.data?.data);
@@ -89,6 +109,7 @@ export const CategoryEdit = () => {
   useEffect(() => {
     fetchData();
     fetchDataForUnit();
+    fetchCategoryList();
   }, []);
   // unit seletected area
   const handleCheckboxChange = (unitId) => {
@@ -106,22 +127,23 @@ export const CategoryEdit = () => {
     }
     // setSelectedunitIds([]);
   };
-  useEffect(()=>{
-    setValue("name",data?.category?.category_name||'');
-    setValue("is_color",data?.category?.is_color?1:0);
-  },[data,setValue])
-  console.log(data);
+  useEffect(() => {
+    setValue("name", data?.category?.category_name || "");
+    setValue("parent_id", data?.category?.parent_id || "");
+    setValue("is_color", data?.cateory?.is_color ? 1 : 0);
+  }, [data, setValue]);
+
   return (
     <>
       <section className="flex justify-between shadow-md p-2 my-3 rounded-md bg-white mb-3">
-        <h2 className=" font-semibold text-xl">Category Create</h2>
+        <h2 className=" font-semibold text-xl">Category Edit</h2>
         <Link to="/dashboard/category">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             list
           </span>
         </Link>
       </section>
-      {data ? (
+      {!loading ? (
         <section className="shadow-md my-5 p-2">
           <form className="p " onSubmit={handleSubmit(onSubmit)}>
             <div>
@@ -129,8 +151,16 @@ export const CategoryEdit = () => {
                 <div className="mb-6 lg:mb-2  relative">
                   <label>Parent Category </label>
                   <SearchDropdownWithSingle
-                    register={register}
-                    setValue={setValue}
+                    options={categoryList}
+                    // setValue={setValue}
+                    placeholder={
+                      categoryList.find(
+                        (item) => item?.category_id == data?.category?.parent_id
+                      )?.category_name ?? "Select your parent category"
+                    }
+                    handleChange={(e) => {
+                      setValue("parent_id", e?.category_id);
+                    }}
                   />
                 </div>
               </div>
@@ -157,10 +187,10 @@ export const CategoryEdit = () => {
                   onChange={(e) => {
                     setData({
                       ...data,
-                      category:{
+                      category: {
                         ...data.category,
                         category_name: e.target.value,
-                      }  
+                      },
                     });
                   }}
                   placeholder="Enter your name"
@@ -170,44 +200,40 @@ export const CategoryEdit = () => {
                 />
               </div>
             </div>
-            {/* here i make image field 
+            {/* here i make image field
              */}
             {/* banner image upload area  */}
-          <div className="mb-6 lg:mb-2 w-full">
-          <p className="text-sm mb-1 text-gray-500">
-                Banner Image 
-              </p>
-            <div className="flex flex-col items-center">
-             
-              <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSingleImageChange}
-                  className="absolute inset-0 opacity-0 cursor-pointer"
-                />
-                {singleImage ? (
-                  <img
-                    src={singleImage}
-                    alt="Uploaded"
-                    className="absolute inset-0 w-full h-full object-cover rounded-md"
+            <div className="mb-6 lg:mb-2 w-full">
+              <p className="text-sm mb-1 text-gray-500">Banner Image</p>
+              <div className="flex flex-col items-center">
+                <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleSingleImageChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
                   />
-                ) : (
-                  <div>
+                  {singleImage ? (
                     <img
-                      src={`${process.env.REACT_APP_BASE_API}${data?.category?.thumbnail}`}
+                      src={singleImage}
                       alt="Uploaded"
-                      className="absolute inset-0 w-full h-full object-cover rounded-md opacity-50"
+                      className="absolute inset-0 w-full h-full object-cover rounded-md"
                     />
-                    <span className="text-gray-500 ">
-                      <FaCamera className="text-black opacity-100 bg-gray-300 p-1 text-3xl  " />
-                    </span>
-                  </div>
-                )}
-              </label>
- 
+                  ) : (
+                    <div>
+                      <img
+                        src={`${process.env.REACT_APP_BASE_API}${data?.category?.thumbnail}`}
+                        alt="Uploaded"
+                        className="absolute inset-0 w-full h-full object-cover rounded-md opacity-50"
+                      />
+                      <span className="text-gray-500 ">
+                        <FaCamera className="text-black opacity-100 bg-gray-300 p-1 text-3xl  " />
+                      </span>
+                    </div>
+                  )}
+                </label>
+              </div>
             </div>
-          </div>
             {/* unit ids  */}
             <div className="mb-6 lg:mb-2">
               <p>Unit IDs</p>
@@ -240,14 +266,16 @@ export const CategoryEdit = () => {
               <input
                 type="checkbox"
                 {...register("checkbox")}
-                   checked={data?.category?.is_color}
-                onChange={()=>setData({
-                  ...data,
-                  category:{
-                    ...data.category,
-                     is_color:data?.category?.is_color?0:1,
-                  }  
-                })}
+                checked={data?.category?.is_color}
+                onChange={() =>
+                  setData({
+                    ...data,
+                    category: {
+                      ...data.category,
+                      is_color: data?.category?.is_color ? 0 : 1,
+                    },
+                  })
+                }
               />
             </div>
             {/* submit button */}
@@ -265,120 +293,5 @@ export const CategoryEdit = () => {
         </>
       )}
     </>
-  );
-};
-
-const SearchDropdownWithSingle = ({ register, setValue }) => {
-  const [searchText, setSearchText] = useState({});
-  const [filteredOptions, setFilteredOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  // Filter options based on user input
-  //   const handleSearch = (e) => {
-  //     const value = e.target.value;
-  //     setSearchText(value);
-
-  //     // Filter options by the search text
-  //     const filtered = options.filter((option) =>
-  //       option.toLowerCase().includes(value.toLowerCase())
-  //     );
-
-  //     setFilteredOptions(filtered);
-  //   };
-
-  // Handle selection from dropdown
-  const handleOptionSelect = (option) => {
-    setOpen(true);
-    setSelectedOption(option);
-    setSearchText(option);
-    setValue("parent_id", option?.category_id);
-  };
-
-  // fetch category data
-  const fetchData = useCallback(async (category) => {
-    try {
-      //   setLoading(true);
-      const response = await NetworkServices.Category.index();
-      if (response?.status === 200 || response?.status === 201) {
-        setFilteredOptions(response?.data?.data?.data);
-        // setLoading(false);
-      }
-    } catch (error) {
-      if (error) {
-        networkErrorHandeller(error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const [isOpen, setIsOpen] = useState(false); // Track if the div is open
-  const divRef = useRef(null); // Reference to the div element
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIsOpen(false); // Close the div if click is outside
-        setOpen(false);
-      }
-    };
-
-    // Attach the event listener to the document
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [divRef]);
-  return (
-    <div className="absolute w-full">
-      <input
-        type="text"
-        value={searchText?.category_name}
-        onFocus={() => setOpen(true)}
-        // onBlur={()=>setOpen(false)}
-        placeholder="Select your item"
-        readOnly
-        className={`w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 cursor-pointer `}
-      />
-
-      {/* Display filtered options in a dropdown */}
-      {open && (
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            border: "1px solid #ccc",
-          }}
-          ref={divRef}
-        >
-          <input
-            type="text"
-            // value={searchText}
-            // onSearch={handleSearch}
-            placeholder="Search your "
-            className="w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 "
-          />
-          {filteredOptions.map((option, index) => (
-            <li
-              key={index}
-              onClick={() => handleOptionSelect(option)}
-              style={{
-                padding: "8px",
-                cursor: "pointer",
-                backgroundColor: "#f8f8f8",
-                borderBottom: "1px solid #ddd",
-              }}
-            >
-              {option?.category_name}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 };
