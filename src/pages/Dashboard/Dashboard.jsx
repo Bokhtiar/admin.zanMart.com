@@ -10,8 +10,8 @@ const Dashboard = () => {
     <div>
       <TotalOrders></TotalOrders>
       <OrderInformation></OrderInformation>
-      <DaliveryStatus></DaliveryStatus>
-      <LineGraph></LineGraph>
+      {/* <DaliveryStatus></DaliveryStatus> */}
+      {/* <LineGraph></LineGraph> */}
     </div>
   );
 };
