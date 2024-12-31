@@ -18,7 +18,7 @@ export function SearchDropdownWithSingle({
       }}
       onInputChange={handleInputChange}
       isClearable
-      className="py-2.5"
+      className="py-2.5 "
       styles={customStyles}
       defaultValue={options[1]}
       {...rest}
@@ -28,7 +28,7 @@ export function SearchDropdownWithSingle({
 
 const CustomSingleValue = (props,showName) => (
   <components.SingleValue {...props}>
-    <div style={{ display: "flex", alignItems: "center" }} className="py-2.5">
+    <div style={{ display: "flex", alignItems: "center" }} className="py-2.5 shadow-sm">
     {props.data?.[showName]}
     </div>
   </components.SingleValue>

@@ -6,7 +6,8 @@ import { useState } from "react";
 export const DashboardLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
-    <div className="dark:bg-boxdark-2 dark:text-bodydark">
+    // <div className="dark:bg-boxdark-2 dark:text-bodydark">
+      <div className="bg-gray-200"> 
       <div className="flex h-screen overflow-hidden">
         {/* sidbar start  */}
         <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />

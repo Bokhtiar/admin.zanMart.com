@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
@@ -22,40 +22,95 @@ const OrderDetails = () => {
     const formattedDate = moment(dateString).format("DD MMM YYYY");
     return formattedDate;
   };
+  const orderAllPrice =  () => {
+    let subtotal =  orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.sell_price)*curr?.qty, 0);
+    let taxPrice = orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.product.tax_price) , 0);
+    return{
+      subtotal,
+    taxPrice,
+    totalPrice: subtotal + taxPrice,
+    }
+  }
+  console.log(orderAllPrice()?.subtotal);
   return (
     <div>
       <div className="flex gap-5 ">
         <div className="w-8/12 space-y-4">
-          <p className="bg-blue-50 p-4 rounded-lg font-bold text-base text-gray-600">
-            All Item
-          </p>
           {/* order product show section  */}
           <section className="rounded-lg p-4 shadow-sm bg-blue-50 space-y-3">
-            {
-              orderDetails?.["order item"]?.map((item, index) => (
-                <div className="flex justify-between ">
-              <div className="flex gap-4" >
-                <img alt="loading" />
+            <p className="bg-[#F7FAFC] p-4 rounded-lg font-bold text-base text-gray-500">
+              All Item
+            </p>
+            {orderDetails?.["order item"]?.map((item, index) => (
+              <div
+                className={` flex justify-between items-center hover:bg-[#F7FAFC] rounded-lg p-4 ${
+                  index % 2 === 0 ? "bg-[#F7FAFC]" : ""
+                }`}
+              >
+                <div className="flex gap-4 items-center">
+                  <img
+                    className="w-16 h-16 border rounded-lg"
+                    src={`${process.env.REACT_APP_BASE_API}${item?.product?.thumbnail_image}`}
+                    alt="loading"
+                  />
+                  <div>
+                    <p>Product Name</p>
+                    <p className="text-base font-bold text-gray-600">
+                      {" "}
+                      {item?.product?.title}
+                    </p>
+                  </div>
+                </div>
                 <div>
-                <p>Product Name</p>
-                <p className="text-base font-bold text-gray-600"> {item?.product?.title}</p>
+                  <p>quantity</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {" "}
+                    {item?.qty}
+                  </p>
+                </div>
+                <div>
+                  <p>price</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.sell_price * item?.qty}
+                  </p>
                 </div>
               </div>
-              <div>
-                <p>quantity</p>
-                <p className="text-base font-bold text-gray-600"> {item?.qty}</p>
+            ))}
+          </section>
+          {/* pricing calculation code here  */}
+          <section className="rounded-lg p-4 shadow-sm bg-blue-50 space-y-3">
+            <div className={`  rounded-lg p-4  `}>
+              <div className="  w-full flex py-3 font-bold text-black   bg-[#F7FAFC]">
+                <p className="w-3/4">Cart Totals</p>
+                <p className="1/4">Price</p>
               </div>
-              <div>
-                <p>price</p>
-                <p className="text-base font-bold text-gray-600">{
-                    item?.sell_price * item?.qty
-                  }</p>
+              <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC] mt-2">
+                <p className="w-3/4">Subtotal:</p>
+                <p className="1/4">${orderAllPrice()?.subtotal}</p>
+              </div>
+
+              {/* <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
+                <p className="w-3/4">Shipping:</p>
+                <p className="1/4">$10.00</p>
+              </div> */}
+
+              <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
+                <p className="w-3/4">Tax (GST):</p>
+                <p className="1/4">${
+                  orderAllPrice()?.taxPrice
+                }</p>
+              </div>
+
+              <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
+                <p className="w-3/4 text-black">Total price:</p>
+                <p className="1/4 text-red-500"> 
+                $
+                {
+                  orderAllPrice()?.totalPrice
+                }
+                </p>
               </div>
             </div>
-              ))
-            }
-            
-             
           </section>
         </div>
         {/* order divided second part  */}
@@ -116,12 +171,15 @@ const OrderDetails = () => {
           {/* tracking order and expected date of delivery  */}
           <section className="rounded-lg p-4 shadow-sm bg-blue-50">
             <h2 className="font-bold text-base text-black pb-2">
-            Expected Date Of Delivery
+              Expected Date Of Delivery
             </h2>
             <p className="text-green-600 overflow-auto font-bold text-base">
-            {formatDate(orderDetails?.["order Details"]?.updated_at)}
+              {formatDate(orderDetails?.["order Details"]?.updated_at)}
             </p>
-            <button className="border border-blue-600 rounded-lg text-blue-600 hover:text-white hover:bg-blue-600 font-semibold text-base w-full flex justify-center items-center gap-2 py-3 mt-3"> <FaCarSide /> Track Order</button>
+            <Link to={`/dashboard/order/order-tracking/${id}`} className="border border-blue-600 rounded-lg text-blue-600 hover:text-white hover:bg-blue-600 font-semibold text-base w-full flex justify-center items-center gap-2 py-3 mt-3">
+              {" "}
+              <FaCarSide /> Track Order
+            </Link>
           </section>
         </section>
       </div>

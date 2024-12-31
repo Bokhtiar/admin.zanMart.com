@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
+  const [newOrders, setNewOrders] = useState([]);
   useEffect(() => {
     privateRequest.get("/admin/order").then((response) => {
       // console.log(response?.data?.data);
@@ -15,7 +16,7 @@ const Orders = () => {
           ...item,
         };
       });
-      setOrders(result);
+      setNewOrders(result);
     });
   }, []);
   // table column code here
@@ -27,9 +28,9 @@ const Orders = () => {
       sortable: true,
       cell:(row)=>{
         if(row.payment_status === "pending"){
-          return <span className="text-gray-600 bg-gray-200 px-1 py-1 font-bold ">{row?.payment_status}</span>
+          return <span className="text-gray-600 bg-gray-200 px-1 py-1 font-bold rounded-sm">{row?.payment_status}</span>
         }  else{
-          return <span className="text-green-600 bg-green-100 px-1 py-1 font-bold"> {row?.payment_status}</span>
+          return <span className="text-green-600 bg-green-100 px-1 py-1 font-bold rounded-sm"> {row?.payment_status}</span>
         }
       
     }
@@ -41,13 +42,13 @@ const Orders = () => {
       cell:(row)=>{
           
           if(row?.order_status === "cancelled"){
-            return <span className="text-red-600 bg-red-100 px-1 py-1 font-bold">{row?.order_status}</span>
+            return <span className="text-red-600 bg-red-100 px-1 py-1 font-bold rounded-sm">{row?.order_status}</span>
           } 
           else if(row?.order_status === "processing"){
-            return <span className="text-gray-500 bg-gray-200 px-1 py-1 font-bold">{row?.order_status}</span>
+            return <span className="text-gray-500 bg-gray-200 px-1 py-1 font-bold rounded-sm">{row?.order_status}</span>
           } 
           else if(row?.order_status === "shipped"){
-            return <span className="text-green-500 bg-red-100 px-1 py-1 font-bold">{row?.order_status}</span>
+            return <span className="text-green-500 bg-red-100 px-1 py-1 font-bold rounded-sm">{row?.order_status}</span>
           } 
           else{
             return row?.order_status
@@ -61,8 +62,8 @@ const Orders = () => {
 
       ,
       cell: (row) => 
-        <div className="flex gap-1"> 
-        <Link to={`/dashboard/order/order-details/${row?.order_id}`}>DETAILS</Link>
+        <div className="flex gap-1 border p-2 rounded-md hover:text-white hover:bg-blue-500 font-bold"> 
+        <Link to={`/dashboard/order/order-details/${row?.order_id}`}>Details</Link>
          </div>
     },
   ];
@@ -100,10 +101,26 @@ const Orders = () => {
         fontWeight: "bold", // Make text bold
         padding: "10px", // Adjust
         // margin:"0px 0px 10px 0px"
-        borderRadius: "8px",
+        // borderRadius: "8px",
       },
     },
   };
+
+  // implement search functionality here \
+  const [searchQuery, setSearchQuery] = useState("");
+   useEffect(()=>{ 
+    const filteredProducts = newOrders.filter((product) => {
+      const matchesName = product?.payment_status?.toLowerCase()
+        .includes(searchQuery?.toLowerCase());
+      const matchesPrice = product.order_status
+        ?.toString()
+        ?.startsWith(searchQuery);
+  
+      return matchesName || matchesPrice;
+    });
+    // orders(filteredProducts);
+    setOrders(filteredProducts);
+   },[searchQuery,newOrders])
   return (
     <div className="rounded-md bg-blue-50 p-5">
       {/* order list head  */}
@@ -111,6 +128,8 @@ const Orders = () => {
         {/* search order list  */}
         <div className="relative w-full max-w-sm">
           <input
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
             type="search"
             className="bg-blue-50 border rounded-lg py-3 px-4 w-full pr-10 focus:outline-none"
             placeholder="Search here..."
@@ -139,6 +158,7 @@ const Orders = () => {
           theme="#F8F9FC"
           customStyles={customStyles}
           fixedHeader
+          pagination
         />
       </section>
     </div>

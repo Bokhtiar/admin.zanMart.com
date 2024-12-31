@@ -35,6 +35,7 @@ import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
 import CategoryHomepage from "../pages/category/category-to-homepage";
 import { ProductEdit } from "../pages/products/edit";
 import OrderDetails from "../pages/Orders/order-detail";
+import OrderTracking from "../pages/Orders/order-tracking";
 
 const appRoutes = [
   {
@@ -51,6 +52,10 @@ const appRoutes = [
       {
         path: "order/order-details/:id",
         element: <OrderDetails />,
+      },
+      {
+        path: "order/order-tracking/:id",
+        element: <OrderTracking />,
       },
       // order route end 
       { path: "product", element: <Product></Product> },
