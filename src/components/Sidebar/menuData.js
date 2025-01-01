@@ -17,6 +17,11 @@ export const menuData = [
     path: "/dashboard",
   },
   {
+    title: "Order",
+    icon: <RxDashboard />,
+    path: "/dashboard/order",
+  },
+  {
     title: "Banner",
     icon: <RxDashboard />,
     path: "/dashboard/banner",
@@ -36,6 +41,7 @@ export const menuData = [
     title: "Product",
     icon: <MdOutlineProductionQuantityLimits />,
     path: "/dashboard/product",
+     
   },
 
   {

@@ -15,6 +15,15 @@ module.exports = {
       padding: "1rem"
     },
     extend: {
+      animation: {
+        wave: 'wave 2s ease-out infinite',
+      },
+      keyframes: {
+        wave: {
+          '0%': { transform: 'scale(0.5)', opacity: '1' },
+          '100%': { transform: 'scale(2.5)', opacity: '0' },
+        },
+      },
       fontFamily: {
         heading: "'Russo One', sans-serif",
         content: "'Rajdhani', sans-serif"
@@ -24,7 +33,5 @@ module.exports = {
       }
     },
   },
-  plugins: [],
-
   plugins: [require("daisyui")],
 }

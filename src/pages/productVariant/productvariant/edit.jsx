@@ -3,9 +3,8 @@ import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
-import DataTable from "react-data-table-component";
 import { networkErrorHandeller } from "../../../utils/helper";
-
+import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
 const ProductVariantEdit = () => {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
@@ -21,32 +20,9 @@ const ProductVariantEdit = () => {
   const [weight, setWeight] = useState("");
   const [price, setPrice] = useState("");
   const [loading, setLoading] = useState(false);
-
   const [allAttributes, setAllAttributes] = useState([]);
   const [productVariantData, setProductVariantData] = useState({});
-
-  //  table data columns list
-  const columns = [
-    {
-      name: "Product ID",
-      cell: (row) => (
-        <div className="flex gap-5">
-          <input
-            className="cursor-pointer"
-            type="checkbox"
-            onChange={() => setSelectedProduct(row?.product_id)}
-            checked={row?.product_id == selectedProduct}
-          />
-          <span> {row?.product_id}</span>
-        </div>
-      ),
-    },
-
-    {
-      name: "Product Name",
-      cell: (row) => row?.title,
-    },
-  ];
+  const [flatDiscount, setFlatDiscount] = useState("");
   // Fetch products, colors, attri=butes, and units from the APIs
   useEffect(() => {
     const fetchData = async () => {
@@ -78,7 +54,15 @@ const ProductVariantEdit = () => {
       try {
         const ProductResponse = await NetworkServices.Product.index();
         if (ProductResponse.status === 200) {
-          setProducts(ProductResponse?.data?.data?.data);
+          const result = ProductResponse?.data?.data?.data;
+          const data = result.map((data) => {
+            return {
+              ...data,
+              label: data?.product_name,
+              value: data?.product_id,
+            };
+          });
+          setProducts(data);
         }
       } catch (error) {}
     };
@@ -103,12 +87,14 @@ const ProductVariantEdit = () => {
             Number(quantity) || Number(productVariantData?.product_qty),
           weight: Number(weight) || Number(productVariantData?.weight),
           price: Number(price) || Number(productVariantData?.price),
+          flat_discount:
+            Number(flatDiscount) || Number(productVariantData?.flat_discount),
           product_variant_id: Number(id),
         },
       ];
       const response = await NetworkServices.ProductVariant.update(id, payload);
-      if (response.status == 200 || response.status == 201) {
-        // navigate("/dashboard/product-variant");
+      if (response.status === 200 || response.status === 201) {
+        navigate("/dashboard/product-variant");
         Toastify.Success("Product varaint create successfully.");
       }
     } catch (error) {
@@ -150,7 +136,7 @@ const ProductVariantEdit = () => {
   };
   return (
     <>
-      {loading ? (
+          {loading ? (
         <SkeletonForm />
       ) : (
         <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -168,12 +154,14 @@ const ProductVariantEdit = () => {
           <form onSubmit={handleSubmit}>
             {/* Product Select Dropdown */}
             <div className="mb-4 ">
-              <DataTable
-                columns={columns}
-                data={products}
-                pagination
-                fixedHeader
-                fixedHeaderScrollHeight="300px" // or any height you prefer
+              <SearchDropdownWithSingle
+                placeholder={
+                  products.find(
+                    (item) => item?.product_id == productVariantData?.product_id
+                  )?.title ?? "Select your  product"
+                }
+                options={products}
+                showName="title"
               />
             </div>
 
@@ -340,6 +328,25 @@ const ProductVariantEdit = () => {
 
                   defaultValue={productVariantData?.price}
                   onChange={(e) => setPrice(e.target.value)}
+                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  placeholder="Enter Price"
+                />
+              </div>
+              {/* Flat Discount Input */}
+              <div className="flex-1">
+                <label
+                  htmlFor="price"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Flat Discount ($)
+                </label>
+                <input
+                  type="number"
+                  id="price"
+                  //   value={price}
+
+                  defaultValue={productVariantData?.flat_discount}
+                  onChange={(e) => setFlatDiscount(e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter Price"
                 />

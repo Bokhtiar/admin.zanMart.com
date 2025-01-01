@@ -139,6 +139,7 @@ export const CategoryCreate = () => {
                 <label>Parent Category </label>
                   
                 <SearchDropdownWithSingle
+                  showName="category_name"
                    options={categoryList}
                    handleChange={(e)=>{
                     console.log(e);

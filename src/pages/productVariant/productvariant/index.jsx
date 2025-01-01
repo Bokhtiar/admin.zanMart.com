@@ -21,6 +21,7 @@ const ProductVariant = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.ProductVariant.index(currentPage);
+        console.log(response);
         if (response?.status === 200 || response?.status === 201) {
           setproductVariantData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -61,17 +62,17 @@ const ProductVariant = () => {
     },
 
     {
-      name: "Product ID",
-      cell: (row) => row?.product_id,
+      name: "Product Name",
+      cell: (row) => row?.product?.title,
     },
 
     {
-      name: "Color ID",
-      cell: (row) => row?.color_id,
+      name: "Color Name",
+      cell: (row) => row?.color?.name,
     },
     {
-      name: "Attribute ID",
-      cell: (row) => row?.attribute_id,
+      name: "Attribute Name",
+      cell: (row) => row?.attribute?.name,
     },
     {
       name: "Product_qty",
@@ -84,6 +85,10 @@ const ProductVariant = () => {
     {
       name: "Product price",
       cell: (row) => row?.price,
+    },
+    {
+      name: "Product Discount",
+      cell: (row) => row?.flat_discount,
     },
 
 

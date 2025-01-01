@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { DashboardLayout } from "../layouts/dashboard.layout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Inventory from "../pages/Inventory/Inventory";
-import Orders from "../pages/Orders/Orders";  
+import Orders from "../pages/Orders";
 import Category from "../pages/category";
 import Unit from "../pages/productVariant/Unit/Unit";
 
@@ -20,10 +20,10 @@ import { ColorCreate } from "../pages/productVariant/color/create";
 import { ColorEdit } from "../pages/productVariant/color/edit";
 import WebSetting from "../pages/webSetting";
 import { WebSettingCreate } from "../pages/webSetting/create";
-import { WebSettingEdit } from "../pages/webSetting/edit"; 
+import { WebSettingEdit } from "../pages/webSetting/edit";
 import Banner from "../pages/banner/index";
-import {BannerCreate} from "../pages/banner/create";
-import {BannerEdit} from "../pages/banner/edit";
+import { BannerCreate } from "../pages/banner/create";
+import { BannerEdit } from "../pages/banner/edit";
 import Attribute from "../pages/productVariant/attribute";
 import AttributeCreate from "../pages/productVariant/attribute/create";
 import AttributeEdit from "../pages/productVariant/attribute/edit";
@@ -34,8 +34,9 @@ import BannerWayProduct from "../pages/banner/banner-way-product";
 import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
 import CategoryHomepage from "../pages/category/category-to-homepage";
 import { ProductEdit } from "../pages/products/edit";
+import OrderDetails from "../pages/Orders/order-detail";
+import OrderTracking from "../pages/Orders/order-tracking";
 
- 
 const appRoutes = [
   {
     path: "dashboard",
@@ -43,9 +44,23 @@ const appRoutes = [
     children: [
       { path: "*", element: <Navigate to="/404" /> },
       { path: "", element: <Dashboard /> },
+      // order route start
+      {
+        path: "order",
+        element: <Orders />,
+      },
+      {
+        path: "order/order-details/:id",
+        element: <OrderDetails />,
+      },
+      {
+        path: "order/order-tracking/:id",
+        element: <OrderTracking />,
+      },
+      // order route end 
       { path: "product", element: <Product></Product> },
-      { path: "product/create", element: <ProductCreate /> }, 
-      { path: "product/edit/:id", element: <ProductEdit /> }, 
+      { path: "product/create", element: <ProductCreate /> },
+      { path: "product/edit/:id", element: <ProductEdit /> },
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },
@@ -58,23 +73,20 @@ const appRoutes = [
       { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
       { path: "category", element: <Category /> },
       { path: "category/create", element: <CategoryCreate /> },
-      { path: "category/edit/:id", element: <CategoryEdit /> }, 
-      { path: "category/homepage", element: <CategoryHomepage /> }, 
+      { path: "category/edit/:id", element: <CategoryEdit /> },
+      { path: "category/homepage", element: <CategoryHomepage /> },
       { path: "brand", element: <Brand /> },
       { path: "brand/create", element: <BrandCreate /> },
       { path: "brand/edit/:id", element: <BrandEdit /> },
       { path: "color", element: <Color /> },
       { path: "color/create", element: <ColorCreate /> },
       { path: "color/edit/:id", element: <ColorEdit /> },
-      { path: "attribute", element: <Attribute/> },
+      { path: "attribute", element: <Attribute /> },
       { path: "attribute/create", element: <AttributeCreate /> },
       { path: "attribute/edit/:id", element: <AttributeEdit /> },
       { path: "web-setting", element: <WebSetting /> },
       { path: "web-setting/create", element: <WebSettingCreate /> },
-      { path: "web-setting/edit/:id", element: <WebSettingEdit /> 
-    
-        
-      },
+      { path: "web-setting/edit/:id", element: <WebSettingEdit /> },
       { path: "unit", element: <Unit /> },
     ],
   },
