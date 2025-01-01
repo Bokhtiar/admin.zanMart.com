@@ -3,14 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect,    useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import "react-quill/dist/quill.snow.css";
-import {
-  SearchableSelect,
-  SingleSelect,
-  TextAreaInput,
-} from "../../components/input";
+ 
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import ReactQuill from "react-quill";
 import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
@@ -18,13 +14,11 @@ import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
 export const ProductCreate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const [selectedunitIds, setSelectedunitIds] = useState([]);
+  const [buttonLoading, setButtonLoading] = useState(false); 
   const [singleImage, setSingleImage] = useState(null);
-  const [multiImages, setMultiImages] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
-  const {
-    control,
+  const [multiImages, setMultiImages] = useState([]); 
+  // react hooks form 
+  const { 
     register,
     handleSubmit,
     trigger,
@@ -45,25 +39,7 @@ export const ProductCreate = () => {
       setMultiImages(files);
     }
   };
-  //   fetch category
-  const fetchDataForUnit = useCallback(async (category) => {
-    try {
-      setLoading(false);
-      const response = await NetworkServices.Category.index();
-
-      if (response?.status === 200 || response?.status === 201) {
-        setCategoryData(response?.data?.data?.data);
-        setLoading(false);
-      }
-    } catch (error) {
-      if (error) {
-        networkErrorHandeller(error);
-      }
-    }
-  }, []);
-  useEffect(() => {
-    fetchDataForUnit();
-  }, []);
+   
   /* submit reosurce */
 
   const onSubmit = async (data) => {
@@ -100,6 +76,7 @@ export const ProductCreate = () => {
       networkErrorHandeller(error);
     }
   };
+  // description handler react quill 
   const handleQuillChange = (content) => {
     setValue("description", content); // Update form state
   };
@@ -107,6 +84,7 @@ export const ProductCreate = () => {
   // fetch category list
   const [categoryList, setCategoryList] = useState([]);
   const [brandList, setBrandList] = useState([]);
+  // category fetch 
   const fetchCategoryList = async () => {
     try {
       const response = await NetworkServices.Category.index();
@@ -146,6 +124,7 @@ export const ProductCreate = () => {
       networkErrorHandeller(error);
     }
   };
+  // fetch brand and category list 
   useEffect(() => {
     fetchCategoryList();
     fetchBrandList();
@@ -165,7 +144,7 @@ export const ProductCreate = () => {
         <SkeletonForm />
       ) : (
         <section className="shadow-md my-5  ">
-          <form className="px-4 space-y-3" onSubmit={handleSubmit(onSubmit)}>
+          <form className="px-4 py-3 space-y-3" onSubmit={handleSubmit(onSubmit)}>
             <div>
             <TextInput
                   name="title"
