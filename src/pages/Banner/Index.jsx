@@ -6,7 +6,8 @@ import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
 import { Toastify } from "../../components/toastify"; 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const Banner = () => {
   const [loading, setLoading] = useState(false);
   const [bannerData, setbannerData] = useState([]);
@@ -59,12 +60,7 @@ const Banner = () => {
       name: "Banner ID",
       cell: (row) => row?.banner_id,
     },
-
-    {
-      name: "Title",
-      cell: (row) => row?.name,
-    },
-    {
+  {
       name: "Banner Image",
       cell: (row) => (
         <div> 
@@ -76,6 +72,11 @@ const Banner = () => {
         </div>
       ),
     },
+    {
+      name: "Title",
+      cell: (row) => row?.name,
+    },
+  
      
 
     {
@@ -83,14 +84,14 @@ const Banner = () => {
       cell: (row) => (
         <div className="flex gap-1">
           <Link to={`/dashboard/banner/featured/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm  ">
-             Add  
+            <span className="bg-primary text-white btn btn-sm  ">
+             Add 
             </span>
           </Link>
 
           <span>
           <Link to={`/dashboard/banner/banner-product/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm  ">
+            <span className="bg-primary text-white btn btn-sm  ">
              show
             </span>
           </Link>
@@ -101,19 +102,19 @@ const Banner = () => {
     {
       name: "Action",
       cell: (row) => (
-        <div className="flex gap-1">
+        <div className="flex gap-3">
           <Link to={`/dashboard/banner/edit/${row?.banner_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
+            <span className="  ">
+            <FaRegEdit />
             </span>
           </Link>
 
           <span>
             <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+              className="text-red-500 cursor-pointer "
               onClick={() => destroy(row?.banner_id)}
             >
-              delete
+             <RiDeleteBin6Line />
             </span>
           </span>
         </div>
@@ -125,8 +126,8 @@ const Banner = () => {
     <section>
       <div className="flex justify-between shadow-md p-2 my-5 rounded-md">
         <h2 className=" font-semibold text-xl">Banner List</h2>
-        <Link to="/dashboard/banner/create">
-          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+        <Link to="/dashboard/banner/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
         </Link>

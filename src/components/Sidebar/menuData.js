@@ -1,15 +1,14 @@
 import { RxDashboard } from "react-icons/rx";
 import { IoColorPaletteOutline } from "react-icons/io5";
-import { RiProductHuntLine } from "react-icons/ri";
-import { TbBrandApplePodcast } from "react-icons/tb";
-import { FaUnity } from "react-icons/fa";
+import { RiGalleryFill, RiProductHuntLine } from "react-icons/ri";
+import { FaFirstOrder, FaUnity } from "react-icons/fa";
 import { CgAttribution } from "react-icons/cg";
 import {
   MdOutlineProductionQuantityLimits,
   MdBrandingWatermark,
   MdSettingsAccessibility,
+  MdOutlineCategory,
 } from "react-icons/md";
-
 export const menuData = [
   {
     title: "Dashboard",
@@ -18,18 +17,18 @@ export const menuData = [
   },
   {
     title: "Order",
-    icon: <RxDashboard />,
+    icon: <FaFirstOrder />,
     path: "/dashboard/order",
   },
   {
     title: "Banner",
-    icon: <RxDashboard />,
+    icon: <RiGalleryFill />,
     path: "/dashboard/banner",
    
   },
   {
     title: "Category",
-    icon: <RxDashboard />,
+    icon: <MdOutlineCategory />,
     path: "/dashboard/category",
   },
   {

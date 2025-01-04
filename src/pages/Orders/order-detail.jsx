@@ -3,9 +3,11 @@ import { Link, useParams } from "react-router-dom";
 import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
+import OrderModal from "../../components/orderFormModal/OrderModal";
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
+  const [isModalOpen,setIsModalOpen]=useState(false)
   useEffect(() => {
     privateRequest
       .get(`/admin/order/${id}`)
@@ -31,6 +33,11 @@ const OrderDetails = () => {
     totalPrice: subtotal + taxPrice,
     }
   }
+const hendleOpnenOrderModal=()=>{
+setIsModalOpen(!isModalOpen)
+console.log(isModalOpen)
+}
+
   console.log(orderAllPrice()?.subtotal);
   return (
     <div>
@@ -38,9 +45,12 @@ const OrderDetails = () => {
         <div className="w-8/12 space-y-4">
           {/* order product show section  */}
           <section className="rounded-lg p-4 shadow-sm bg-blue-50 space-y-3">
+            <div className="flex justify-between">
             <p className="bg-[#F7FAFC] p-4 rounded-lg font-bold text-base text-gray-500">
               All Item
-            </p>
+            </p> 
+            <button onClick={hendleOpnenOrderModal} className="bg-primary rounded-lg px-5 text-white">Update Status</button>
+            </div>
             {orderDetails?.["order item"]?.map((item, index) => (
               <div
                 className={` flex justify-between items-center hover:bg-[#F7FAFC] rounded-lg p-4 ${
@@ -183,6 +193,9 @@ const OrderDetails = () => {
           </section>
         </section>
       </div>
+      {
+        isModalOpen && <OrderModal setIsModalOpen={setIsModalOpen} hendleOpnenOrderModal={hendleOpnenOrderModal}/>
+      }
     </div>
   );
 };

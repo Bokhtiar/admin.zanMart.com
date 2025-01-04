@@ -8,7 +8,8 @@ import { Link } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const Product = () => {
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState([]);
@@ -61,10 +62,32 @@ const Product = () => {
       networkErrorHandeller(error);
     }
   };
+
+  const conditionalRowStyles = [
+    {
+      when: () => true, // Apply this style function to all rows
+      style: (row, index) => ({
+        backgroundColor: index % 2 === 0 ? "#000000" : "#111111", // Conditional background color
+      }),
+    },
+  ];
+  
   const columns = [
     {
       name: "Product ID",
       cell: (row) => row?.product_id,
+    },
+    {
+      name: "Image",
+      cell: (row) => (
+        <div>
+          <img
+            className="w-20 h-20 border rounded-full"
+            src={`${process.env.REACT_APP_BASE_API}${row?.thumbnail_image}`}
+            alt="loading"
+          />
+        </div>
+      ),
     },
 
     {
@@ -81,19 +104,19 @@ const Product = () => {
     {
       name: "Action",
       cell: (row) => (
-        <div className="flex gap-1">
+        <div className="flex gap-3">
           <Link to={`/dashboard/product/edit/${row?.product_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
+            <span className="">
+            <FaRegEdit />
             </span>
           </Link>
 
           <span>
             <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+              className="text-red-700  cursor-pointer"
               onClick={() => destroy(row?.product_id)}
             >
-              delete
+              <RiDeleteBin6Line/>
             </span>
           </span>
         </div>
@@ -104,8 +127,8 @@ const Product = () => {
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
         <h2 className=" font-semibold text-xl">Product List</h2>
-        <Link to="/dashboard/product/create">
-          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+        <Link to="/dashboard/product/create" className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
         </Link>
@@ -115,7 +138,7 @@ const Product = () => {
         <SkeletonTable />
       ) : (
         <>
-          <DataTable pagination columns={columns} data={productData} />
+          <DataTable pagination  columns={columns} data={productData} />
           {/* <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}
