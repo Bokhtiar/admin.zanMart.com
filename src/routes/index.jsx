@@ -36,6 +36,7 @@ import { BannerCreate } from "../pages/Banner/create";
 import { BannerEdit } from "../pages/Banner/edit";
 import BannerWayProduct from "../pages/Banner/banner-way-product";
 import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
+import Form from "../pages/form";
 
 
 const appRoutes = [
@@ -49,6 +50,10 @@ const appRoutes = [
       {
         path: "order",
         element: <Orders />,
+      },
+      {
+        path: "form",
+        element: <Form/>,
       },
       {
         path: "order/order-details/:id",
