@@ -1,72 +1,8 @@
-// import React, { useState } from "react";
+
 import { menuData } from "./menuData";
-// import SidebarItem from "./SidebarItem";
-// import logo from "../../assets/image/logo.png"
-// const  Sidebar = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   const toggleSidebar = () => {
-//     setIsOpen(!isOpen);
-//     setIsSidebarOpen(!isSidebarOpen);
-//   };
-
-//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-//   // const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
-
-//   // Toggle Sidebar
-//   // const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
-
-//   // Toggle Submenu
-//   // const toggleSubmenu = () => setIsSubmenuOpen(!isSubmenuOpen);
-//   // const [idx,setIdx] = useState(null);
-//   return (
-//     <div className="flex z-50 ">
-//       {/* Sidebar */}
-
-//       <div
-//         className={`fixed top-0 left-0 h-full bg-blue-600 text-white w-72  space-y-6 px-2   transform transition-transform duration-300 ${
-//           isOpen ? "translate-x-0" : "-translate-x-full"
-//         } md:relative md:translate-x-0`}
-//       >
-//         {/* Close button for mobile */}
-//         <button
-//           onClick={toggleSidebar}
-//           className="block md:hidden ml-auto text-xl px-2 pt-5"
-//         >
-//           ✕
-//         </button>
-
-//         <div className="flex justify-center items-center gap-2">
-//           <img src={logo} alt="logo..." className=" w-16 h-16 object-fill" />
-//           <h1 className="text-3xl font-bold text-center italic">ZANMART</h1>
-//         </div>
-//         <nav>
-//           <ul className="space-y-2">
-
-//        {   menuData?.map((item, index) => <SidebarItem key={index} item={item} />) }
-//           </ul>
-//         </nav>
-//       </div>
-//       {/* Main content */}
-//       <div className="  fixed top-5">
-//         <div className="md:hidden">
-//           {/* Mobile menu button */}
-//         { !isOpen &&  <button
-//             onClick={toggleSidebar}
-//             className="px-5 text-gray-800 focus:outline-none"
-//           >
-//             ☰
-//           </button>}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default  Sidebar;
 import React, { useEffect, useRef, useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
-// import SidebarLinkGroup from './SidebarLinkGroup';
+
 import Logo from "../../assets/image/logo.png";
 import SidebarLinkGroup from "./Liks";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -159,9 +95,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
         <nav className="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
           {/* <!-- Menu Group --> */}
           <div>
-            <h3 className="mb-4 ml-4 text-sm font-semibold text-bodydark2">
-              MENU
-            </h3>
+           
 
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item  with Toggle --> */}
@@ -181,7 +115,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                               className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
                                 (pathname === "/" ||
                                   pathname.includes("dashboard")) &&
-                                "bg-gray-600 text-white"
+                                "text-primary"
                               }`}
                               onClick={(e) => {
                                 e.preventDefault();
@@ -205,9 +139,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                                   <li>
                                     <NavLink
                                       to={child?.path}
-                                      className={`group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
+                                      className={`group relative flex items-center gap-2.5 rounded-md px-4 py-2 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary ${
                                         pathname.includes(`${child.path}`) &&
-                                        "   text-white"
+                                        "  text-primary"
                                       }`}
                                     >
                                       {child?.title}
@@ -228,8 +162,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }) => {
                         <NavLink
                           to={item?.path}
                           className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                            pathname.includes(item?.path) &&
-                            "bg-gray-600 text-white"
+                           pathname === item?.path ? "text-primary" : ""
                           }`}
                         >
                           <span>{item?.icon}</span>

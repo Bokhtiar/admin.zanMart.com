@@ -5,9 +5,10 @@ import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
-import { FaFacebookSquare, FaTwitterSquare, FaLinkedin,FaYoutube,FaInstagramSquare } from "react-icons/fa";
+import { FaFacebookSquare, FaTwitterSquare, FaLinkedin,FaYoutube,FaInstagramSquare, FaRegEdit } from "react-icons/fa";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const WebSetting = () => {
   const [loading, setLoading] = useState(false);
   const [websettingData, setwebsettingData] = useState([]);
@@ -61,10 +62,7 @@ const WebSetting = () => {
       cell: (row) => row?.web_setting_id,
     },
 
-    {
-      name: "Title",
-      cell: (row) => row?.title,
-    },
+   
     {
       name: "Logo",
       cell: (row) => (
@@ -76,6 +74,10 @@ const WebSetting = () => {
           />
         </div>
       ),
+    },
+    {
+      name: "Title",
+      cell: (row) => row?.title,
     },
     {
       name: "Email websetting",
@@ -123,17 +125,17 @@ const WebSetting = () => {
       cell: (row) => (
         <div className="flex gap-1">
           <Link to={`/dashboard/web-setting/edit/${row?.web_setting_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
+            <span className=" btn btn-sm material-symbols-outlined">
+            <FaRegEdit/>
             </span>
           </Link>
 
           <span>
             <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+              className=" text-red-700 btn btn-sm material-symbols-outlined"
               onClick={() => destroy(row?.web_setting_id)}
             >
-              delete
+              <RiDeleteBin6Line />
             </span>
           </span>
         </div>
@@ -145,8 +147,8 @@ const WebSetting = () => {
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
         <h2 className=" font-semibold text-xl">Websetting List</h2>
-        <Link to="/dashboard/web-setting/create">
-          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+        <Link to="/dashboard/web-setting/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
         </Link>

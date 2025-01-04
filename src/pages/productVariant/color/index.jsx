@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const Color = () => {
   const [loading, setLoading] = useState(false);
   const [colorData, setcolorData] = useState([]);
@@ -69,19 +70,16 @@ const Color = () => {
     {
       name: "Action",
       cell: (row) => (
-        <div className="flex gap-1">
+        <div className="flex gap-5">
           <Link to={`/dashboard/color/edit/${row?.color_id}`}>
-            <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-              edit
-            </span>
+          <FaRegEdit />
           </Link>
 
           <span>
-            <span
-              className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+            <span className="text-red-700"   
               onClick={() => destroy(row?.color_id)}
             >
-              delete
+             <RiDeleteBin6Line />
             </span>
           </span>
         </div>
@@ -93,8 +91,8 @@ const Color = () => {
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
         <h2 className=" font-semibold text-xl">Color List</h2>
-        <Link to="/dashboard/color/create">
-          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+        <Link to="/dashboard/color/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
         </Link>

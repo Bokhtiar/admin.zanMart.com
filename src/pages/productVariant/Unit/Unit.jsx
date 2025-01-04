@@ -152,10 +152,12 @@ const Unit = () => {
             onChange={(e) => setunitText(e.target.value)}
           />
           <button
-            className="bg-blue-700 py-2 rounded-lg px-2 text-white font-bold"
+            className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
             onClick={() => setAddedToggle(true)}
           >
-            + Add Unit
+           Add New  <span className="  material-symbols-outlined p-1">
+            add
+          </span>
           </button>
         </div>
         <DataTable

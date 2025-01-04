@@ -8,8 +8,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
 import { CategoryUtilsFunction } from "./components/hooks";
+import { RiDeleteBin6Line } from "react-icons/ri";
 const Category = () => {
   const {column}  = CategoryUtilsFunction();
   const navigate = useNavigate();
@@ -70,19 +71,19 @@ const Category = () => {
        {
         name: "Action",
         cell: (row) => (
-          <span className="flex gap-1">
+          <span className="flex gap-3">
             <Link to={`/dashboard/category/edit/${row?.category_id}`}>
-              <span className="bg-green-500 text-white btn btn-sm material-symbols-outlined">
-                edit
+              <span className=" ">
+              <FaRegEdit/>
               </span>
             </Link>
   
             <span>
               <span
-                className="bg-red-500 text-white btn btn-sm material-symbols-outlined"
+                className="text-red-500 cursor-pointer"
                 onClick={() => destroy(row?.category_id)}
               >
-                delete
+                <RiDeleteBin6Line />
               </span>
             </span>
           </span>
@@ -116,10 +117,10 @@ const Category = () => {
       
         <h2 className=" font-semibold text-xl">Category List</h2>
         <div className="flex items-center gap-3">
-        <button onClick={()=>addedHomePageCategory()} className="bg-green-500 text-white btn btn-sm  ">Add Homepage</button>
-        <Link to="/dashboard/category/homepage"   className="bg-green-500 text-white btn btn-sm  ">Show Homepage</Link>
-        <Link to="/dashboard/category/create">
-          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+        <button onClick={()=>addedHomePageCategory()} className="bg-primary text-white btn btn-sm  ">Add Homepage</button>
+        <Link to="/dashboard/category/homepage"   className="bg-primary text-white btn btn-sm  ">Show Homepage</Link>
+        <Link to="/dashboard/category/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
         </Link>

@@ -21,21 +21,22 @@ import { ColorEdit } from "../pages/productVariant/color/edit";
 import WebSetting from "../pages/webSetting";
 import { WebSettingCreate } from "../pages/webSetting/create";
 import { WebSettingEdit } from "../pages/webSetting/edit";
-import Banner from "../pages/banner/index";
-import { BannerCreate } from "../pages/banner/create";
-import { BannerEdit } from "../pages/banner/edit";
 import Attribute from "../pages/productVariant/attribute";
 import AttributeCreate from "../pages/productVariant/attribute/create";
 import AttributeEdit from "../pages/productVariant/attribute/edit";
 import ProductVariant from "../pages/productVariant/productvariant";
 import ProductVariantCreate from "../pages/productVariant/productvariant/create";
 import EditProductVariant from "../pages/productVariant/productvariant/edit";
-import BannerWayProduct from "../pages/banner/banner-way-product";
-import BannerWayProductCreate from "../pages/banner/banner-way-product/create";
 import CategoryHomepage from "../pages/category/category-to-homepage";
 import { ProductEdit } from "../pages/products/edit";
 import OrderDetails from "../pages/Orders/order-detail";
 import OrderTracking from "../pages/Orders/order-tracking";
+import Banner from "../pages/Banner/index";
+import { BannerCreate } from "../pages/Banner/create";
+import { BannerEdit } from "../pages/Banner/edit";
+import BannerWayProduct from "../pages/Banner/banner-way-product";
+import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
+
 
 const appRoutes = [
   {
@@ -67,7 +68,7 @@ const appRoutes = [
       { path: "product-variant/create", element: <ProductVariantCreate /> },
       { path: "product-variant/edit/:id", element: <EditProductVariant /> },
       { path: "banner", element: <Banner /> },
-      { path: "banner/create", element: <BannerCreate /> },
+      { path: "banner/create", element: <BannerCreate/> },
       { path: "banner/edit/:id", element: <BannerEdit /> },
       { path: "banner/banner-product/:id", element: <BannerWayProduct /> },
       { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
