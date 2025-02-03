@@ -7,7 +7,7 @@ export const index = async (page, perPage) => {
 
 /* resource store */
 export const store = async(data) => {
-    return await privateRequest.post('/admin/color/', data)
+    return await privateRequest.post('/admin/color', data)
 }
 
 /* resource show */

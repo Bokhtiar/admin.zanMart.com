@@ -19,7 +19,7 @@ export const ColorCreate = () => {
   const {
     control,
     handleSubmit,
-
+               register,
     formState: { errors },
   } = useForm();
   /* submit reosurce */
@@ -28,7 +28,8 @@ export const ColorCreate = () => {
       setButtonLoading(true);
       const payload = {
         ...data,
-      };  
+      };   
+      console.log(payload, "data is submit"  );
       const response = await NetworkServices.Color.store(payload);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate('/dashboard/Color')
@@ -55,15 +56,16 @@ export const ColorCreate = () => {
       <section className="shadow-md my-5 p-4 px-6">
         <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 lg:mb-2">
-            <TextInput
+            {/* <TextInput
               label="Color Name"
               name="name"
-              type="text"
+              type="color"
               placeholder="Enter Color name"
               control={control}
               error={errors.name && errors.name.message}
               rules={{ required: "Color Name is required" }}
-            />
+            /> */}
+            <input type="color" name="color" {...register('name')} />
           </div>
 
           {/* submit button */}

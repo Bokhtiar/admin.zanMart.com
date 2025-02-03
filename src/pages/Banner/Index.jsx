@@ -21,7 +21,6 @@ const Banner = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Banner.index(currentPage);
-       
         if (response?.status === 200 || response?.status === 201) {
           setbannerData(response?.data?.data);
           setCurrentPage(response?.data?.current_page);
