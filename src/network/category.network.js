@@ -7,7 +7,7 @@ export const index = async (page, perPage) => {
 
 /* resource store */
 export const store = async(data) => {
-    return await privateRequest.post('/admin/category/', data)
+    return await privateRequest.post('/admin/category', data)
 }
 
 /* resource show */
@@ -35,5 +35,5 @@ export const homepagecategoryshow = async() => {
 }
 // hompage category list 
 export const homepagecategory = async(data) => {
-    return await privateRequest.post('/admin/home-page-category/', data)
+    return await privateRequest.post('/admin/home-page-category', data)
 }

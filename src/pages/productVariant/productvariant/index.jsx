@@ -89,7 +89,7 @@ const ProductVariant = () => {
     },
     {
       name: "Product Discount",
-      cell: (row) => row?.flat_discount,
+      cell: (row) => row?.discount_price,
     },
 
 
