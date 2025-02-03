@@ -94,12 +94,24 @@ const Product = () => {
       name: "Product Name",
       cell: (row) => row?.title,
     },
+   
     {
-      name: "Descriptions",
-      cell: (row) =><div  dangerouslySetInnerHTML={{ __html: row?.description }}>
-
-      </div>
+      name: " Sale Price",
+      cell: (row) => row?.sell_price,
     },
+    {
+      name: " Flat Discount",
+      cell: (row) => row?.flat_discount,
+    },
+    {
+      name: "Buy Price",
+      cell: (row) => row?.buy_price,
+    },
+    {
+      name: "In Stock",
+      cell: (row) => row?.stock_qty,
+    },
+   
 
     {
       name: "Action",

@@ -7,7 +7,7 @@ export const index = async (page, perPage) => {
 
 /* resource store */
 export const store = async(data) => {
-    return await privateRequest.post('/admin/banner/', data)
+    return await privateRequest.post('/admin/banner', data)
 }
 // banner ways to product 
 export const homepagebannerproduct = async(data) => {

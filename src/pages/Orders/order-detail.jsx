@@ -7,18 +7,28 @@ import OrderModal from "../../components/orderFormModal/OrderModal";
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
-  const [isModalOpen,setIsModalOpen]=useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [status, setStatus] = useState(""); // Track selected status
+
   useEffect(() => {
     privateRequest
       .get(`/admin/order/${id}`)
       .then((response) => {
-        console.log(response.data.data);
         setOrderDetails(response.data.data);
       })
       .catch((error) => {
         console.error(error);
       });
   }, [id]);
+
+  const handleStatusChange = (event) => {
+    const selectedStatus = event.target.value;
+    setStatus(selectedStatus);
+    if (selectedStatus === "Processing") {
+      setIsModalOpen(true); // Open modal if Processing is selected
+    }
+  };
+
   //   formate date code here
   const formatDate = (dateString) => {
     const formattedDate = moment(dateString).format("DD MMM YYYY");
@@ -49,7 +59,16 @@ console.log(isModalOpen)
             <p className="bg-[#F7FAFC] p-4 rounded-lg font-bold text-base text-gray-500">
               All Item
             </p> 
-            <button onClick={hendleOpnenOrderModal} className="bg-primary rounded-lg px-5 text-white">Update Status</button>
+            <select
+                value={status}
+                onChange={handleStatusChange}
+                className="bg-primary text-white rounded-lg px-5"
+              >
+                <option value="">Select Status</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+              </select>
             </div>
             {orderDetails?.["order item"]?.map((item, index) => (
               <div
