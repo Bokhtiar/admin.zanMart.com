@@ -1,13 +1,11 @@
 import { getToken } from "../utils/helper";
 import { Navigate } from "react-router-dom";
-
 import { DashboardLayout } from "../layouts/dashboard.layout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Inventory from "../pages/Inventory/Inventory";
 import Orders from "../pages/Orders";
 import Category from "../pages/category";
 import Unit from "../pages/productVariant/Unit/Unit";
-
 import { CategoryCreate } from "../pages/category/create";
 import { CategoryEdit } from "../pages/category/edit";
 import Product from "../pages/products/index";
@@ -32,6 +30,11 @@ import { ProductEdit } from "../pages/products/edit";
 import OrderDetails from "../pages/Orders/order-detail";
 import OrderTracking from "../pages/Orders/order-tracking"; 
 import Form from "../pages/form"; 
+import Banner from "../pages/Banner/Index";
+import { BannerCreate } from "../pages/Banner/create";
+import { BannerEdit } from "../pages/Banner/edit";
+import BannerWayProduct from "../pages/Banner/banner-way-product";
+import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
  
 const appRoutes = [
   {
@@ -66,11 +69,11 @@ const appRoutes = [
       { path: "product-variant", element: <ProductVariant /> },
       { path: "product-variant/create", element: <ProductVariantCreate /> },
       { path: "product-variant/edit/:id", element: <EditProductVariant /> },
-      // { path: "banner", element: <Banner /> },
-      // { path: "banner/create", element: <BannerCreate/> },
-      // { path: "banner/edit/:id", element: <BannerEdit /> },
-      // { path: "banner/banner-product/:id", element: <BannerWayProduct /> },
-      // { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
+      { path: "banner", element: <Banner /> },
+      { path: "banner/create", element: <BannerCreate/> },
+      { path: "banner/edit/:id", element: <BannerEdit /> },
+      { path: "banner/banner-product/:id", element: <BannerWayProduct /> },
+      { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
       { path: "category", element: <Category /> },
       { path: "category/create", element: <CategoryCreate /> },
       { path: "category/edit/:id", element: <CategoryEdit /> },
