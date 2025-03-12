@@ -36,7 +36,7 @@ const OrderDetails = () => {
   };
   const orderAllPrice =  () => {
     let subtotal =  orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.sell_price)*curr?.qty, 0);
-    let taxPrice = orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.product.tax_price) , 0);
+    let taxPrice = orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.product?.tax_price) , 0);
     return{
       subtotal,
     taxPrice,
