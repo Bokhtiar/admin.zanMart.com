@@ -31,12 +31,13 @@ import CategoryHomepage from "../pages/category/category-to-homepage";
 import { ProductEdit } from "../pages/products/edit";
 import OrderDetails from "../pages/Orders/order-detail";
 import OrderTracking from "../pages/Orders/order-tracking";
-import Banner from "../pages/Banner/index";
+// import Banner from "../pages/Banner/index";
 import { BannerCreate } from "../pages/Banner/create";
 import { BannerEdit } from "../pages/Banner/edit";
 import BannerWayProduct from "../pages/Banner/banner-way-product";
 import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
 import Form from "../pages/form";
+import Banner from "../pages/Banner/Index";
 
 
 const appRoutes = [

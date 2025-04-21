@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { NetworkServices } from "../../../network";
 import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
- 
+import { useForm } from "react-hook-form";
+import { SingleSelect, TextInput } from "../../../components/input";
+
 const ProductForm = () => {
   const [products, setProducts] = useState([]);
   const [colors, setColors] = useState([]);
   const [attributes, setAttributes] = useState([]);
-  const [allAttributes, setAllAttributes] = useState([]);
+
   const [unit, setUnit] = useState([]);
   const navigate = useNavigate();
   const [selectedProduct, setSelectedProduct] = useState("");
@@ -22,81 +24,124 @@ const ProductForm = () => {
   const [flatDiscount, setFlatDiscount] = useState("");
   const [loading, setLoading] = useState(false);
   const [addedVariant, setAddedVariant] = useState([]);
-  // all attribute color,unit filter product fetch here
-  useEffect(() => {
-    const fetchData = async () => {
-      // setLoading(true)
-      try {
-        const colorResponse = await NetworkServices.Color.index();
-        const attributeResponse = await NetworkServices.Attribute.index();
-        const unitResponse = await NetworkServices.Unit.index();
-        if (
-          colorResponse?.status === 200 &&
-          attributeResponse?.status === 200 &&
-          unitResponse?.status === 200
-        ) {
-          setColors(colorResponse?.data?.data?.data);
-          setAllAttributes(attributeResponse?.data?.data?.data);
-          setUnit(unitResponse?.data?.data?.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-  const [ddd, setdd] = useState(false);
-  useEffect(() => {
-    // only product fetch here
-    const fetchProducts = async () => {
-      try {
-        const ProductResponse = await NetworkServices.Product.index();
-        if (ProductResponse.status === 200) {
-            const result = ProductResponse?.data?.data?.data;
-           const data = result.map((data)=>{
-            return{
-             ...data,
-              label: data?.product_name,
-              value: data?.product_id,
-            }
 
-           })
-          setProducts(data);
-        }
-      } catch (error) {
-        Toastify.Error(error);
-      }
-    };
-    fetchProducts();
-  }, [ddd]);
-  // submit here   code
-  const handleSubmit = async (e) => {
+  console.log("attributes", attributes);
+
+  const {
+    control,
+    handleSubmit,
+
+    formState: { errors },
+  } = useForm();
+
+  const fetchColor = useCallback(async () => {
+    // setLoading(true);
     try {
-      const data = {
-        product_id: Number(selectedProduct),
-        color_id: Number(selectedColor),
-        attribute_id: Number(selectedAttribute),
-        unit_id: Number(selectedUnit),
-        product_qty: Number(quantity),
-        weight: Number(weight),
-        price: Number(price),
-        flat_discount : Number(flatDiscount)
-      };
-      const updateValue = [...addedVariant, data];
-      e.preventDefault();
-      // You can send this formData to your API
-      const response = await NetworkServices.ProductVariant.store(updateValue);
-      if (response.status === 200 || response.status === 201) {
-        navigate("/dashboard/product-variant");
-        return Toastify.Success("Product varaint create successfully.");
+      const colorResponse = await NetworkServices.Color.index(); // Fetch colors from API
+      console.log("colorResponse", colorResponse);
+
+      if (colorResponse && colorResponse.status === 200) {
+        const result = colorResponse.data.data.data.map((item) => {
+          return {
+            label: item.name,
+            value: item.color_id,
+            ...item,
+          };
+        });
+        console.log(result);
+        setColors(result); // Set the result to state
       }
     } catch (error) {
-      return Toastify.Error(error);
+      console.error("Fetch Category Error:", error); // Handle errors
     }
-  };
 
-  // added variant variants
+    setLoading(false); // End loading (handled in both success and error)
+  }, []);
+
+  // Fetch color data when the component mounts
+  useEffect(() => {
+    fetchColor();
+  }, [fetchColor]);
+
+  const fetchProducts = useCallback(async () => {
+    try {
+      const ProductResponse = await NetworkServices.Product.index();
+      if (ProductResponse.status === 200) {
+        const result = ProductResponse?.data?.data?.data;
+        const data = result.map((data) => ({
+          label: data?.slug,
+          value: data?.product_id,
+          ...data,
+        }));
+        setProducts(data);
+      }
+    } catch (error) {
+      Toastify.Error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  const fetchUnit = useCallback(async () => {
+    // setLoading(true);
+    try {
+      const unitResponse = await NetworkServices.Unit.index(); // Fetch colors from API
+      console.log("unitResponse", unitResponse);
+
+      if (unitResponse && unitResponse.status === 200) {
+        const result = unitResponse.data?.data?.data?.map((item) => {
+          return {
+            label: item.name,
+            value: item.unit_id,
+            ...item,
+          };
+        });
+        console.log(result);
+        setUnit(result); // Set the result to state
+      }
+    } catch (error) {
+      console.error("Fetch Category Error:", error); // Handle errors
+    }
+
+    setLoading(false); // End loading (handled in both success and error)
+  }, []);
+
+  // Fetch color data when the component mounts
+  useEffect(() => {
+    fetchUnit();
+  }, [fetchUnit]);
+
+  const fetchAttribute = useCallback(async () => {
+    // setLoading(true);
+    try {
+      const attributeResponse = await NetworkServices.Attribute.index(); // Fetch colors from API
+      console.log("attributeResponse", attributeResponse);
+
+      if (attributeResponse && attributeResponse.status === 200) {
+        const result = attributeResponse.data?.data?.data?.map((item) => {
+          return {
+            label: item.name,
+            value: item.attribute_id,
+            ...item,
+          };
+        });
+        console.log(result);
+        setAttributes(result); // Set the result to state
+      }
+    } catch (error) {
+      console.error("Fetch Category Error:", error); // Handle errors
+    }
+
+    setLoading(false); // End loading (handled in both success and error)
+  }, []);
+
+  // Fetch color data when the component mounts
+  useEffect(() => {
+    fetchAttribute();
+  }, [fetchAttribute]);
+
   const handelAllVariant = () => {
     const data = {
       product_id: Number(selectedProduct),
@@ -119,23 +164,21 @@ const ProductForm = () => {
     setWeight("");
     setFlatDiscount("");
   };
-  // change attribute code here
-  const handleAttributeChange = (e) => {
-    if (!selectedUnit) {
-      Toastify.Error("please select unit");
-      return;
+
+  // submit here   code
+  const onSubmit = async (data) => {
+    try {
+      // You can send this formData to your API
+      const response = await NetworkServices.ProductVariant.store(data);
+      if (response.status === 200 || response.status === 201) {
+        navigate("/dashboard/product-variant");
+        return Toastify.Success("Product varaint create successfully.");
+      }
+    } catch (error) {
+      return Toastify.Error(error);
     }
-    setSelectedAttribute(e.target.value);
   };
-  const handleUnitChangeForAttribute = (e) => {
-    setSelectedUnit(e.target.value);
-    setAttributes(
-      allAttributes.filter(
-        (attribute) => attribute?.unit?.unit_id === Number(e.target.value)
-      )
-    );
-  };
- 
+
   return (
     <>
       {loading ? (
@@ -153,62 +196,57 @@ const ProductForm = () => {
             </Link>
           </div>
 
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             {/* Product Select Dropdown */}
-            <div className="mb-4 "> 
+            <div className="mb-4 ">
 
-                <SearchDropdownWithSingle options={products} showName="title" handleChange={(e)=>{
-                    console.log(e?.product_id);
-                    setSelectedProduct(e?.product_id)
-                }}/>
+              <SingleSelect
+                label=" Select Product"
+                name="product"
+                control={control}
+                error={errors.product && errors.product.message}
+                isClearable={true}
+                placeholder="Select Product"
+                options={products}
+                rules={{ required: "Meeting_type is required" }}
+                // onSearch={fetchColor}
+                onSelectId={(id) => setSelectedColor(id)}
+              />
             </div>
 
             {/* Row for Color and Attribute */}
             <div className="flex mb-4 gap-4">
               {/* Color Select Dropdown */}
               <div className="flex-1">
-                <label
-                  htmlFor="color"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Color
-                </label>
-                <select
-                  id="color"
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="">Select Color</option>
-                  {colors?.map((color) => (
-                    <option key={color?.color_id} value={color?.color_id}>
-                      {color?.name}
-                    </option>
-                  ))}
-                </select>
+
+                <SingleSelect
+                  label=" Select Color"
+                  name="color"
+                  control={control}
+                  error={errors.color && errors.color.message}
+                  isClearable={true}
+                  placeholder="Select Color"
+                  options={colors}
+                  rules={{ required: "Meeting_type is required" }}
+                  // onSearch={fetchColor}
+                  onSelectId={(id) => setSelectedColor(id)}
+                />
               </div>
 
               {/* Unit Select Dropdown */}
               <div className="flex-1">
-                <label
-                  htmlFor="unit"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Unit
-                </label>
-                <select
-                  id="unit"
-                  value={selectedUnit}
-                  onChange={handleUnitChangeForAttribute}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="">Select Unit</option>
-                  {unit?.map((itm) => (
-                    <option key={itm?.id} value={itm?.unit_id}>
-                      {itm?.name}
-                    </option>
-                  ))}
-                </select>
+                <SingleSelect
+                  label=" Select Unit"
+                  name="unit"
+                  control={control}
+                  error={errors.unit && errors.unit.message}
+                  isClearable={true}
+                  placeholder="Select unit"
+                  options={unit}
+                  rules={{ required: "unit is required" }}
+                  // onSearch={fetchColor}
+                  onSelectId={(id) => setSelectedColor(id)}
+                />
               </div>
             </div>
 
@@ -216,42 +254,29 @@ const ProductForm = () => {
             <div className="flex mb-4 gap-4">
               {/* Attribute Select Dropdown */}
               <div className="flex-1">
-                <label
-                  htmlFor="attribute"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Attribute
-                </label>
-                <select
-                  id="attribute"
-                  value={selectedAttribute}
-                  onChange={handleAttributeChange}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  disabled={attributes?.length ? false : true}
-                >
-                  <option value="">Select Attribute</option>
-                  {attributes?.map((attribute) => (
-                    <option key={attribute?.id} value={attribute?.attribute_id}>
-                      {attribute?.name}
-                    </option>
-                  ))}
-                </select>
+                <SingleSelect
+                  label=" Select Attributes"
+                  name="attributes"
+                  control={control}
+                  error={errors.unit && errors.unit.message}
+                  isClearable={true}
+                  placeholder="Select Attributes"
+                  options={attributes}
+                  rules={{ required: "Attributes is required" }}
+                  // onSearch={fetchColor}
+                  onSelectId={(id) => setSelectedColor(id)}
+                />
               </div>
               {/* Quantity Input */}
               <div className="flex-1">
-                <label
-                  htmlFor="quantity"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Product Quantity
-                </label>
-                <input
+                <TextInput
+                  name="quantity"
+                  control={control}
+                  label=" Product Quantity "
                   type="number"
-                  id="quantity"
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Quantity"
+                  placeholder="Create Quantity"
+                  rules={{ required: "Quantity is required" }} // Validation rule
+                  error={errors.quantity?.message} // Show error message
                 />
               </div>
             </div>
@@ -260,54 +285,39 @@ const ProductForm = () => {
             <div className="flex mb-4 gap-4">
               {/* Weight Input */}
               <div className="flex-1">
-                <label
-                  htmlFor="weight"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Weight (kg)
-                </label>
-                <input
+                <TextInput
+                  name="weight"
+                  control={control}
+                  label=" Product Weight "
                   type="number"
-                  id="weight"
-                  value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Weight"
+                  placeholder="Enter weight"
+                  rules={{ required: "Quantity is required" }} // Validation rule
+                  error={errors.weight?.message} // Show error message
                 />
               </div>
 
               {/* Price Input */}
               <div className="flex-1">
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Price ($)
-                </label>
-                <input
+                <TextInput
+                  name="price"
+                  control={control}
+                  label=" Price "
                   type="number"
-                  id="price"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter Price"
+                  rules={{ required: "Price is required" }} // Validation rule
+                  error={errors.price?.message} // Show error message
                 />
               </div>
               {/* flat discount  */}
               <div className="flex-1">
-                <label
-                  htmlFor="flat_discount"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Flat Discount ($)
-                </label>
-                <input
+                <TextInput
+                  name="flat_discount"
+                  control={control}
+                  label=" Flat Discount "
                   type="number"
-                  id="flat_discount"
-                  value={flatDiscount}
-                  onChange={(e) => setFlatDiscount(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter Flat Discount"
+                  rules={{ required: "Price is required" }} // Validation rule
+                  error={errors.price?.message} // Show error message
                 />
               </div>
             </div>
