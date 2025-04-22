@@ -85,8 +85,7 @@ const Color = () => {
         </div>
       ),
     },
-  ];
-
+  ]; 
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">

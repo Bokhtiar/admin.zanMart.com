@@ -154,7 +154,7 @@ const ProductForm = () => {
       flat_discount : Number(flatDiscount)
     };
     setAddedVariant((prev) => [...prev, data]);
-    setdd(!ddd);
+    // setdd(!ddd);
     setSelectedColor("");
     setSelectedAttribute("");
     setSelectedProduct("");

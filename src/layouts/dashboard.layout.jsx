@@ -1,21 +1,57 @@
+
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar/index";
-import { Header } from "../components/Header";
+
 import { useState } from "react";
+import Sidebar from "../components/Sidebar/SidebarItem";
+import Header from "../components/Header";
 
 export const DashboardLayout = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(true);
+  const [menuStyle, setMenuStyle] = useState("hover");
+  const [menuPosition, setMenuPosition] = useState("fixed");
+
+  console.log("menuStyle", menuStyle);
+  console.log("menuPosition", menuPosition);
+
+  const toggleSidebar = () => {
+    console.log("first");
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     // <div className="dark:bg-boxdark-2 dark:text-bodydark">
-      <div className="bg-gray-200"> 
-      <div className="flex h-screen overflow-hidden">
+    <div>
+      <div className="flex h-screen overflow-hidden ">
         {/* sidbar start  */}
-        <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
-        <div className="relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden">
+        <Sidebar
+          toggleSidebar={toggleSidebar}
+          menuOpen={menuOpen}
+          menuStyle={menuStyle}
+          setMenuStyle={setMenuStyle}
+
+        />
+        <div className=" relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden  ">
+          {/* relative flex flex-1 flex-col overflow-y-auto overflow-x-hidden  */}
           {/* Header start  */}
-          <Header  sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
+          
+            {" "}
+            <Header
+              toggleSidebar={toggleSidebar}
+              menuOpen={menuOpen}
+              menuStyle={menuStyle}
+              setMenuStyle={setMenuStyle}
+              menuPosition={menuPosition}
+              setMenuPosition={setMenuPosition}
+            />
+       
           <main>
-            <div className="mx-auto max-w-screen-2xl p-4 md:p-6 2xl:p-10">
+            <div
+              className={`mx-auto w-full p-2 md:p-4 2xl:p-6 bg-light dark:bg-dark     ${
+                menuPosition === "fixed"
+                  ? "mt-16"
+                  : ""
+              } `}
+            >
               <Outlet />
             </div>
           </main>
@@ -24,3 +60,4 @@ export const DashboardLayout = () => {
     </div>
   );
 };
+

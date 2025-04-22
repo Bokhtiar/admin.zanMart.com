@@ -1,7 +1,7 @@
 import { privateRequest } from '../config/axios.config'
 
 /* list of resource */
-export const index = async (page, perPage) => {
+export const index = async (page=1, perPage=10) => {
     return await privateRequest.get(`/admin/banner?page=${page}&page_size=${perPage}`);
 };
 

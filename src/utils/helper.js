@@ -26,7 +26,7 @@ const setCookie = (name, value, days) => {
 export const getToken = () => {
    
     
-    return  getCookie("token");
+    return  getCookie("zan_mart_admin_token");
 }
 
 
@@ -34,13 +34,13 @@ export const getToken = () => {
 /* set token */
 export const setToken = (token) => {
     
-    return setCookie("token", token, 7);
+    return setCookie("zan_mart_admin_token", token, 7);
     // return localStorage.setItem("token", token);
 }
 
 /* remove token */
 export const removeToken = () => {
-    return removeCookie("token")
+    return removeCookie("zan_mart_admin_token")
 };
 
 /* Global network error handeller */
@@ -147,3 +147,10 @@ export const employeeStatus = [
     },
 ];
 
+export const responseChecker = (response,status_code=200) => {
+    if ((response && response.status == status_code) || response.status == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  };
