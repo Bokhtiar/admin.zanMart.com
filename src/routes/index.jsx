@@ -1,7 +1,7 @@
 import { getToken } from "../utils/helper";
 import { Navigate } from "react-router-dom";
 import { DashboardLayout } from "../layouts/dashboard.layout";
-import Dashboard from "../pages/Dashboard/Dashboard";
+// import Dashboard from "../pages/Dashboard/Dashboard";
 import Inventory from "../pages/Inventory/Inventory";
 import Orders from "../pages/Orders";
 import Category from "../pages/category";
@@ -35,6 +35,7 @@ import { BannerCreate } from "../pages/Banner/create";
 import { BannerEdit } from "../pages/Banner/edit";
 import BannerWayProduct from "../pages/Banner/banner-way-product";
 import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
+import Dashboard from "../pages/Dashboard/Dashboard";
  
 const appRoutes = [
   {

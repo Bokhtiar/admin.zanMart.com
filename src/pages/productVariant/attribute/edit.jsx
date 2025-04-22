@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { TextInput } from "../../../components/input";
+import { Checkbox, TextInput } from "../../../components/input";
 import { Toastify } from "../../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -15,6 +15,8 @@ const AttributeEdit = () => {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [unitId, setUnitId] = useState(null);
+
+  console.log("first", data);
 
   const [unitData, setUnitData] = useState([]);
   const {
@@ -35,23 +37,31 @@ const AttributeEdit = () => {
     }
   }, [id]);
 
+  useEffect(() => {
+    const defaultUnit = unitData.find(
+      (unit) => unit?.name === data?.unit?.name
+    );
+    if (defaultUnit) {
+      setUnitId(defaultUnit.unit_id);
+    }
+  }, [data?.unit?.name, unitData]);
+
   /* submit reosurce */
   const onSubmit = async (dat) => {
     try {
-    
       const payload = {
         ...dat,
         unit_id: unitId ? unitId : data?.unit_id,
-      }; 
- 
+      };
+
       const response = await NetworkServices.Attribute.update(id, payload);
- 
+
       if (response.status === 200) {
         navigate("/dashboard/attribute");
         return Toastify.Success(response.data.message);
       }
     } catch (error) {
-    //   setLoading(false);
+      //   setLoading(false);
       networkErrorHandeller(error);
     }
   };
@@ -65,7 +75,7 @@ const AttributeEdit = () => {
     try {
       setLoading(true);
       const response = await NetworkServices.Unit.index();
-  
+
       if (response?.status === 200 || response?.status === 201) {
         setUnitData(response?.data?.data?.data);
         setLoading(false);
@@ -101,17 +111,15 @@ const AttributeEdit = () => {
                 <div className="grid grid-cols-2 md:grid-cols-4 ">
                   {unitData.map((unit) => (
                     <div key={unit?.unit_id}>
-                      <label className="space-x-2">
-                        <div className="flex gap-2 items-center">
-                          <input
-                            type="checkbox"
-                            checked={unit?.unit_id === unitId}
-                            onChange={() => setUnitId(unit?.unit_id)} // Handle checkbox selection
-                            className="cursor-pointer"
-                          />
-                          <span>{unit?.name}</span>
-                        </div>
-                      </label>
+                      <Checkbox
+                        name="checkbox"
+                        control={control}
+                        type="checkbox"
+                        placeholder="Enter attribute"
+                        checked={unit?.unit_id === unitId} 
+                        onChange={() => setUnitId(unit?.unit_id)} 
+                      />
+                      <span>{unit?.name}</span>
                     </div>
                   ))}
                 </div>

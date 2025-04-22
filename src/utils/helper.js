@@ -147,3 +147,10 @@ export const employeeStatus = [
     },
 ];
 
+export const responseChecker = (response,status_code=200) => {
+    if ((response && response.status == status_code) || response.status == 201) {
+      return true;
+    } else {
+      return false;
+    }
+  };
