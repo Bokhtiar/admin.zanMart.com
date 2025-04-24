@@ -7,7 +7,6 @@ import {
   RiProductHuntLine,
 } from "react-icons/ri";
 import {
-
   MdBrandingWatermark,
   MdOutlineCategory,
   MdOutlineProductionQuantityLimits,
@@ -16,9 +15,8 @@ import {
 // import logo from "../../assets/logo/Zanicon.jpg";
 import logo from "../../assets/image/logo.png";
 import { IoColorPaletteOutline } from "react-icons/io5";
-import { FaUnity } from "react-icons/fa6";
+import { FaFirstOrder, FaUnity } from "react-icons/fa6";
 import { CgAttribution } from "react-icons/cg";
-
 
 const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -31,16 +29,16 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
   console.log("menuStyle", menuStyle);
 
- const menuData = [
+  const menuData = [
     {
       title: "Dashboard",
-      icon: <RxDashboard></RxDashboard>, 
+      icon: <RxDashboard></RxDashboard>,
       path: "/dashboard",
     },
     {
-      title: "Category",
-      icon: <MdOutlineCategory></MdOutlineCategory>,
-      path: "/dashboard/category",
+      title: "Order",
+      icon: <FaFirstOrder />,
+      path: "/dashboard/order",
     },
     {
       title: "Banner",
@@ -48,13 +46,21 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
       path: "/dashboard/banner",
     },
     {
+      title: "Category",
+      icon: <MdOutlineCategory></MdOutlineCategory>,
+      path: "/dashboard/category",
+    },
+
+    {
       title: "Brand",
       icon: <MdBrandingWatermark></MdBrandingWatermark>,
       path: "/dashboard/brand",
     },
     {
       title: "Product",
-      icon: <MdOutlineProductionQuantityLimits></MdOutlineProductionQuantityLimits>,
+      icon: (
+        <MdOutlineProductionQuantityLimits></MdOutlineProductionQuantityLimits>
+      ),
       path: "/dashboard/product",
     },
     {
@@ -89,7 +95,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
       path: "/dashboard/web-setting",
     },
   ];
-  
+
   return (
     <>
       {menuStyle === "hover" && (
@@ -105,12 +111,12 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
           {/* Menu List */}
 
-          <nav className="mt-4">
+          <nav className="mt-4 overflow-y-auto h-[calc(100vh-70px)]">
             {menuData.map((item, index) => {
               const isActive = location.pathname === item.path;
 
               return (
-                <div key={index} className="mb-2 relative">
+                <div key={index} className="mb-1 relative">
                   {/* Active Indicator */}
                   {isActive && (
                     <span className="absolute left-0 top-0 h-full w-1 bg-[#0d6efd] z-50"></span>
@@ -180,7 +186,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
       {menuStyle === "click" && (
         <div
-          className={`w-64 fixed z-50  top-0 left-0 h-screen bg-lightCard dark:bg-darkCard dark:text-darkTitle shadow-2xl transition-all duration-300 ${
+          className={`w-64  fixed z-50  top-0 left-0 h-screen bg-lightCard dark:bg-darkCard dark:text-darkTitle shadow-2xl transition-all duration-300 ${
             menuOpen ? "translate-x-0" : "-translate-x-full"
           }`}
         >
@@ -206,7 +212,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
           </div>
 
           {/* Menu List */}
-          <nav className="mt-4 overflow-hidden">
+          <nav className="mt-4 overflow-y-auto h-[calc(100vh-70px)]">
             {" "}
             {/* Prevents blue bar from going outside */}
             {menuData.map((item, index) => {
@@ -215,11 +221,11 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
               return (
                 <div
                   key={index}
-                  className="mb-2 relative overflow-hidden gap-4"
+                  className="mb-1 relative overflow-auto gap-4"
                 >
                   {/* Parent Menu Item */}
                   {isActive && (
-                    <span className="absolute left-0 top-0 h-full w-1 bg-[#0d6efd] z-50  "></span>
+                    <span className="absolute left-0 top-0 h-full w-1 bg-[#0d6efd] z-50"></span>
                   )}
                   <Link
                     to={item.path}
