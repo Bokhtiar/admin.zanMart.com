@@ -25,8 +25,6 @@ const ProductForm = () => {
   const [loading, setLoading] = useState(false);
   const [addedVariant, setAddedVariant] = useState([]);
 
-  console.log("attributes", attributes);
-
   const {
     control,
     handleSubmit,
@@ -38,7 +36,6 @@ const ProductForm = () => {
     // setLoading(true);
     try {
       const colorResponse = await NetworkServices.Color.index(); // Fetch colors from API
-      console.log("colorResponse", colorResponse);
 
       if (colorResponse && colorResponse.status === 200) {
         const result = colorResponse.data.data.data.map((item) => {
@@ -48,7 +45,7 @@ const ProductForm = () => {
             ...item,
           };
         });
-        console.log(result);
+
         setColors(result); // Set the result to state
       }
     } catch (error) {
@@ -88,7 +85,6 @@ const ProductForm = () => {
     // setLoading(true);
     try {
       const unitResponse = await NetworkServices.Unit.index(); // Fetch colors from API
-      console.log("unitResponse", unitResponse);
 
       if (unitResponse && unitResponse.status === 200) {
         const result = unitResponse.data?.data?.data?.map((item) => {
@@ -98,7 +94,7 @@ const ProductForm = () => {
             ...item,
           };
         });
-        console.log(result);
+
         setUnit(result); // Set the result to state
       }
     } catch (error) {
@@ -117,7 +113,6 @@ const ProductForm = () => {
     // setLoading(true);
     try {
       const attributeResponse = await NetworkServices.Attribute.index(); // Fetch colors from API
-      console.log("attributeResponse", attributeResponse);
 
       if (attributeResponse && attributeResponse.status === 200) {
         const result = attributeResponse.data?.data?.data?.map((item) => {
@@ -127,7 +122,7 @@ const ProductForm = () => {
             ...item,
           };
         });
-        console.log(result);
+
         setAttributes(result); // Set the result to state
       }
     } catch (error) {
@@ -151,7 +146,7 @@ const ProductForm = () => {
       product_qty: Number(quantity),
       weight: Number(weight),
       price: Number(price),
-      flat_discount : Number(flatDiscount)
+      flat_discount: Number(flatDiscount),
     };
     setAddedVariant((prev) => [...prev, data]);
     // setdd(!ddd);
@@ -166,10 +161,27 @@ const ProductForm = () => {
   };
 
   // submit here   code
-  const onSubmit = async (data) => {
+  const onsubmit = async (e) => {
     try {
+      const data = {
+        product_id: Number(e?.product?.product_id),
+        color_id: Number(e?.color?.color_id),
+        attribute_id: Number(e?.attributes?.attribute_id),
+        unit_id: Number(e?.unit?.unit_id),
+        product_qty: Number(e?.quantity),
+        weight: Number(e?.weight),
+        price: Number(e?.price),
+        // flat_discount: Number(e?.flat_discount),
+        discount_price: Number(e?.flat_discount),
+        available_quantity:55
+      };
+      console.log(e);
+      const updateValue = [...addedVariant, data];
+      // e.preventDefault();
+      console.log(updateValue, "come from bad");
       // You can send this formData to your API
-      const response = await NetworkServices.ProductVariant.store(data);
+      const response = await NetworkServices.ProductVariant.store(updateValue);
+
       if (response.status === 200 || response.status === 201) {
         navigate("/dashboard/product-variant");
         return Toastify.Success("Product varaint create successfully.");
@@ -196,10 +208,9 @@ const ProductForm = () => {
             </Link>
           </div>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(onsubmit)}>
             {/* Product Select Dropdown */}
             <div className="mb-4 ">
-
               <SingleSelect
                 label=" Select Product"
                 name="product"
@@ -218,7 +229,6 @@ const ProductForm = () => {
             <div className="flex mb-4 gap-4">
               {/* Color Select Dropdown */}
               <div className="flex-1">
-
                 <SingleSelect
                   label=" Select Color"
                   name="color"
@@ -324,12 +334,12 @@ const ProductForm = () => {
 
             {/* Submit Button */}
             <div className="flex gap-4">
-              <span
+              {/* <span
                 onClick={handelAllVariant}
                 className="cursor-pointer flex justify-center w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
               >
                 Add
-              </span>
+              </span> */}
               <button
                 type="submit"
                 className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
