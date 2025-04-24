@@ -173,7 +173,7 @@ const ProductForm = () => {
         price: Number(e?.price),
         // flat_discount: Number(e?.flat_discount),
         discount_price: Number(e?.flat_discount),
-        available_quantity:55
+        available_quantity: Number(e?.available_quantity),
       };
       console.log(e);
       const updateValue = [...addedVariant, data];
@@ -287,6 +287,17 @@ const ProductForm = () => {
                   placeholder="Create Quantity"
                   rules={{ required: "Quantity is required" }} // Validation rule
                   error={errors.quantity?.message} // Show error message
+                />
+              </div>
+              <div className="flex-1">
+                <TextInput
+                  name="available_quantity"
+                  control={control}
+                  label=" Available quantity "
+                  type="number"
+                  placeholder="Create available quantity"
+                  rules={{ required: "available quantity is required" }} // Validation rule
+                  error={errors.available_quantity?.message} // Show error message
                 />
               </div>
             </div>
