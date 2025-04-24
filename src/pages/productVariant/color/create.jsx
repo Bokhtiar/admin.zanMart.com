@@ -56,16 +56,16 @@ export const ColorCreate = () => {
       <section className="shadow-md my-5 p-4 px-6">
         <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 lg:mb-2">
-            {/* <TextInput
+            <TextInput
               label="Color Name"
               name="name"
-              type="color"
+              type="text"
               placeholder="Enter Color name"
               control={control}
               error={errors.name && errors.name.message}
               rules={{ required: "Color Name is required" }}
-            /> */}
-            <input type="color" name="color" {...register('name')} />
+            />
+            {/* <input type="color" name="color" {...register('name')} /> */}
           </div>
 
           {/* submit button */}
