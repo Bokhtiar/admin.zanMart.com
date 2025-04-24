@@ -68,7 +68,7 @@ const ProductVariantEdit = () => {
             Number(quantity) || Number(productVariantData?.product_qty),
           weight: Number(weight) || Number(productVariantData?.weight),
           price: Number(price) || Number(productVariantData?.price),
-          flat_discount:
+          discount_price:
             Number(flatDiscount) || Number(productVariantData?.flat_discount),
           product_variant_id: Number(id),
         },
