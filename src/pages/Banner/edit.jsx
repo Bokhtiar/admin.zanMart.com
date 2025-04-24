@@ -6,6 +6,7 @@ import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { FaCamera } from "react-icons/fa"; 
+import { Checkbox } from "../../components/input";
 
 export const BannerEdit = () => {
   const navigate = useNavigate();
@@ -43,6 +44,7 @@ export const BannerEdit = () => {
     register, 
     setValue,
     formState: { errors },
+    control
   } = useForm( );
   
   /* submit reosurce */
@@ -67,6 +69,7 @@ export const BannerEdit = () => {
   // value set for update in form 
   useEffect(()=>{
     setValue("name",data?.name||'');
+    setValue('status',data?.status)
   },[data,setValue])
   return (
     <>
@@ -153,6 +156,13 @@ export const BannerEdit = () => {
                 </button>
               )}
             </div>
+            <br/>
+            <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
           </div>
           {/* submit button */}
           <div className="my-4 flex justify-center">

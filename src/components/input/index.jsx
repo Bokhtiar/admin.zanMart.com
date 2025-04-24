@@ -401,46 +401,49 @@ export const SearchableSelect = (props) => {
 };
 
 /* checkbox input */
-export const Checkbox = (props) => {
-    const {
-      field: {  onBlur, value },
-    } = useController({
-      name: props.name,
-      control: props.control,
-      rules: { ...props.rules },
-      defaultValue: props.defaultvalue,
   
-    });
-  
-    return (
-      <div>
-        {props?.error ? (
-          <p className="text-sm mb-1 text-red-500">{props?.error}</p>
-        ) : (
-          <p className="text-sm mb-1 text-gray-500">
-            {props?.label}{" "}
-            <span className="text-red-500">
-              {props?.rules?.required ? "*" : ""}
-            </span>
-          </p>
-        )}
-        <input
-          onChange={props?.onChange} // send value to hook form
-          onBlur={onBlur} // notify when input is touched/blur
-          value={value} // input value
-          name={props?.name} // send down the input name
-          placeholder={props?.placeholder}
-          disabled={props?.disabled}
-          type={props?.type || "text"}
-          min={0}
-          checked={props.checked}
-          // className={
-          //   props?.error
-          //     ? `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border !border-danger ${props?.className}`
-          //     : `w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${props?.className}`
-          // }
-        />
-          
-      </div>
-    );
+ 
+export const Checkbox = ({ name, control, label, rules }) => {
+  const {
+    field: { value, onChange, onBlur },
+    fieldState: { error },
+  } = useController({
+    name,
+    control,
+    rules,
+    defaultValue: 0,  
+  });
+ 
+  const toggle = () => {
+    onChange(value === 1 ? 0 : 1);  
   };
+
+  return (
+    <div className="mb-4">
+      {/* The entire div will be clickable */}
+      <label
+        htmlFor={name}  
+        // onClick={toggle}  
+        className="flex items-center space-x-4 p-4 bg-white rounded-2xl shadow-md w-full cursor-pointer" // Full-width clickable area
+      >
+        <input
+          id={name}
+          type="checkbox"
+          checked={value === 1}  
+          onChange={toggle} 
+          onBlur={onBlur}  
+          className="w-5 h-5 text-green-600 rounded"
+        />
+        <span className="text-gray-800 text-lg font-medium">{label}</span>
+        <span
+          className={`ml-auto text-sm font-semibold px-3 py-1 rounded-full ${
+            value === 1 ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          }`}
+        >
+          {value === 1 ? "Active" : "Inactive"}
+        </span>
+      </label>
+      {error && <p className="text-sm text-red-500 mt-1">{error.message}</p>}
+    </div>
+  );
+};

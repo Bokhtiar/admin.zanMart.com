@@ -6,14 +6,13 @@ import { PrimaryButton } from "../../components/button";
 import { useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { FaCamera } from "react-icons/fa";
-import { TextInput } from "../../components/input";
+import { Checkbox, TextInput } from "../../components/input";
 
 export const BannerCreate = () => {
   const navigate = useNavigate();
   const [buttonLoading, setButtonLoading] = useState(false);
   const [singleImage, setSingleImage] = useState(null);
   const [showSingleImage, setShowSingleImage] = useState(null);
-  // uploadProgress 
   const handleSingleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -25,17 +24,25 @@ export const BannerCreate = () => {
   const {
     control,
     handleSubmit,
-
     formState: { errors },
-  } = useForm();
+    watch,
+  } = useForm({
+    defaultValues: {
+      status: 0,
+    },
+  });
+  console.log(watch("status"));
   /* submit reosurce */
   const onSubmit = async (data) => {
     try {
+      console.log(data);
       setButtonLoading(true);
       const formData = new FormData();
       formData.append("name", data.name);
-      formData.append("image", singleImage); 
-      const response = await NetworkServices.Banner.store(formData); 
+      formData.append("image", singleImage);
+      formData.append("status", data?.status);
+      // console.log(status);
+      const response = await NetworkServices.Banner.store(formData);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/banner");
         setButtonLoading(false);
@@ -89,16 +96,22 @@ export const BannerCreate = () => {
                   />
                 ) : (
                   <div>
-                  
                     <span className="text-gray-500 ">
                       <FaCamera className="text-black opacity-100    text-3xl  " />
                     </span>
                   </div>
                 )}
               </label>
- 
             </div>
           </div>
+          {/* status  */}
+
+          <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
           {/* submit button */}
           <div className="my-4 pb-4 flex justify-center">
             <PrimaryButton
