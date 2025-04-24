@@ -1,12 +1,13 @@
 
 import { permittedRoutes } from "./routes";
-import { Login } from "./pages/auth/login";
+// import { Login } from "./pages/auth/login";
 import { ToastContainer } from "react-toastify";
 import { Navigate, useRoutes,useNavigate } from "react-router-dom";
 import { Register } from "./pages/auth/register";
 import OTP from "./pages/auth/otp";
 import { getToken } from "./utils/helper";
 import { useEffect } from "react";
+import Login from "./pages/auth/login";
 
 export const App = () => {
 
@@ -18,7 +19,7 @@ export const App = () => {
       { path: "/", element: <Login /> },
       { path: "/otp", element: <OTP /> },
       { path: "/login", element: <Login /> },
-      { path: "/registration", element: <Register /> },
+      // { path: "/registration", element: <Register /> },
     ],
   };
 
