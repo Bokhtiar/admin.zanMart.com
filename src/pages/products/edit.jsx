@@ -27,6 +27,7 @@ export const ProductEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
+    watch
   } = useForm();
   //   single product fetch
   const fetchData = useCallback(
@@ -36,7 +37,7 @@ export const ProductEdit = () => {
         const response = await NetworkServices.Product.show(id);
         if (response?.status === 200 || response?.status === 201) {
           setProduct(response?.data?.data);
-
+         
           setLoading(false);
         }
       } catch (error) {
@@ -100,6 +101,7 @@ export const ProductEdit = () => {
       formData.append("tax_price", data?.tax_price); // Other form fields
       formData.append("buy_price", data?.buy_price); // Other form fields
       formData.append("stock_qty", data?.stock_qty); // Other form fields
+      formData.append("flat_discount", 55); // Other form fields
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
@@ -133,7 +135,7 @@ export const ProductEdit = () => {
     setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning); // Update form state for low_stock_quantity_warning
     // setSingleImage(product?.thumbnail_image); // Update form state for thumbnail_image
     setValue("thumbnail_image", product?.thumbnail_image);
-  }, []);
+  }, [product]);
   //   set decription
   const handleQuillChange = (content) => {
     setValue("description", content); // Update form state
@@ -160,10 +162,10 @@ export const ProductEdit = () => {
                   label="Product Name"
                   name="title"
                   type="text"
-                  placeholder="Enter category name"
+                  placeholder="Enter Product name"
                   control={control}
                   error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
+                  rules={{ required: "Product Name is required" }}
                 />
               </div>
               {/* cvategory field
@@ -221,6 +223,7 @@ export const ProductEdit = () => {
                   name="buy_price"
                   type="number"
                   placeholder="Enter buy"
+                   
                   control={control}
                   error={errors.name && errors.name.message}
                   rules={{ required: "Category Name is required" }}
@@ -334,7 +337,7 @@ export const ProductEdit = () => {
             <div className="my-4 flex justify-center">
               <PrimaryButton
                 loading={buttonLoading}
-                name="Product create"
+                name="Product  Update"
               ></PrimaryButton>
             </div>
           </form>

@@ -67,8 +67,8 @@ export const TextInput = (props) => {
       <input
         onChange={onChange} // send value to hook form
         onBlur={onBlur} // notify when input is touched/blur
-        // value={value} // input value
-        // name={props.name} // send down the input name
+        value={value} // input value
+        name={props.name} // send down the input name
         placeholder={props.placeholder}
         disabled={props.disabled}
         type={props.type || "text"}
