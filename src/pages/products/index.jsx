@@ -6,7 +6,7 @@ import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
-
+import { FiSend } from "react-icons/fi";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
@@ -131,6 +131,11 @@ const Product = () => {
               <RiDeleteBin6Line/>
             </span>
           </span>
+          <Link to={`/dashboard/product-variant/create/${row?.product_id}`}>
+            <span className="">
+            <FiSend />
+            </span>
+          </Link>
         </div>
       ),
     },

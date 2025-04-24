@@ -68,7 +68,7 @@ const appRoutes = [
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },
-      { path: "product-variant/create", element: <ProductVariantCreate /> },
+      { path: "product-variant/create/:id", element: <ProductVariantCreate /> },
       { path: "product-variant/edit/:id", element: <EditProductVariant /> },
       { path: "banner", element: <Banner /> },
       { path: "banner/create", element: <BannerCreate/> },

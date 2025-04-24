@@ -134,6 +134,29 @@ const ProductVariantEdit = () => {
       )
     );
   };
+  const fetchData = useCallback(
+    async (product) => {
+      try {
+        // setLoading(true);
+        const response = await NetworkServices.Product.show(id);
+        console.log("my response result",response);
+        if (response?.status === 200 || response?.status === 201) {
+          // setProduct(response?.data?.data);
+            //  setColors(response?.data?.data?.product_variants?.color?.color_id)
+          setLoading(false);
+        }
+      } catch (error) {
+        if (error) {
+          setLoading(false);
+          networkErrorHandeller(error);
+        }
+      }
+    },
+    [id]
+  );
+  useEffect(() => {
+    fetchData();
+  }, []);
   return (
     <>
           {loading ? (

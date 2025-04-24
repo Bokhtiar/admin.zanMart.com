@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { NetworkServices } from "../../../network";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { SingleSelect, TextInput } from "../../../components/input";
 
 const ProductForm = () => {
+   const { id } = useParams();
   const [products, setProducts] = useState([]);
   const [colors, setColors] = useState([]);
   const [attributes, setAttributes] = useState([]);
@@ -164,7 +165,7 @@ const ProductForm = () => {
   const onsubmit = async (e) => {
     try {
       const data = {
-        product_id: Number(e?.product?.product_id),
+        product_id: Number(id),
         color_id: Number(e?.color?.color_id),
         attribute_id: Number(e?.attributes?.attribute_id),
         unit_id: Number(e?.unit?.unit_id),
@@ -210,7 +211,7 @@ const ProductForm = () => {
 
           <form onSubmit={handleSubmit(onsubmit)}>
             {/* Product Select Dropdown */}
-            <div className="mb-4 ">
+            {/* <div className="mb-4 ">
               <SingleSelect
                 label=" Select Product"
                 name="product"
@@ -223,7 +224,7 @@ const ProductForm = () => {
                 // onSearch={fetchColor}
                 onSelectId={(id) => setSelectedColor(id)}
               />
-            </div>
+            </div> */}
 
             {/* Row for Color and Attribute */}
             <div className="flex mb-4 gap-4">
