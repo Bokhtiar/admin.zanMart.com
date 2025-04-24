@@ -54,6 +54,7 @@ export const BannerEdit = () => {
       const formData = new FormData();
       formData.append("name", bannerFormData?.name);
       formData.append("image", updateBannerImage?updateBannerImage:data?.image);
+      formData.append('status',bannerFormData?.status)
       formData.append("_method", "PUT");  
       const response = await NetworkServices.Banner.update(id, formData); 
       if (response && (response.status === 201 || response?.status === 200)) {
