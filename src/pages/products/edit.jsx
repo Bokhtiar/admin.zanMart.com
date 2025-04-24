@@ -106,9 +106,9 @@ export const ProductEdit = () => {
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
       ); // Other form fields
-      formData.append("thumbnail_image", singleImage);
+      singleImage &&   formData.append("thumbnail_image", singleImage);
       formData.append("_method", "PUT"); //
-      multiImages.forEach((image, index) => {
+      multiImages &&  multiImages.forEach((image, index) => {
         formData.append(`gallery_image[${index}]`, image); // Append multiple images
       });
       const response = await NetworkServices.Product.update(id, formData);
