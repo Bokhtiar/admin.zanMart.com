@@ -37,7 +37,7 @@ const ShowTable = ({ dashboard }) => {
   ];
 
   const propsData = {
-    pageTitle: "Top Exam List",
+    pageTitle: "Top Product List",
     pageIcon: <IoIosList />,
     // buttonName: "Create New Category",
     // buttonUrl: "/dashboard/create-category",

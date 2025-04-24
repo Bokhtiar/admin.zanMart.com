@@ -13,7 +13,7 @@ import { FaClipboardCheck } from "react-icons/fa";
 export default function Card({dashboard}) {
   const stats = [
     {
-      title: "Total Exam",
+      title: "Total Product",
       value: dashboard.examCount,
       // percentage: "1.56%",
       icon: <PiExamBold className="text-white" />,
@@ -32,7 +32,7 @@ export default function Card({dashboard}) {
       ],
     },
     {
-      title: "Total Exam Done",
+      title: "Total Product Sell",
       value: dashboard.exam_done,
       // percentage: "-1.56%",
       icon: <FaClipboardCheck className="text-white" />,
@@ -51,7 +51,7 @@ export default function Card({dashboard}) {
       ],
     },
     {
-      title: "Incomplete Exam",
+      title: "Incomplete Product",
       value: dashboard.exam_not_done,
       // z
       icon: <FaFileInvoice className="text-white" />,
@@ -70,7 +70,7 @@ export default function Card({dashboard}) {
       ],
     },
     {
-      title: "Exam Participent Count",
+      title: "Pending Product",
       value: dashboard.exam_participent_count,
       // percentage: "1.56%",
       icon: <FaUsers className="text-white" />,
