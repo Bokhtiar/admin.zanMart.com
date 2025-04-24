@@ -120,11 +120,11 @@ const ProductVariant = () => {
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
         <h2 className=" font-semibold text-xl">ProductVariant List</h2>
-        <Link to="/dashboard/product-variant/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
+        {/* <Link to="/dashboard/product-variant/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
         Add New  <span className="  material-symbols-outlined p-1">
             add
           </span>
-        </Link>
+        </Link> */}
       </div>
 
       {loading ? (

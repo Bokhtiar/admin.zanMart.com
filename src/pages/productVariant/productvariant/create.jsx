@@ -184,7 +184,7 @@ const ProductForm = () => {
       const response = await NetworkServices.ProductVariant.store(updateValue);
 
       if (response.status === 200 || response.status === 201) {
-        navigate("/dashboard/product-variant");
+        navigate("/dashboard/product");
         return Toastify.Success("Product varaint create successfully.");
       }
     } catch (error) {
@@ -202,7 +202,7 @@ const ProductForm = () => {
             <h2 className="text-lg font-bold mb-4 text-gray-700">
               Product Information
             </h2>
-            <Link to={`/dashboard/product-variant/`}>
+            <Link to={`/dashboard/product/`}>
               <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
                 list
               </span>
