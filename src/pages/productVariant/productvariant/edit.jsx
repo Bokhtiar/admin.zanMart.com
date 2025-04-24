@@ -5,6 +5,7 @@ import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
+import { TextInput } from "../../../components/input";
 const ProductVariantEdit = () => {
   const { id } = useParams();
   const [products, setProducts] = useState([]);
@@ -48,26 +49,7 @@ const ProductVariantEdit = () => {
     };
     fetchData();
   }, []);
-  //   fetch product
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const ProductResponse = await NetworkServices.Product.index();
-        if (ProductResponse.status === 200) {
-          const result = ProductResponse?.data?.data?.data;
-          const data = result.map((data) => {
-            return {
-              ...data,
-              label: data?.product_name,
-              value: data?.product_id,
-            };
-          });
-          setProducts(data);
-        }
-      } catch (error) {}
-    };
-    fetchProducts();
-  }, []);
+
   //   submit product variant as edit
   const handleSubmit = async (e) => {
     try {
@@ -75,8 +57,7 @@ const ProductVariantEdit = () => {
       // You can send this formData to your API
       const payload = [
         {
-          product_id:
-            Number(selectedProduct) || Number(productVariantData?.product_id),
+          product_id: Number(productVariantData?.product_id),
           color_id:
             Number(selectedColor) || Number(productVariantData?.color_id),
           attribute_id:
@@ -106,6 +87,8 @@ const ProductVariantEdit = () => {
   const fetchProductVariants = useCallback(async () => {
     try {
       const response = await NetworkServices.ProductVariant.show(id);
+      console.log(response, "-------------------- response product");
+
       if (response.status === 200) {
         // setAddedVariant(response?.data?.data)
         setSelectedProduct(response?.data?.data?.product_id);
@@ -139,10 +122,10 @@ const ProductVariantEdit = () => {
       try {
         // setLoading(true);
         const response = await NetworkServices.Product.show(id);
-        console.log("my response result",response);
+        console.log("my response result", response);
         if (response?.status === 200 || response?.status === 201) {
           // setProduct(response?.data?.data);
-            //  setColors(response?.data?.data?.product_variants?.color?.color_id)
+          //  setColors(response?.data?.data?.product_variants?.color?.color_id)
           setLoading(false);
         }
       } catch (error) {
@@ -159,7 +142,7 @@ const ProductVariantEdit = () => {
   }, []);
   return (
     <>
-          {loading ? (
+      {loading ? (
         <SkeletonForm />
       ) : (
         <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -177,7 +160,7 @@ const ProductVariantEdit = () => {
           <form onSubmit={handleSubmit}>
             {/* Product Select Dropdown */}
             <div className="mb-4 ">
-              <SearchDropdownWithSingle
+              {/* <SearchDropdownWithSingle
                 placeholder={
                   products.find(
                     (item) => item?.product_id == productVariantData?.product_id
@@ -185,6 +168,15 @@ const ProductVariantEdit = () => {
                 }
                 options={products}
                 showName="title"
+              /> */}
+              <input
+                type="text"
+                id="quantity"
+                //   value={productVariantData?.product_qty||''}
+                defaultValue={productVariantData?.product?.title}
+                readOnly
+                className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Enter Quantity"
               />
             </div>
 
@@ -368,7 +360,7 @@ const ProductVariantEdit = () => {
                   id="price"
                   //   value={price}
 
-                  defaultValue={productVariantData?.flat_discount}
+                  defaultValue={productVariantData?.discount_price}
                   onChange={(e) => setFlatDiscount(e.target.value)}
                   className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="Enter Price"
