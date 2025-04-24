@@ -101,7 +101,7 @@ export const ProductEdit = () => {
       formData.append("tax_price", data?.tax_price); // Other form fields
       formData.append("buy_price", data?.buy_price); // Other form fields
       formData.append("stock_qty", data?.stock_qty); // Other form fields
-      formData.append("flat_discount", 55); // Other form fields
+      formData.append("flat_discount",data?.flat_discount); // Other form fields
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
@@ -132,6 +132,7 @@ export const ProductEdit = () => {
     setValue("tax_price", product?.tax_price); // Update form state for tax_price
     setValue("buy_price", product?.buy_price); // Update form state for buy_price
     setValue("stock_qty", product?.stock_qty); // Update form state for stock_qty
+    setValue("flat_discount", product?.flat_discount); // Update form state for stock_qty
     setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning); // Update form state for low_stock_quantity_warning
     // setSingleImage(product?.thumbnail_image); // Update form state for thumbnail_image
     setValue("thumbnail_image", product?.thumbnail_image);
@@ -187,35 +188,17 @@ export const ProductEdit = () => {
             <div className="flex flex-col md:flex-row gap-3  ">
               {/* sell price area  */}
               <div className="mb-6 lg:mb-2 w-full">
-                {errors?.name ? (
-                  <span className="text-red-500 text-sm">
-                    {errors?.name?.message}
-                  </span>
-                ) : (
-                  <span className="  text-sm">Banner Title</span>
-                )}
-                <input
-                  value={product?.sell_price ? product?.sell_price : "0"}
-                  {...register("sell_price", {
-                    required: {
-                      value: true,
-                      message: "Banner Title is required",
-                    },
-                    validate: (value) => value.trim() !== '' || "Title is required", // Optional validation to ensure non-empty
-                  })}
+                <TextInput
+                  label="Sell Price"
+                  name="sell_price"
                   type="number"
-                  onChange={(e)=>{
-                    setProduct({
-                      ...product,
-                      sell_price:e.target.value,
-                    })
-                  }}
-                  placeholder="Enter your name"
-                  className={`  w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${
-                    errors?.sell_price ? "border-red-500" : "border-gray-300"
-                  } rounded-md`}
+                  placeholder="Enter tax"
+                  control={control}
+                  error={errors.name && errors.name.message}
+                  rules={{ required: "Sell Price is required" }}
                 />
               </div>
+              
               {/* buy price area  */}
               <div className="mb-6 lg:mb-2 w-full">
                 <TextInput
@@ -241,6 +224,17 @@ export const ProductEdit = () => {
                   rules={{ required: "Category Name is required" }}
                 />
               </div>
+              <div className="mb-6 lg:mb-2 w-full">
+                <TextInput
+                  label="Flat Discount"
+                  name="flat_discount"
+                  type="number"
+                  placeholder="Enter tax"
+                  control={control}
+                  error={errors.name && errors.name.message}
+                  rules={{ required: "Category Name is required" }}
+                />
+              </div>
             </div>
             {/* quantity   */}
             <div className="flex flex-col md:flex-row gap-3">
@@ -256,6 +250,7 @@ export const ProductEdit = () => {
                   rules={{ required: "Category Name is required" }}
                 />
               </div>
+              
               {/* show quantiy when it warning  */}
               <div className="mb-6 lg:mb-2 w-full">
                 <TextInput
