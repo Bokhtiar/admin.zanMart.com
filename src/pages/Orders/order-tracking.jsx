@@ -13,7 +13,7 @@ const OrderTracking = () => {
     privateRequest
       .get(`/admin/order/${id}`)
       .then((response) => {
-        console.log(response.data.data);
+       
         setOrderDetails(response.data.data);
       })
       .catch((error) => {

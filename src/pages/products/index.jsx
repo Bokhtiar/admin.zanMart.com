@@ -25,7 +25,7 @@ const Product = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.Product.index(currentPage,10);
-         console.log(response,"product");
+        
         if (response?.status === 200 || response?.status === 201) {
           setProductData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

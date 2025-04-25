@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { TextInput } from "../../components/input";
+import { Checkbox, TextInput } from "../../components/input";
 import { Toastify } from "../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,12 @@ export const CategoryEdit = () => {
     handleSubmit,
     setValue,
     formState: { errors },
-  } = useForm();
+    control,
+  } = useForm({
+    defaultValues: {
+      status: 0,
+    },
+  });
   // fetch all category
   const fetchCategoryList = async () => {
     try {
@@ -79,11 +84,12 @@ export const CategoryEdit = () => {
       data?.parent_id && formData.append("parent_id", data?.parent_id);
       formData.append("is_unit", JSON.stringify(ids));
       data?.is_color && formData.append("is_color", data?.is_color);
+      formData.append("status", data?.status);
       formData.append("_method", "PUT");
       singleImage && formData.append("thumbnail", updateBannerImage);
       const response = await NetworkServices.Category.update(id, formData);
       if (response.status === 200) {
-        navigate("/dashboard/category");
+        // navigate("/dashboard/category");
         return Toastify.Success(response.data.message);
       }
     } catch (error) {
@@ -131,6 +137,7 @@ export const CategoryEdit = () => {
     setValue("name", data?.category?.category_name || "");
     setValue("parent_id", data?.category?.parent_id || "");
     setValue("is_color", data?.cateory?.is_color ? 1 : 0);
+    setValue("status", data?.cateory?.status ? 1 : 0);
   }, [data, setValue]);
 
   return (
@@ -278,6 +285,12 @@ export const CategoryEdit = () => {
                 }
               />
             </div>
+            <Checkbox
+              name="status"
+              control={control}
+              label="Task Status"
+              rules={{ required: "Status is required" }}
+            />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton

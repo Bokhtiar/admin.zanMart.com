@@ -90,7 +90,7 @@ export const ProductEdit = () => {
 
   const onSubmit = async (data) => {
     try {
-      console.log(data, "data is submit", product);
+      
       setButtonLoading(true);
       const formData = new FormData();
       formData.append("title", data?.title); // Other form fields

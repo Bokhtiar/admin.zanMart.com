@@ -65,7 +65,7 @@ export const ProductCreate = () => {
         formData.append(`gallery_image[${index}]`, image); // Append multiple images
       });
       const response = await NetworkServices.Product.store(formData);
-  console.log(response);
+   
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate(`/dashboard/product-variant/create/${response?.data?.data?.product_id}`);
         setButtonLoading(false);
@@ -165,7 +165,7 @@ export const ProductCreate = () => {
                 <SearchDropdownWithSingle
                   options={categoryList}
                   handleChange={(e) => {
-                    console.log(e);
+             
                     setValue("category_id", e?.category_id);
                   }}
                 />
@@ -179,7 +179,7 @@ export const ProductCreate = () => {
                 <SearchDropdownWithSingle
                   options={brandList}
                   handleChange={(e) => {
-                    console.log(e);
+                   
                     setValue("brand_id", e?.brand_id);
                   }}
                   showName="name"

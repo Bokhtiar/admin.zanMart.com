@@ -1,4 +1,3 @@
- 
 import React, { useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { NetworkServices } from "../../network";
@@ -8,11 +7,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+  FaRegEdit,
+} from "react-icons/fa";
 import { CategoryUtilsFunction } from "./components/hooks";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeleteModal } from "../../context/DeleteModalContext";
 const Category = () => {
-  const {column}  = CategoryUtilsFunction();
+  const { openModal } = useDeleteModal();
+  const { column } = CategoryUtilsFunction();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [categoryData, setCategoryData] = useState([]);
@@ -30,7 +35,8 @@ const Category = () => {
     async (category) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.Category.index(currentPage);  
+        const response = await NetworkServices.Category.index(currentPage);
+        console.log(response);
         if (response?.status === 200 || response?.status === 201) {
           setCategoryData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -56,7 +62,7 @@ const Category = () => {
   const destroy = async (id) => {
     try {
       const response = await NetworkServices.Category.destroy(id);
-      console.log(response?.data?.data?.data);
+
       if (response.status === 200 || response?.status === 201) {
         fetchData();
         return Toastify.Info(response?.data?.message);
@@ -65,46 +71,57 @@ const Category = () => {
       networkErrorHandeller(error);
     }
   };
-  // columns for table 
+  // columns for table
   const columns = [
-       ...column,
-       {
-        name: "Action",
-        cell: (row) => (
-          <span className="flex gap-3">
-            <Link to={`/dashboard/category/edit/${row?.category_id}`}>
-              <span className=" ">
-              <FaRegEdit/>
-              </span>
-            </Link>
-  
-            <span>
-              <span
-                className="text-red-500 cursor-pointer"
-                onClick={() => destroy(row?.category_id)}
-              >
-                <RiDeleteBin6Line />
-              </span>
+    ...column,
+    {
+      name: "Action",
+      cell: (row) => (
+        <span className="flex gap-3">
+          <Link to={`/dashboard/category/edit/${row?.category_id}`}>
+            <span className=" ">
+              <FaRegEdit />
+            </span>
+          </Link>
+
+          <span>
+            <span
+              className="text-red-500 cursor-pointer"
+              onClick={() =>
+                openModal(
+                  () => destroy(row?.category_id),
+                  <span>
+                    Are you sure you want to delete{" "}
+                    <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                      {row?.category_name}
+                    </span>
+                    item?
+                  </span>
+                )
+              }
+            >
+              <RiDeleteBin6Line />
             </span>
           </span>
-        ),
-      },
-         
-      ]
+        </span>
+      ),
+    },
+  ];
 
   const handleSelectedRowsChange = (state) => {
     // Extract only the category_id from selected rows
-    const ids = state.selectedRows.map(row => row.category_id);
+    const ids = state.selectedRows.map((row) => row.category_id);
     setSelectedIds(ids);
- 
   };
   const addedHomePageCategory = async () => {
     try {
-      const response = await NetworkServices.Category.homepagecategory({category_id:selectedIds});
-      
+      const response = await NetworkServices.Category.homepagecategory({
+        category_id: selectedIds,
+      });
+
       if (response.status === 200 || response?.status === 201) {
         // fetchData();
-        navigate('/dashboard/category/homepage')
+        navigate("/dashboard/category/homepage");
         return Toastify.Info(response?.data?.message);
       }
     } catch (error) {
@@ -114,26 +131,39 @@ const Category = () => {
   return (
     <section>
       <div className="flex justify-between shadow-md p-2 my-3 rounded-md">
-      
         <h2 className=" font-semibold text-xl">Category List</h2>
         <div className="flex items-center gap-3">
-        <button onClick={()=>addedHomePageCategory()} className="bg-primary text-white btn btn-sm  ">Add Homepage</button>
-        <Link to="/dashboard/category/homepage"   className="bg-primary text-white btn btn-sm  ">Show Homepage</Link>
-        <Link to="/dashboard/category/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
-        Add New  <span className="  material-symbols-outlined p-1">
-            add
-          </span>
-        </Link>
+          <button
+            onClick={() => addedHomePageCategory()}
+            className="bg-primary text-white btn btn-sm  "
+          >
+            Add Homepage
+          </button>
+          <Link
+            to="/dashboard/category/homepage"
+            className="bg-primary text-white btn btn-sm  "
+          >
+            Show Homepage
+          </Link>
+          <Link
+            to="/dashboard/category/create"
+            className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
+          >
+            Add New <span className="  material-symbols-outlined p-1">add</span>
+          </Link>
         </div>
-
-       
       </div>
 
       {loading ? (
         <SkeletonTable />
       ) : (
         <>
-          <DataTable selectableRows columns={columns} data={categoryData}   onSelectedRowsChange={handleSelectedRowsChange} />
+          <DataTable
+            selectableRows
+            columns={columns}
+            data={categoryData}
+            onSelectedRowsChange={handleSelectedRowsChange}
+          />
           <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}
@@ -228,4 +258,3 @@ const Pagination = ({
     </>
   );
 };
- 

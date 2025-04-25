@@ -87,8 +87,7 @@ const ProductVariantEdit = () => {
   const fetchProductVariants = useCallback(async () => {
     try {
       const response = await NetworkServices.ProductVariant.show(id);
-      console.log(response, "-------------------- response product");
-
+    
       if (response.status === 200) {
         // setAddedVariant(response?.data?.data)
         setSelectedProduct(response?.data?.data?.product_id);
@@ -122,7 +121,7 @@ const ProductVariantEdit = () => {
       try {
         // setLoading(true);
         const response = await NetworkServices.Product.show(id);
-        console.log("my response result", response);
+     
         if (response?.status === 200 || response?.status === 201) {
           // setProduct(response?.data?.data);
           //  setColors(response?.data?.data?.product_variants?.color?.color_id)

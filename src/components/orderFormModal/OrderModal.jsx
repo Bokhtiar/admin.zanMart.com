@@ -12,7 +12,7 @@ const OrderModal = ({hendleOpnenOrderModal,setIsModalOpen}) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+   
     setIsModalOpen(false)
   };
 

@@ -18,13 +18,7 @@ import ThemeColor from "./mode";
 const Header = ({ toggleSidebar, menuOpen, setMenuStyle, menuStyle,setMenuPosition,menuPosition }) => {
   const [showPopup, setShowPopup] = useState(false);
   const popupRef = useRef(null);
-  // const [header, setHeader] = useState("fixed");
-  // const [menuStyle, setMenuStyle] = useState("click");
-
-  // const [layoutStyle, setLayoutStyle] = useState("fullWidth");
-
-  // console.log("header",header)
-
+   
   const [isOpen, setIsOpen] = useState(false);
   const [check, setCheck] = useState("");
   const [flagUrl, setFlagUrl] = useState("");
@@ -32,7 +26,7 @@ const Header = ({ toggleSidebar, menuOpen, setMenuStyle, menuStyle,setMenuPositi
   const [profile, setProfile] = useState([]);
   const navigate = useNavigate();
 
-  console.log("profile",profile)
+ 
 
   const [theme, setTheme] = useState(() => {
     return (
@@ -43,7 +37,7 @@ const Header = ({ toggleSidebar, menuOpen, setMenuStyle, menuStyle,setMenuPositi
     );
   });
 
-  console.log("theme",theme)
+ 
 
   useEffect(() => {
     if (theme === "dark") {
@@ -82,7 +76,7 @@ const Header = ({ toggleSidebar, menuOpen, setMenuStyle, menuStyle,setMenuPositi
     fetch("https://ipinfo.io?token=d12e9ebf8437bb")
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
+  
         const countryCode = data.country.toLowerCase();
         const flagUrl = `https://flagcdn.com/w320/${countryCode}.png`; // Removed the extra space
         setFlagUrl(flagUrl);
@@ -101,19 +95,9 @@ const Header = ({ toggleSidebar, menuOpen, setMenuStyle, menuStyle,setMenuPositi
     }
   };
 
-  // user
-
-  // const logout = () => {
-  //   console.log("clicked")
-  //   removeToken();
-  //   Navigate(`/login?redirectFrom=${window.location.pathname}`);
-    
   
-  //   // navigate(`/login?redirectFrom=${location.pathname}`);
-  //   console.log(location.pathname)
-  // };
   const logout = () => {
-    console.log("clicked");
+    
     removeToken();
     navigate(`/login?redirectFrom=${window.location.pathname}`);
   };

@@ -22,7 +22,7 @@ const ProductVariant = () => {
       try {
         setLoading(true);
         const response = await NetworkServices.ProductVariant.index(currentPage);
-        console.log(response);
+       
         if (response?.status === 200 || response?.status === 201) {
           setproductVariantData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);

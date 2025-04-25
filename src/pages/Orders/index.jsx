@@ -8,7 +8,7 @@ const Orders = () => {
   const [newOrders, setNewOrders] = useState([]);
   useEffect(() => {
     privateRequest.get("/admin/order").then((response) => {
-      // console.log(response?.data?.data);
+    
       const { data } = response?.data;
       const result = data.map((item, idx) => {
         return {

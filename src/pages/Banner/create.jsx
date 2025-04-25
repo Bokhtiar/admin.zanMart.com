@@ -31,17 +31,17 @@ export const BannerCreate = () => {
       status: 0,
     },
   });
-  console.log(watch("status"));
+ 
   /* submit reosurce */
   const onSubmit = async (data) => {
     try {
-      console.log(data);
+ 
       setButtonLoading(true);
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("image", singleImage);
       formData.append("status", data?.status);
-      // console.log(status);
+  
       const response = await NetworkServices.Banner.store(formData);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/banner");

@@ -176,10 +176,10 @@ const ProductForm = () => {
         discount_price: Number(e?.flat_discount),
         available_quantity: Number(e?.available_quantity),
       };
-      console.log(e);
+    
       const updateValue = [...addedVariant, data];
       // e.preventDefault();
-      console.log(updateValue, "come from bad");
+      
       // You can send this formData to your API
       const response = await NetworkServices.ProductVariant.store(updateValue);
 

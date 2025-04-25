@@ -14,38 +14,17 @@ const Dashboard = () => {
     const [dashboard, setDashboard] = useState([]);
     const [loading, setLoading] = useState(false);
   
-    console.log("categories", dashboard);
-  
-    // Fetch categories from API
-    // const fetchDashboard = useCallback(async () => {
-    //   setLoading(true);
-    //   try {
-    //     const response = await NetworkServices.Dashboard.index();
-    //     console.log("response",response)
-  
-    //     if (responseChecker(response, 200)) {
-    //       setDashboard(response?.data?.data || []);
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //     networkErrorHandeller(error);
-    //   }
-    //   setLoading(false);
-    // }, []);
-  
-    // useEffect(() => {
-    //   fetchDashboard();
-    // }, [fetchDashboard]);
+     
     const { openModal } = useDeleteModal();
     const handleDelete = () => {
       // your delete logic here
-      console.log('Item deleted!');
+      
     };
   
   return (
     <div className="mt-5" >
         <button
-        onClick={() => openModal(handleDelete, "Do you really want to remove this item?")}
+        onClick={() => openModal(handleDelete, "Do you really want to r  item?sdfsfds")}
         className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
       >
         Delete Item

@@ -29,7 +29,7 @@ export const ColorCreate = () => {
       const payload = {
         ...data,
       };   
-      console.log(payload, "data is submit"  );
+     
       const response = await NetworkServices.Color.store(payload);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate('/dashboard/Color')

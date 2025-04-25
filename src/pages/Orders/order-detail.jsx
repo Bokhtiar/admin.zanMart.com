@@ -45,10 +45,10 @@ const OrderDetails = () => {
   }
 const hendleOpnenOrderModal=()=>{
 setIsModalOpen(!isModalOpen)
-console.log(isModalOpen)
+ 
 }
 
-  console.log(orderAllPrice()?.subtotal);
+   
   return (
     <div>
       <div className="flex gap-5 ">

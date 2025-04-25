@@ -5,7 +5,7 @@ import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect,  useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
-import { TextInput } from "../../components/input";
+import { Checkbox, TextInput } from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import { FaCamera } from "react-icons/fa";
 import Select, { components } from 'react-select';
@@ -37,7 +37,7 @@ export const CategoryCreate = () => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      checkbox: 0, // Initial value set to 0
+      status: 0,
     },
   });
     //  unit data fetch function 
@@ -69,6 +69,7 @@ export const CategoryCreate = () => {
       data?.parent_id && formData.append("parent_id", data?.parent_id);
       formData.append('is_unit',JSON.stringify( selectedunitIds));
       data?.is_color && formData.append("is_color", data?.is_color);
+        formData.append("status", data?.status);
       singleImage && formData.append("thumbnail", singleImage);
       const response = await NetworkServices.Category.store(formData); 
       if (response && (response.status === 201 || response?.status === 200)) {
@@ -142,7 +143,7 @@ export const CategoryCreate = () => {
                   showName="category_name"
                    options={categoryList}
                    handleChange={(e)=>{
-                    console.log(e);
+               
                     setValue('parent_id', e?.category_id);
                    }}
                 />
@@ -214,7 +215,13 @@ export const CategoryCreate = () => {
                 onChange={(e) => setValue("is_color", e.target.checked ? 1 : 0)}
               />
             </div>
-
+       <br/>
+       <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton

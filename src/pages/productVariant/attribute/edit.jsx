@@ -16,7 +16,7 @@ const AttributeEdit = () => {
   const [loading, setLoading] = useState(false);
   const [unitId, setUnitId] = useState(null);
 
-  console.log("first", data);
+ 
 
   const [unitData, setUnitData] = useState([]);
   const {

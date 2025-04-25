@@ -51,7 +51,7 @@ const Banner = () => {
   // delete data
   const destroy = async (id) => {
     try {
-      console.log(id, "id is back");
+    
       const response = await NetworkServices.Banner.destroy(id);
       if (response.status === 200 || response?.status === 201) {
         fetchData();

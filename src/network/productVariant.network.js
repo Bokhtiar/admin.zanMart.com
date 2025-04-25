@@ -17,7 +17,7 @@ export const show = async(id) => {
 
 /* reosurce update */
 export const update = async(id, data) => {
-    console.log(data);
+     
     return await privateRequest.put(`/admin/productvariant/${id}`, data)
 }
 
