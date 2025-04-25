@@ -3,33 +3,40 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect,    useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import "react-quill/dist/quill.snow.css";
- 
+
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import ReactQuill from "react-quill";
 import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
-import { Checkbox } from "../../components/input";
+import {
+  Checkbox,
+  ImageUpload,
+  SingleSelect,
+  TextInput,
+} from "../../components/input";
+import { productField } from "./data";
 
 export const ProductCreate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [buttonLoading, setButtonLoading] = useState(false); 
+  const [buttonLoading, setButtonLoading] = useState(false);
   const [singleImage, setSingleImage] = useState(null);
-  const [multiImages, setMultiImages] = useState([]); 
-  // react hooks form 
-  const { 
+  const [multiImages, setMultiImages] = useState([]);
+  // react hooks form
+  const {
     register,
     handleSubmit,
     trigger,
     setValue,
     formState: { errors },
-    control
+    control,
+    watch,
   } = useForm({
-    defaultValues:{
-      status:0
-    }
+    defaultValues: {
+      status: 0,
+    },
   });
   //   single image set in state
   const handleSingleImageChange = (e) => {
@@ -45,7 +52,7 @@ export const ProductCreate = () => {
       setMultiImages(files);
     }
   };
-   
+
   /* submit reosurce */
 
   const onSubmit = async (data) => {
@@ -61,20 +68,27 @@ export const ProductCreate = () => {
       formData.append("buy_price", data?.buy_price); // Other form fields
       formData.append("flat_discount", data?.flat_discount); // Other form fields
       formData.append("stock_qty", data?.stock_qty); // Other form fields
-      formData.append("brand_id", data?.brand_id); // Other form fields
+      data?.is_refundable_product_day &&
+        formData.append(
+          "is_refundable_product_day",
+          data?.is_refundable_product_day
+        ); // Other form fields
+      data?.brand_id && formData.append("brand_id", data?.brand_id); // Other form fields
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
       ); // Other form fields
-      formData.append("thumbnail_image", singleImage);
+      formData.append("thumbnail_image", data?.singleImage);
       multiImages.forEach((image, index) => {
         formData.append(`gallery_image[${index}]`, image); // Append multiple images
       });
       formData.append("status", data?.status);
       const response = await NetworkServices.Product.store(formData);
-   
+
       if (response && (response.status === 201 || response?.status === 200)) {
-        navigate(`/dashboard/product-variant/create/${response?.data?.data?.product_id}`);
+        navigate(
+          `/dashboard/product-variant/create/${response?.data?.data?.product_id}`
+        );
         setButtonLoading(false);
         return Toastify.Success(response?.data?.message);
       }
@@ -83,7 +97,7 @@ export const ProductCreate = () => {
       networkErrorHandeller(error);
     }
   };
-  // description handler react quill 
+  // description handler react quill
   const handleQuillChange = (content) => {
     setValue("description", content); // Update form state
   };
@@ -91,7 +105,7 @@ export const ProductCreate = () => {
   // fetch category list
   const [categoryList, setCategoryList] = useState([]);
   const [brandList, setBrandList] = useState([]);
-  // category fetch 
+  // category fetch
   const fetchCategoryList = async () => {
     try {
       const response = await NetworkServices.Category.index();
@@ -111,7 +125,7 @@ export const ProductCreate = () => {
       networkErrorHandeller(error);
     }
   };
-  // fetch brand list 
+  // fetch brand list
   const fetchBrandList = async () => {
     try {
       const response = await NetworkServices.Brand.index();
@@ -124,14 +138,14 @@ export const ProductCreate = () => {
             value: item?.brand_id,
             ...item,
           };
-        }); 
+        });
         setBrandList(data);
       }
     } catch (error) {
       networkErrorHandeller(error);
     }
   };
-  // fetch brand and category list 
+  // fetch brand and category list
   useEffect(() => {
     fetchCategoryList();
     fetchBrandList();
@@ -151,139 +165,65 @@ export const ProductCreate = () => {
         <SkeletonForm />
       ) : (
         <section className="shadow-md my-5  ">
-          <form className="px-4 py-3 space-y-3" onSubmit={handleSubmit(onSubmit)}>
-            <div>
-            <TextInput
-                  name="title"
-                  label="Product Title"
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Product Title"
-                />
+          <form
+            className="px-4 py-3 space-y-3"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+              {productField.map((item, idx) => (
+                <div key={idx}>
+                  <TextInput
+                    label={item?.label}
+                    name={item?.name}
+                    type={item?.type}
+                    placeholder={item?.placeholder}
+                    control={control}
+                    error={errors[item?.name] && errors[item?.name].message}
+                    rules={{ required: item?.rules }}
+                    min={item?.min}
+                    max={item?.max}
+                  />
+                </div>
+              ))}
             </div>
+
             <div className="flex flex-col md:flex-row gap-3">
               <div className=" lg:mb-2 w-full">
-                {/* product title field  */}
-                
-                 <label className="text-gray-700 font-medium">
-                  Product Category{" *"}
-                </label>
-                <SearchDropdownWithSingle
+                <SingleSelect
+                  name="category_id"
+                  control={control}
                   options={categoryList}
-                  handleChange={(e) => {
-             
-                    setValue("category_id", e?.category_id);
-                  }}
+                  onSelected={(selected) =>
+                    setValue("category_id", selected?.value || null)
+                  }
+                  placeholder={
+                    categoryList.find(
+                      (item) => item.value === watch("category_id")
+                    )?.label ?? "Select Category"
+                  }
+                  error={errors.category_id?.message}
+                  label="Choose a Category *"
+                  isClearable
+                  rules={{ required: "Product Category is required" }}
                 />
               </div>
               {/* category field
                */}
-              <div className="  w-full  ">
-                <label className="text-gray-700 font-medium">
-                  Product Brand{" *"}
-                </label>
-                <SearchDropdownWithSingle
+              <div className="w-full">
+                <SingleSelect
+                  name="brand_id"
+                  control={control}
                   options={brandList}
-                  handleChange={(e) => {
-                   
-                    setValue("brand_id", e?.brand_id);
-                  }}
-                  showName="name"
-                />
-              </div>
-            </div>
-
-            {/* price area
-             */}
-            <div className="flex flex-col md:flex-row gap-3  ">
-              {/* sell price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  name="sell_price"
-                  label="Sell Price"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Sell Price"
-                />
-              </div>
-              {/* buy price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  name="buy_price"
-                  label="Buy Price"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Buy Price"
-                />
-              </div>
-              {/* tax price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  name="tax_price"
-                  label="Tax Price"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Tax Price"
-                />
-              </div>
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  name="flat_discount"
-                  label="Flat Discount"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Flat Discount"
-                />
-              </div>
-            </div>
-            {/* quantity   */}
-            <div className="flex flex-col md:flex-row gap-3">
-              {/* stock quantity  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  name="stock_qty"
-                  label="Stock Quantity"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Stock Quantity"
-                />
-              </div>
-              {/* show quantiy when it warning  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Low Quantity Show"
-                  name="low_stock_quantity_warning"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  placeholder="Enter Low Stock Quantity"
-                />
-              </div>
-              {/* Rating */}
-
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Rating"
-                  name="rating"
-                  type={"number"}
-                  register={register}
-                  errors={errors}
-                  trigger={trigger}
-                  min="1"
-                  max="5"
-                  placeholder="enter minmum 1 and max 5 rating"
+                  onSelected={(selected) =>
+                    setValue("brand_id", selected?.value || null)
+                  }
+                  placeholder={
+                    brandList.find((item) => item.value === watch("brand_id"))
+                      ?.label ?? "Select Brand Id"
+                  }
+                  error={errors.brand_id?.message}
+                  label="Choose a Brand"
+                  isClearable
                 />
               </div>
             </div>
@@ -308,10 +248,11 @@ export const ProductCreate = () => {
                 )}
               </div>
             </div>
+
             {/* image area coide  */}
-            <div className="flex flex-col md:flex-row gap-3">
+            <div className="space-y-2">
               {/* thumbnail iamge  */}
-              <div className="mb-6 lg:mb-2 w-full">
+              {/* <div className="mb-6 lg:mb-2 w-full">
                 <p className="text-sm mb-1 font-medium text-gray-700 ">
                   Thumbnail Image
                   <span className="text-red-500">*</span>
@@ -323,13 +264,16 @@ export const ProductCreate = () => {
                   onChange={handleSingleImageChange}
                   className="file-input file-input-bordered file-input-info w-full  "
                 />
-              </div>
-
+              </div> */}
+            <div>
+            <ImageUpload control={control} name="singleImage" label="welco"   error={errors?.singleImage && errors?.singleImage.message}
+                    rules={{ required: "please insert image" }} />
+            </div>
               {/* gallary iamge  */}
               <div className="mb-6 lg:mb-2 w-full">
                 <p className="text-sm mb-1 text-gray-500">
                   Gallary Image
-                  <span className="text-red-500">*</span>
+                  {/* <span className="text-red-500">*</span> */}
                 </p>
                 <input
                   type="file"
@@ -341,11 +285,11 @@ export const ProductCreate = () => {
               </div>
             </div>
             <Checkbox
-            name="status"
-            control={control}
-            label="Task Status"
-            rules={{ required: "Status is required" }}
-          />
+              name="status"
+              control={control}
+              label="Task Status"
+              rules={{ required: "Status is required" }}
+            />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton
@@ -355,45 +299,6 @@ export const ProductCreate = () => {
             </div>
           </form>
         </section>
-      )}
-    </>
-  );
-};
-
-const TextInput = ({
-  name,
-  label,
-  asterRisk = true,
-  type = "text",
-  errors,
-  register,
-  trigger,
-  ...rest
-}) => {
-  return (
-    <>
-      <label
-        htmlFor={name}
-        className={`block text-base font-medium text-gray-700 pb-2.5 ${
-          errors?.[name] ? "border-red-500 text-red-500" : ""
-        }`}
-      >
-        {label} {asterRisk && "*"}
-      </label>
-      <input
-        id={name}
-        type={type}
-        {...register(name, {
-          required: "This field is required",
-        })}
-        onBlur={() => trigger(name)} // Validate dynamically on blur
-        className={`px-2 py-3 block w-full h-[50px] bg-white border rounded-md shadow-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-          errors?.[name] ? "border-red-500" : "border-gray-300"
-        }`}
-        {...rest}
-      />
-      {errors?.[name] && (
-        <p className="mt-2 text-sm text-red-500">{errors[name]?.message}</p>
       )}
     </>
   );

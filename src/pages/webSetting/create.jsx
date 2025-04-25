@@ -43,7 +43,7 @@ export const WebSettingCreate = () => {
       formData.append("youtube", data.youtube);
       formData.append("twitter", data.twitter);
 
-      formData.append("logo", singleImage);
+       formData.append("logo", singleImage);
 
       const response = await NetworkServices.WebSetting.store(formData);
       if (response && (response.status === 201 || response?.status === 200)) {

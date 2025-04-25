@@ -45,10 +45,10 @@ export const WebSettingEdit = () => {
       formData.append("facebook", data.facebook);
       formData.append("youtube", data.youtube);
       formData.append("twitter", data.twitter);
+         formData.append('method','PUT');
+      singleImage &&   formData.append("logo", singleImage);
 
-      formData.append("logo", singleImage);
-
-      const response = await NetworkServices.WebSetting.store(formData);
+      const response = await NetworkServices.WebSetting.update(formData);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/web-setting");
         setButtonLoading(false);
