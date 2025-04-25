@@ -9,7 +9,9 @@ import { Toastify } from "../../components/toastify";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeleteModal } from "../../context/DeleteModalContext";
 const Brand = () => {
+   const { openModal } = useDeleteModal();
   const [loading, setLoading] = useState(false);
   const [brandData, setbrandData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -80,7 +82,18 @@ const Brand = () => {
           <span>
             <span
               className="text-red-700 "
-              onClick={() => destroy(row?.brand_id)}
+              onClick={() =>
+                openModal(
+                  () => destroy(row?.brand_id),
+                  <span>
+                    Are you sure you want to delete{" "}
+                    <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                      {row?.name}
+                    </span>
+                    item?
+                  </span>
+                )
+              }
             >
               <RiDeleteBin6Line />
             </span>

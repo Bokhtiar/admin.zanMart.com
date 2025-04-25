@@ -7,6 +7,7 @@ import {   useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import {
    
+  Checkbox,
   TextInput,
 } from "../../components/input";
  
@@ -18,7 +19,11 @@ export const BrandCreate = () => {
     handleSubmit,
 
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues:{
+      status:0
+    }
+  });
   /* submit reosurce */
   const onSubmit = async (data) => {
     try {
@@ -62,7 +67,13 @@ export const BrandCreate = () => {
               rules={{ required: "Brand Name is required" }}
             />
           </div>
-
+         <br/>
+         <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
           {/* submit button */}
           <div className="my-4 flex justify-center">
             <PrimaryButton

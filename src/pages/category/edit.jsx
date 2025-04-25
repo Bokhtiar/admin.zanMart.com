@@ -137,7 +137,7 @@ export const CategoryEdit = () => {
     setValue("name", data?.category?.category_name || "");
     setValue("parent_id", data?.category?.parent_id || "");
     setValue("is_color", data?.cateory?.is_color ? 1 : 0);
-    setValue("status", data?.cateory?.status ? 1 : 0);
+    setValue("status", data?.category?.status  );
   }, [data, setValue]);
 
   return (

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { TextInput } from "../../components/input";
+import { Checkbox, TextInput } from "../../components/input";
 import { Toastify } from "../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm  } from "react-hook-form";
@@ -19,7 +19,12 @@ export const BrandEdit = () => {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    setValue
+  } = useForm({
+    defaultValues:{
+      status:0
+    }
+  });
 
   /* reosure show */
   const fetchData = useCallback(async () => {
@@ -28,6 +33,7 @@ export const BrandEdit = () => {
      
       if (response.status === 200) {
         setData(response.data.data);
+        setValue('status',response?.data?.data?.status)
       }
     } catch (error) {
       networkErrorHandeller(error);
@@ -83,7 +89,13 @@ export const BrandEdit = () => {
                 rules={{ required: "Category name is required" }}
               />
             </div>
-
+            <br/>
+            <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton
