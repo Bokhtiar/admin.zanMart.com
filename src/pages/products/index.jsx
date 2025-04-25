@@ -10,7 +10,9 @@ import { FiSend } from "react-icons/fi";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeleteModal } from "../../context/DeleteModalContext";
 const Product = () => {
+  const {openModal} = useDeleteModal();
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState([]);
   const [currentPage, setCurrentPage] = useState(
@@ -126,7 +128,18 @@ const Product = () => {
           <span>
             <span
               className="text-red-700  cursor-pointer"
-              onClick={() => destroy(row?.product_id)}
+              onClick={() =>
+                openModal(
+                  () => destroy(row?.product_id),
+                  <span>
+                    Are you sure you want to delete{" "}
+                    <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                      {row?.title}
+                    </span>
+                    item?
+                  </span>
+                )
+              }
             >
               <RiDeleteBin6Line/>
             </span>
