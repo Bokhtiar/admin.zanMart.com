@@ -93,3 +93,35 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(202, 202, 246); 
 }
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@keyframes circle-grow {
+  0% {
+    border-width: 0px;
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    border-width: 4px;
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-border-grow {
+  animation: circle-grow 0.4s ease-out forwards;
+}

@@ -4,11 +4,17 @@ import { NetworkServices } from "../../network";
 import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
-import { Toastify } from "../../components/toastify"; 
+import { Toastify } from "../../components/toastify";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+  FaRegEdit,
+} from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeleteModal } from "../../context/DeleteModalContext";
 const Banner = () => {
+  const { openModal } = useDeleteModal();
   const [loading, setLoading] = useState(false);
   const [bannerData, setbannerData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,12 +46,13 @@ const Banner = () => {
   );
   useEffect(() => {
     fetchData();
-  }, [ ]);
+  }, []);
 
   // delete data
   const destroy = async (id) => {
     try {
-      const response = await NetworkServices.Banner.destroy(id); 
+      console.log(id, "id is back");
+      const response = await NetworkServices.Banner.destroy(id);
       if (response.status === 200 || response?.status === 201) {
         fetchData();
         return Toastify.Info(response?.data?.message);
@@ -59,10 +66,10 @@ const Banner = () => {
       name: "Banner ID",
       cell: (row) => row?.banner_id,
     },
-  {
+    {
       name: "Banner Image",
       cell: (row) => (
-        <div> 
+        <div>
           <img
             className="w-40 h-20 border rounded-lg"
             src={`${process.env.REACT_APP_BASE_API}${row?.image}`}
@@ -75,25 +82,19 @@ const Banner = () => {
       name: "Title",
       cell: (row) => row?.name,
     },
-  
-     
 
     {
       name: "Banner Way Product",
       cell: (row) => (
         <div className="flex gap-1">
           <Link to={`/dashboard/banner/featured/${row?.banner_id}`}>
-            <span className="bg-primary text-white btn btn-sm  ">
-             Add 
-            </span>
+            <span className="bg-primary text-white btn btn-sm  ">Add</span>
           </Link>
 
           <span>
-          <Link to={`/dashboard/banner/banner-product/${row?.banner_id}`}>
-            <span className="bg-primary text-white btn btn-sm  ">
-             show
-            </span>
-          </Link>
+            <Link to={`/dashboard/banner/banner-product/${row?.banner_id}`}>
+              <span className="bg-primary text-white btn btn-sm  ">show</span>
+            </Link>
           </span>
         </div>
       ),
@@ -104,16 +105,16 @@ const Banner = () => {
         <div className="flex gap-3">
           <Link to={`/dashboard/banner/edit/${row?.banner_id}`}>
             <span className="  ">
-            <FaRegEdit />
+              <FaRegEdit />
             </span>
           </Link>
 
           <span>
             <span
               className="text-red-500 cursor-pointer "
-              onClick={() => destroy(row?.banner_id)}
+              onClick={() => openModal(() => destroy(row?.banner_id))}
             >
-             <RiDeleteBin6Line />
+              <RiDeleteBin6Line />
             </span>
           </span>
         </div>
@@ -125,10 +126,11 @@ const Banner = () => {
     <section>
       <div className="flex justify-between shadow-md p-2 my-5 rounded-md">
         <h2 className=" font-semibold text-xl">Banner List</h2>
-        <Link to="/dashboard/banner/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
-        Add New  <span className="  material-symbols-outlined p-1">
-            add
-          </span>
+        <Link
+          to="/dashboard/banner/create"
+          className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
+        >
+          Add New <span className="  material-symbols-outlined p-1">add</span>
         </Link>
       </div>
 
@@ -136,7 +138,7 @@ const Banner = () => {
         <SkeletonTable />
       ) : (
         <>
-          <DataTable columns={columns} data={bannerData}   />
+          <DataTable columns={columns} data={bannerData} />
           <Pagination
             nextPageUrl={nextPageUrl}
             setCurrentPage={setCurrentPage}

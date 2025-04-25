@@ -65,7 +65,7 @@ const BannerWayProductCreate = () => {
   ]; 
   const [selectedIds,setSelectedIds] = useState([]);
   const handleSelectedRowsChanged = (state) => { 
-    const ids = state.selectedRows.map(row => row.category_id);
+    const ids = state?.selectedRows?.map(row => row?.product_id);
     setSelectedIds(ids);
 
   }

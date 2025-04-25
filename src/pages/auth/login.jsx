@@ -175,7 +175,7 @@ const Login = () => {
           <div className="relative ">
             <label
               htmlFor="email"
-              className={`absolute left-3 text-sm transition-all cursor-pointer ${
+              className={`absolute left-3 text-sm transition-all cursor-text ${
                 focusField === "email" || inputValues.email
                   ? "-top-3 left-3  text-white"
                   : "top-6 text-white"
@@ -215,7 +215,7 @@ const Login = () => {
           <div className="relative">
             <label
               htmlFor="pass"
-              className={`absolute left-3 text-sm transition-all cursor-pointer ${
+              className={`absolute left-3 text-sm transition-all cursor-text ${
                 focusField === "password" || inputValues.password
                   ? "-top-3 left-3  text-white"
                   : "top-6 text-white"
