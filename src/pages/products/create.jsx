@@ -10,6 +10,7 @@ import "react-quill/dist/quill.snow.css";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import ReactQuill from "react-quill";
 import { SearchDropdownWithSingle } from "../../components/input/selectsearch";
+import { Checkbox } from "../../components/input";
 
 export const ProductCreate = () => {
   const navigate = useNavigate();
@@ -24,7 +25,12 @@ export const ProductCreate = () => {
     trigger,
     setValue,
     formState: { errors },
-  } = useForm();
+    control
+  } = useForm({
+    defaultValues:{
+      status:0
+    }
+  });
   //   single image set in state
   const handleSingleImageChange = (e) => {
     const file = e.target.files[0];
@@ -64,6 +70,7 @@ export const ProductCreate = () => {
       multiImages.forEach((image, index) => {
         formData.append(`gallery_image[${index}]`, image); // Append multiple images
       });
+      formData.append("status", data?.status);
       const response = await NetworkServices.Product.store(formData);
    
       if (response && (response.status === 201 || response?.status === 200)) {
@@ -333,6 +340,12 @@ export const ProductCreate = () => {
                 />
               </div>
             </div>
+            <Checkbox
+            name="status"
+            control={control}
+            label="Task Status"
+            rules={{ required: "Status is required" }}
+          />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton

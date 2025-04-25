@@ -6,7 +6,7 @@ import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import "react-quill/dist/quill.snow.css";
-import { TextInput } from "../../components/input";
+import { Checkbox, TextInput } from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import ReactQuill from "react-quill";
 
@@ -28,7 +28,11 @@ export const ProductEdit = () => {
     setValue,
     formState: { errors },
     watch
-  } = useForm();
+  } = useForm({
+    defaultValues:{
+      status:0
+    }
+  });
   //   single product fetch
   const fetchData = useCallback(
     async (product) => {
@@ -102,6 +106,7 @@ export const ProductEdit = () => {
       formData.append("buy_price", data?.buy_price); // Other form fields
       formData.append("stock_qty", data?.stock_qty); // Other form fields
       formData.append("flat_discount",data?.flat_discount); // Other form fields
+      formData.append("status",data?.status); // Other form fields
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
@@ -136,6 +141,7 @@ export const ProductEdit = () => {
     setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning); // Update form state for low_stock_quantity_warning
     // setSingleImage(product?.thumbnail_image); // Update form state for thumbnail_image
     setValue("thumbnail_image", product?.thumbnail_image);
+    setValue('status',product?.status)
   }, [product]);
   //   set decription
   const handleQuillChange = (content) => {
@@ -328,6 +334,12 @@ export const ProductEdit = () => {
                 />
               </div>
             </div>
+             <Checkbox
+                        name="status"
+                        control={control}
+                        label="Task Status"
+                        rules={{ required: "Status is required" }}
+                      />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton
