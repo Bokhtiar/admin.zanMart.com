@@ -97,7 +97,7 @@ const ProductVariant = () => {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-3">
-          <Link to={`/dashboard/product-variant/edit/${row?.product_variant_id}`}>
+          <Link to={`/dashboard/product-variant/edit/${row?.product_id}`}>
             <span className="">
             <FaRegEdit />
             </span>

@@ -6,6 +6,7 @@ import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
 import { useForm } from "react-hook-form";
 import { SingleSelect, TextInput } from "../../../components/input";
+import { networkErrorHandeller } from "../../../utils/helper";
 
 const ProductForm = () => {
    const { id } = useParams();
@@ -178,8 +179,6 @@ const ProductForm = () => {
       };
     
       const updateValue = [...addedVariant, data];
-      // e.preventDefault();
-      
       // You can send this formData to your API
       const response = await NetworkServices.ProductVariant.store(updateValue);
 
@@ -188,7 +187,7 @@ const ProductForm = () => {
         return Toastify.Success("Product varaint create successfully.");
       }
     } catch (error) {
-      return Toastify.Error(error);
+      return networkErrorHandeller(error);
     }
   };
 
