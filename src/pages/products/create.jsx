@@ -251,24 +251,16 @@ export const ProductCreate = () => {
 
             {/* image area coide  */}
             <div className="space-y-2">
-              {/* thumbnail iamge  */}
-              {/* <div className="mb-6 lg:mb-2 w-full">
-                <p className="text-sm mb-1 font-medium text-gray-700 ">
-                  Thumbnail Image
-                  <span className="text-red-500">*</span>
-                </p>
-
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSingleImageChange}
-                  className="file-input file-input-bordered file-input-info w-full  "
+              {/* thumbnail image  */}
+              <div>
+                <ImageUpload
+                  control={control}
+                  name="singleImage"
+                  label="Thumbnail Image"
+                  error={errors?.singleImage && errors?.singleImage.message}
+                  rules={{ required: "please insert image" }}
                 />
-              </div> */}
-            <div>
-            <ImageUpload control={control} name="singleImage" label="welco"   error={errors?.singleImage && errors?.singleImage.message}
-                    rules={{ required: "please insert image" }} />
-            </div>
+              </div>
               {/* gallary iamge  */}
               <div className="mb-6 lg:mb-2 w-full">
                 <p className="text-sm mb-1 text-gray-500">
@@ -287,7 +279,7 @@ export const ProductCreate = () => {
             <Checkbox
               name="status"
               control={control}
-              label="Task Status"
+              label="Product Status"
               rules={{ required: "Status is required" }}
             />
             {/* submit button */}

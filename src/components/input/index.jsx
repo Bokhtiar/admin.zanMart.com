@@ -488,7 +488,7 @@ export const ImageUpload = (props) => {
             ) : (
               <div className="h-12 w-12 flex items-center justify-center bg-gray-200 rounded-md cursor-pointer">
            {
-            props?.imgUrl?  <img src={`${process.env.NEXT_PUBLIC_API_SERVER}${props?.imgUrl}`}alt="loading"  className="h-12 w-12 object-cover rounded-md cursor-pointer"/> : "📷"
+            props?.imgUrl?  <img src={`${process.env.REACT_APP_BASE_API}${props?.imgUrl}`}alt="loading"  className="h-12 w-12 object-cover rounded-md cursor-pointer"/> : "📷"
            }     
                  
              

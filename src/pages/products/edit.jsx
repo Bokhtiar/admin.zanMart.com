@@ -6,9 +6,15 @@ import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import "react-quill/dist/quill.snow.css";
-import { Checkbox, TextInput } from "../../components/input";
+import {
+  Checkbox,
+  ImageUpload,
+  SingleSelect,
+  TextInput,
+} from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import ReactQuill from "react-quill";
+import { productField } from "./data";
 
 export const ProductEdit = () => {
   const { id } = useParams();
@@ -16,22 +22,21 @@ export const ProductEdit = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
-  const [selectedunitIds, setSelectedunitIds] = useState([]);
-  const [singleImage, setSingleImage] = useState(null);
   const [multiImages, setMultiImages] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
+  const [categoryList, setCategoryData] = useState([]);
+  const [brandList, setBrandList] = useState([]);
   const [product, setProduct] = useState({});
   const {
     control,
-    register,
+
     handleSubmit,
     setValue,
     formState: { errors },
-    watch
+    watch,
   } = useForm({
-    defaultValues:{
-      status:0
-    }
+    defaultValues: {
+      status: 0,
+    },
   });
   //   single product fetch
   const fetchData = useCallback(
@@ -41,7 +46,7 @@ export const ProductEdit = () => {
         const response = await NetworkServices.Product.show(id);
         if (response?.status === 200 || response?.status === 201) {
           setProduct(response?.data?.data);
-         
+
           setLoading(false);
         }
       } catch (error) {
@@ -57,13 +62,6 @@ export const ProductEdit = () => {
     fetchData();
   }, []);
 
-  //   single image set in state
-  const handleSingleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSingleImage(file);
-    }
-  };
   //   multi state set in multisetate
   const handleMultiImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -76,9 +74,17 @@ export const ProductEdit = () => {
     try {
       //   setLoading(true);
       const response = await NetworkServices.Category.index();
-
       if (response?.status === 200 || response?.status === 201) {
-        setCategoryData(response?.data?.data?.data);
+        const result = response?.data?.data?.data;
+        //  setCategoryList(result);
+        const data = result.map((item) => {
+          return {
+            label: item?.category_name,
+            value: item?.category_id,
+            ...item,
+          };
+        });
+        setCategoryData(data);
         setLoading(false);
       }
     } catch (error) {
@@ -87,14 +93,34 @@ export const ProductEdit = () => {
       }
     }
   }, []);
+  // fetch brand list
+  const fetchBrandList = async () => {
+    try {
+      const response = await NetworkServices.Brand.index();
+      if (response?.status === 200 || response?.status === 201) {
+        const result = response?.data?.data?.data;
+        //  setCategoryList(result);
+        const data = result.map((item) => {
+          return {
+            label: item?.name,
+            value: item?.brand_id,
+            ...item,
+          };
+        });
+        setBrandList(data);
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+    }
+  };
   useEffect(() => {
+    fetchBrandList();
     fetchDataForUnit();
   }, []);
   /* submit reosurce */
 
   const onSubmit = async (data) => {
     try {
-      
       setButtonLoading(true);
       const formData = new FormData();
       formData.append("title", data?.title); // Other form fields
@@ -105,21 +131,29 @@ export const ProductEdit = () => {
       formData.append("tax_price", data?.tax_price); // Other form fields
       formData.append("buy_price", data?.buy_price); // Other form fields
       formData.append("stock_qty", data?.stock_qty); // Other form fields
-      formData.append("flat_discount",data?.flat_discount); // Other form fields
-      formData.append("status",data?.status); // Other form fields
+      formData.append("flat_discount", data?.flat_discount); // Other form fields
+      formData.append("status", data?.status); // Other form fields
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
-      ); // Other form fields
-      singleImage &&   formData.append("thumbnail_image", singleImage);
+      ); 
+      data?.is_refundable_product_day &&
+      formData.append(
+        "is_refundable_product_day",
+        data?.is_refundable_product_day
+      );
+      data?.brand_id && formData.append("brand_id", data?.brand_id); 
+      data?.singleImage &&
+        formData.append("thumbnail_image", data?.singleImage);
       formData.append("_method", "PUT"); //
-      multiImages &&  multiImages.forEach((image, index) => {
-        formData.append(`gallery_image[${index}]`, image); // Append multiple images
-      });
+      multiImages &&
+        multiImages.forEach((image, index) => {
+          formData.append(`gallery_image[${index}]`, image); // Append multiple images
+        });
       const response = await NetworkServices.Product.update(id, formData);
 
       if (response && (response.status === 201 || response?.status === 200)) {
-        // navigate("/dashboard/product");
+        navigate("/dashboard/product");
         setButtonLoading(false);
         return Toastify.Success(response?.data?.message);
       }
@@ -128,25 +162,28 @@ export const ProductEdit = () => {
       networkErrorHandeller(error);
     }
   };
+  // product field for update value added 
   useEffect(() => {
-    setValue("description", product?.description); // Update form state for description
-    setValue("title", product?.title); // Update form state for title
-    setValue("sell_price", product?.sell_price); // Update form state for sell_price
-    setValue("category_id", product?.category_id); // Update form state for category_id
-    setValue("rating", product?.rating); // Update form state for rating
-    setValue("tax_price", product?.tax_price); // Update form state for tax_price
-    setValue("buy_price", product?.buy_price); // Update form state for buy_price
-    setValue("stock_qty", product?.stock_qty); // Update form state for stock_qty
-    setValue("flat_discount", product?.flat_discount); // Update form state for stock_qty
-    setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning); // Update form state for low_stock_quantity_warning
-    // setSingleImage(product?.thumbnail_image); // Update form state for thumbnail_image
+    setValue("description", product?.description);  
+    setValue("title", product?.title); 
+    setValue("sell_price", product?.sell_price);  
+    setValue("category_id", product?.category_id);   
+    setValue("rating", product?.rating); 
+    setValue("tax_price", product?.tax_price);  
+    setValue("buy_price", product?.buy_price);  
+    setValue("stock_qty", product?.stock_qty);  
+    setValue("flat_discount", product?.flat_discount);  
+    setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning);  
     setValue("thumbnail_image", product?.thumbnail_image);
-    setValue('status',product?.status)
+    setValue("brand_id", product?.brand_id);
+    setValue("is_refundable_product_day", product?.is_refundable_product_day );
+    setValue("status", product?.status);
   }, [product]);
   //   set decription
   const handleQuillChange = (content) => {
     setValue("description", content); // Update form state
   };
+  console.log(product);
   return (
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
@@ -163,127 +200,62 @@ export const ProductEdit = () => {
       ) : (
         <section className="shadow-md my-5 p-4 px-6">
           <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col md:flex-row gap-3 ">
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Product Name"
-                  name="title"
-                  type="text"
-                  placeholder="Enter Product name"
-                  control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Product Name is required" }}
-                />
-              </div>
-              {/* cvategory field
-               */}
-              <div className="mb-14 w-full">
-                <div className="mb-6 lg:mb-2  relative">
-                  <label>Product Category </label>
-
-                  <SearchDropdownWithSingle
-                    register={register}
-                    setValue={setValue}
+            <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
+              {productField.map((item, idx) => (
+                <div key={idx}>
+                  <TextInput
+                    label={item?.label}
+                    name={item?.name}
+                    type={item?.type}
+                    placeholder={item?.placeholder}
+                    control={control}
+                    error={errors[item?.name] && errors[item?.name].message}
+                    rules={{ required: item?.rules }}
+                    min={item?.min}
+                    max={item?.max}
                   />
                 </div>
-              </div>
+              ))}
             </div>
 
-            {/* price area
-             */}
-            <div className="flex flex-col md:flex-row gap-3  ">
-              {/* sell price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Sell Price"
-                  name="sell_price"
-                  type="number"
-                  placeholder="Enter tax"
-                  control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Sell Price is required" }}
-                />
-              </div>
-              
-              {/* buy price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Buy Price"
-                  name="buy_price"
-                  type="number"
-                  placeholder="Enter buy"
-                   
-                  control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
-                />
-              </div>
-              {/* tax price area  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Tax Price"
-                  name="tax_price"
-                  type="number"
-                  placeholder="Enter tax"
-                  control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
-                />
-              </div>
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Flat Discount"
-                  name="flat_discount"
-                  type="number"
-                  placeholder="Enter tax"
-                  control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
-                />
-              </div>
-            </div>
-            {/* quantity   */}
             <div className="flex flex-col md:flex-row gap-3">
-              {/* stock quantity  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Stock Quantity"
-                  name="stock_qty"
-                  type="number"
-                  placeholder="Enter tax"
+              <div className=" lg:mb-2 w-full">
+                <SingleSelect
+                  name="category_id"
                   control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
+                  options={categoryList}
+                  onSelected={(selected) =>
+                    setValue("category_id", selected?.value || null)
+                  }
+                  placeholder={
+                    categoryList.find(
+                      (item) => item.value === watch("category_id")
+                    )?.label ?? "Select Category"
+                  }
+                  error={errors.category_id?.message}
+                  label="Choose a Category *"
+                  isClearable
+                  rules={{ required: "Product Category is required" }}
                 />
               </div>
-              
-              {/* show quantiy when it warning  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <TextInput
-                  label="Low Quantity Show"
-                  name="low_stock_quantity_warning"
-                  type="number"
-                  placeholder="Enter tax"
+              {/* category field
+               */}
+              <div className="w-full">
+                <SingleSelect
+                  name="brand_id"
                   control={control}
-                  error={errors.name && errors.name.message}
-                  rules={{ required: "Category Name is required" }}
-                />
-              </div>
-              {/* Rating */}
-
-              <div className="mb-6 lg:mb-2 w-full">
-                <p className="text-sm mb-1 text-gray-500">
-                  Rating
-                  <span className="text-red-500">*</span>
-                </p>
-                <input
-                  type="number"
-                  name="rating"
-                  placeholder="enter minmum 1 and max 5 rating"
-                  {...register("rating")}
-                  min="1"
-                  max="5"
-                  className="w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300"
+                  options={brandList}
+                  onSelected={(selected) =>
+                    setValue("brand_id", selected?.value || null)
+                  }
+                  placeholder={
+                    brandList.find(
+                      (item) => item.value === watch("brand_id")
+                    )?.label ?? "Select Brand Id"
+                  }
+                  error={errors.brand_id?.message}
+                  label="Choose a Brand"
+                  isClearable
                 />
               </div>
             </div>
@@ -291,11 +263,16 @@ export const ProductEdit = () => {
             {/* description field  */}
 
             <div className="mb-6 lg:mb-2">
-              <div className="quill-wrapper rounded-lg border border-gray-300">
+              <p className="text-sm mb-1 text-gray-500">
+                Product Description
+                <span className="text-red-500">*</span>
+              </p>
+              <div className="quill-wrapper   rounded-lg border border-gray-300 overflow-hidden">
                 <ReactQuill
                   onChange={handleQuillChange}
                   placeholder="Write your description..."
-                  className="w-full overflow-y-auto h-72"
+                  className="w-full overflow-y-auto h-72 bg-white rounded-md"
+                  value={product?.description}
                 />
                 {errors?.description && (
                   <p className="text-red-500 mt-1">
@@ -304,169 +281,50 @@ export const ProductEdit = () => {
                 )}
               </div>
             </div>
+
             {/* image area coide  */}
-            <div className="flex flex-col md:flex-row gap-3">
-              {/* thumbnail iamge  */}
-              <div className="mb-6 lg:mb-2 w-full">
-                <p className="text-sm mb-1 text-gray-500">
-                  Thumbnail Image
-                  <span className="text-red-500">*</span>
-                </p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleSingleImageChange}
-                  className="cursor-pointer w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300"
+            <div className="space-y-2">
+              {/* thumbnail image  */}
+              <div>
+                <ImageUpload
+                  control={control}
+                  name="singleImage"
+                  label="Thumbnail Image"
+                  error={errors?.singleImage && errors?.singleImage.message}
+                  rules={{ required: "please insert image" }}
                 />
               </div>
               {/* gallary iamge  */}
               <div className="mb-6 lg:mb-2 w-full">
                 <p className="text-sm mb-1 text-gray-500">
-                  Thumbnail Image
-                  <span className="text-red-500">*</span>
+                  Gallary Image
+                  {/* <span className="text-red-500">*</span> */}
                 </p>
                 <input
                   type="file"
                   accept="image/*"
                   multiple
                   onChange={handleMultiImageChange}
-                  className="cursor-pointer w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300"
+                  className="file-input file-input-bordered file-input-info w-full  "
                 />
               </div>
             </div>
-             <Checkbox
-                        name="status"
-                        control={control}
-                        label="Task Status"
-                        rules={{ required: "Status is required" }}
-                      />
+            <Checkbox
+              name="status"
+              control={control}
+              label="Product Status"
+              rules={{ required: "Status is required" }}
+            />
             {/* submit button */}
             <div className="my-4 flex justify-center">
               <PrimaryButton
                 loading={buttonLoading}
-                name="Product  Update"
+                name="Product create"
               ></PrimaryButton>
             </div>
           </form>
         </section>
       )}
     </>
-  );
-};
-
-const SearchDropdownWithSingle = ({ register, setValue }) => {
-  const [searchText, setSearchText] = useState({});
-  const [filteredOptions, setFilteredOptions] = useState([]);
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [open, setOpen] = useState(false);
-
-  // Filter options based on user input
-  //   const handleSearch = (e) => {
-  //     const value = e.target.value;
-  //     setSearchText(value);
-
-  //     // Filter options by the search text
-  //     const filtered = options.filter((option) =>
-  //       option.toLowerCase().includes(value.toLowerCase())
-  //     );
-
-  //     setFilteredOptions(filtered);
-  //   };
-
-  // Handle selection from dropdown
-  const handleOptionSelect = (option) => {
-    setOpen(true);
-    setSelectedOption(option);
-    setSearchText(option);
-    setValue("category_id", option?.category_id);
-    // Set search text to selected option
-    // setFilteredOptions([]); // Clear dropdown after selection
-  };
-
-  // fetch category data
-  const fetchData = useCallback(async (category) => {
-    try {
-      //   setLoading(true);
-      const response = await NetworkServices.Category.index();
-      if (response?.status === 200 || response?.status === 201) {
-        setFilteredOptions(response?.data?.data?.data);
-        // setLoading(false);
-      }
-    } catch (error) {
-      if (error) {
-        networkErrorHandeller(error);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-  const [isOpen, setIsOpen] = useState(false); // Track if the div is open
-  const divRef = useRef(null); // Reference to the div element
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (divRef.current && !divRef.current.contains(event.target)) {
-        setIsOpen(false); // Close the div if click is outside
-        setOpen(false);
-      }
-    };
-
-    // Attach the event listener to the document
-    document.addEventListener("mousedown", handleClickOutside);
-
-    // Cleanup the event listener on component unmount
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [divRef]);
-  return (
-    <div className="absolute w-full">
-      <input
-        type="text"
-        value={searchText?.category_name}
-        onFocus={() => setOpen(true)}
-        // onBlur={()=>setOpen(false)}
-        placeholder="Select your item"
-        readOnly
-        className={`w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 cursor-pointer `}
-      />
-
-      {/* Display filtered options in a dropdown */}
-      {open && (
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            margin: 0,
-            border: "1px solid #ccc",
-          }}
-          ref={divRef}
-        >
-          <input
-            type="text"
-            // value={searchText}
-            // onSearch={handleSearch}
-            placeholder="Search your "
-            className="w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 "
-          />
-          {filteredOptions.map((option, index) => (
-            <li
-              key={index}
-              onClick={() => handleOptionSelect(option)}
-              style={{
-                padding: "8px",
-                cursor: "pointer",
-                backgroundColor: "#f8f8f8",
-                borderBottom: "1px solid #ddd",
-              }}
-            >
-              {option?.category_name}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 };
