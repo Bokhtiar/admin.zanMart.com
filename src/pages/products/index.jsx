@@ -18,40 +18,37 @@ const Product = () => {
   const [lastPage, setLastPage] = useState(1);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [perPage,setPerPage] = useState(10);
   // fetch product data
-  const fetchData = useCallback(
-    async (product) => {
-      try {
-        setLoading(true);
-        const response = await NetworkServices.Product.index(currentPage, 10);
-
-        if (response?.status === 200 || response?.status === 201) {
-          setProductData(response?.data?.data?.data);
-          setCurrentPage(response?.data?.data?.current_page);
-          setLastPage(response?.data?.data?.last_page);
-          setNextPageUrl(response?.data?.data?.next_page_url);
-          setPrevPageUrl(response?.data?.data?.prev_page_url);
-          setLoading(false);
-        }
-      } catch (error) {
-        if (error) {
-          setLoading(false);
-          networkErrorHandeller(error);
-        }
+  const fetchData = async (page = 1,per_page) => {
+    try {
+      setLoading(true);
+      const response = await NetworkServices.Product.index(page, per_page); // Only use page from param
+      console.log(response.data);
+  
+      if (response?.status === 200 || response?.status === 201) {
+        setProductData(response?.data?.data?.data);
+        // setCurrentPage(response?.data?.data?.current_page)
+        setLastPage(response?.data?.data?.last_page);
+        setNextPageUrl(response?.data?.data?.next_page_url);
+        setPrevPageUrl(response?.data?.data?.prev_page_url);
       }
-    },
-    [currentPage]
-  );
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+  
   useEffect(() => {
-    fetchData();
-  }, [currentPage]);
+    fetchData(currentPage,perPage);
+  }, [currentPage,perPage]);
 
   // delete data
   const destroy = async (id) => {
     try {
       const response = await NetworkServices.Product.destroy(id);
       if (response.status === 200 || response?.status === 201) {
-        fetchData();
+        fetchData(currentPage,perPage);
         return Toastify.Info("product Deleted");
       }
     } catch (error) {
@@ -158,13 +155,23 @@ const Product = () => {
       ),
     },
   ];
-  const handleData = async (id) => {
-    try {
-      const response = await NetworkServices.Product.show(id);
-      return <div>welcobaco</div>;
-    } catch (error) {}
+  const handlePageChange = (page) => {
+    console.log(page);
+    if(!loading){
+      setCurrentPage(page);
+    }
+    
+    // fetchData(page);
   };
-
+  const handleRowsPerPageChange = (newPerPage) => {
+    console.log("Rows per page changed to:", newPerPage);
+    setPerPage(newPerPage)
+    // fetchData(1, newPerPage); // Fetch data again with the new rows per page
+  };
+  const paginatedData = productData.slice(
+    // (currentPage - 1) * rowsPerPage,
+    // currentPage * rowsPerPage
+  );
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
@@ -195,6 +202,12 @@ const Product = () => {
         <>
           <DataTable
             pagination
+            paginationServer
+            paginationTotalRows={lastPage*perPage} // Important for DataTable
+            paginationPerPage={perPage}
+            onChangePage={handlePageChange}
+            paginationDefaultPage={currentPage} 
+            onChangeRowsPerPage={handleRowsPerPageChange}
             columns={columns}
             data={productData}
             selectableRows
@@ -202,7 +215,7 @@ const Product = () => {
             expandableRows
             expandableRowsComponent={({ data }) => (
               <div >
-                {console.log(data)}
+                
                 {data?.product_variants.map((item, index) => (
                   <div key={index} className="flex justify-around bg-blue-100 text-black py-2">
                     <span>price: {item?.price}</span>
