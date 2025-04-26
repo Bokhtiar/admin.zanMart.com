@@ -18,14 +18,14 @@ const Product = () => {
   const [lastPage, setLastPage] = useState(1);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
-  const [perPage,setPerPage] = useState(10);
+  const [perPage, setPerPage] = useState(10);
   // fetch product data
-  const fetchData = async (page = 1,per_page) => {
+  const fetchData = async (page = 1, per_page) => {
     try {
       setLoading(true);
       const response = await NetworkServices.Product.index(page, per_page); // Only use page from param
       console.log(response.data);
-  
+
       if (response?.status === 200 || response?.status === 201) {
         setProductData(response?.data?.data?.data);
         // setCurrentPage(response?.data?.data?.current_page)
@@ -38,17 +38,17 @@ const Product = () => {
       setLoading(false);
     }
   };
-  
+
   useEffect(() => {
-    fetchData(currentPage,perPage);
-  }, [currentPage,perPage]);
+    fetchData(currentPage, perPage);
+  }, [currentPage, perPage]);
 
   // delete data
   const destroy = async (id) => {
     try {
       const response = await NetworkServices.Product.destroy(id);
       if (response.status === 200 || response?.status === 201) {
-        fetchData(currentPage,perPage);
+        fetchData(currentPage, perPage);
         return Toastify.Info("product Deleted");
       }
     } catch (error) {
@@ -157,21 +157,22 @@ const Product = () => {
   ];
   const handlePageChange = (page) => {
     console.log(page);
-    if(!loading){
+    if (!loading) {
       setCurrentPage(page);
     }
-    
+
     // fetchData(page);
   };
   const handleRowsPerPageChange = (newPerPage) => {
     console.log("Rows per page changed to:", newPerPage);
-    setPerPage(newPerPage)
+    setPerPage(newPerPage);
     // fetchData(1, newPerPage); // Fetch data again with the new rows per page
   };
-  const paginatedData = productData.slice(
+  const paginatedData = productData
+    .slice
     // (currentPage - 1) * rowsPerPage,
     // currentPage * rowsPerPage
-  );
+    ();
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
@@ -203,10 +204,10 @@ const Product = () => {
           <DataTable
             pagination
             paginationServer
-            paginationTotalRows={lastPage*perPage} // Important for DataTable
+            paginationTotalRows={lastPage * perPage} // Important for DataTable
             paginationPerPage={perPage}
             onChangePage={handlePageChange}
-            paginationDefaultPage={currentPage} 
+            paginationDefaultPage={currentPage}
             onChangeRowsPerPage={handleRowsPerPageChange}
             columns={columns}
             data={productData}
@@ -214,18 +215,8 @@ const Product = () => {
             onSelectedRowsChange={handleSelectedRowsChange}
             expandableRows
             expandableRowsComponent={({ data }) => (
-              <div >
-                
-                {data?.product_variants.map((item, index) => (
-                  <div key={index} className="flex justify-around bg-blue-100 text-black py-2">
-                    <span>price: {item?.price}</span>
-                    <span>color: {item?.color?.name}</span>
-                    <span>unit: {item?.unit?.name}</span>
-                    <span>attribute: {item?.attribute?.name}</span>
-                    <span>available_quantity: {item?.available_quantity}</span>
-                    <span>discount price: {item?.discount_price}</span>
-                  </div>
-                ))}
+              <div>
+                <ProductVariantShow data={data} />
               </div>
             )}
           />
@@ -236,3 +227,55 @@ const Product = () => {
 };
 
 export default Product;
+
+const ProductVariantShow = ({ data }) => {
+  return (
+    <div className="p-4 bg-white rounded-lg shadow-md space-y-4">
+      {/* If no product variants */}
+      {!data?.product_variants?.length ? (
+        <div className="bg-blue-100 text-blue-800 font-semibold text-center py-3 rounded-md">
+          Category: {data?.category?.category_name}
+        </div>
+      ) : (
+        <>
+          {/* Product Variants */}
+          {data?.product_variants.map((item, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 bg-blue-50 p-4 rounded-md shadow-sm"
+            >
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Category: </span>
+                {data?.category?.category_name}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Price: </span>
+                {item?.price}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Color: </span>
+                {item?.color?.name}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Unit: </span>
+                {item?.unit?.name}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Attribute: </span>
+                {item?.attribute?.name}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Available Qty: </span>
+                {item?.available_quantity}
+              </div>
+              <div className="text-gray-700 font-medium">
+                <span className="text-gray-500">Discount Price: </span>
+                {item?.discount_price}
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+    </div>
+  );
+};
