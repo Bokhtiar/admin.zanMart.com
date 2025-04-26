@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { ImageUpload, TextInput } from "../../components/input";
 import { websettingInputFieldData } from "./data";
@@ -13,9 +13,7 @@ export const WebSettingEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const [buttonLoading, setButtonLoading] = useState(false);
-  const [selectedunitIds, setSelectedunitIds] = useState([]);
-  const [singleImage, setSingleImage] = useState(null);
+  const [buttonLoading, setButtonLoading] = useState(false); 
   const [data, setData] = useState({});
   const {
     control,
@@ -36,11 +34,10 @@ export const WebSettingEdit = () => {
         
       });
       formData.append("_method", "PUT");
-      data?.logo && formData.append("logo", data?.logo);
-
+      data?.logo && formData.append("logo", data?.logo); 
       const response = await NetworkServices.WebSetting.update(id,formData);
       if (response && (response.status === 201 || response?.status === 200)) {
-        // navigate("/dashboard/web-setting");
+        navigate("/dashboard/web-setting");
         setButtonLoading(false);
         return Toastify.Success(response?.data?.message);
       }

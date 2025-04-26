@@ -12,32 +12,22 @@ import {
   FaYoutube,
   FaInstagramSquare,
   FaRegEdit,
-} from "react-icons/fa";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
+} from "react-icons/fa"; 
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDeleteModal } from "../../context/DeleteModalContext";
 const WebSetting = () => {
    const { openModal } = useDeleteModal();
   const [loading, setLoading] = useState(false);
-  const [websettingData, setwebsettingData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [websettingData, setwebsettingData] = useState([]); 
   // fetch websetting data
   const fetchData = useCallback(
     async (websetting) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.WebSetting.index(currentPage);
+        const response = await NetworkServices.WebSetting.index( );
 
         if (response?.status === 200 || response?.status === 201) {
-          setwebsettingData(response?.data?.data);
-          setCurrentPage(response?.data?.current_page);
-          setLastPage(response?.data?.last_page);
-          setNextPageUrl(response?.data?.next_page_url);
-          setPrevPageUrl(response?.data?.prev_page_url);
+          setwebsettingData(response?.data?.data); 
           setLoading(false);
         }
       } catch (error) {
@@ -47,11 +37,11 @@ const WebSetting = () => {
         }
       }
     },
-    [currentPage]
+    [ ]
   );
   useEffect(() => {
     fetchData();
-  }, [currentPage]);
+  }, [ ]);
 
   // delete data
   const destroy = async (id) => {
@@ -178,13 +168,7 @@ const WebSetting = () => {
       ) : (
         <>
           <DataTable columns={columns} data={websettingData} />
-          <Pagination
-            nextPageUrl={nextPageUrl}
-            setCurrentPage={setCurrentPage}
-            prevPageUrl={prevPageUrl}
-            lastPage={lastPage}
-            currentPage={currentPage}
-          />
+           
         </>
       )}
     </section>
@@ -192,83 +176,4 @@ const WebSetting = () => {
 };
 
 export default WebSetting;
-const Pagination = ({
-  nextPageUrl,
-  setCurrentPage,
-  prevPageUrl,
-  lastPage,
-  currentPage,
-}) => {
-  const handleNext = () => {
-    if (nextPageUrl) {
-      setCurrentPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    if (prevPageUrl) {
-      setCurrentPage((prevPage) => prevPage - 1);
-    }
-  };
-  // pagination store
-  useEffect(() => {
-    sessionStorage.setItem("currentPage", currentPage);
-  }, [currentPage]);
-  return (
-    <>
-      <div className="flex justify-end items-center gap-2 my-3">
-        <button
-          onClick={() => {
-            setCurrentPage(1);
-          }}
-          disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !prevPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
-        >
-          <FaAngleDoubleLeft />
-        </button>
-        <button
-          onClick={handlePrev}
-          disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !prevPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
-        >
-          <IoIosArrowBack />
-        </button>
-        <span className="text-gray-700">
-          Page {currentPage} of {lastPage}
-        </span>
-        <button
-          onClick={handleNext}
-          disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !nextPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
-        >
-          <IoIosArrowForward />
-        </button>
-        <button
-          onClick={() => {
-            setCurrentPage(lastPage);
-          }}
-          disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
-            !nextPageUrl
-              ? "bg-gray-400 cursor-not-allowed"
-              : "bg-blue-500 hover:bg-blue-600"
-          }`}
-        >
-          <FaAngleDoubleRight />
-        </button>
-      </div>
-    </>
-  );
-};
+ ;

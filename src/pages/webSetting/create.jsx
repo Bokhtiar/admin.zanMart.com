@@ -3,14 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {   useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { ImageUpload, TextInput } from "../../components/input";
 import { websettingInputFieldData } from "./data";
 
 export const WebSettingCreate = () => {
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); 
   const [buttonLoading, setButtonLoading] = useState(false); 
   const {
     control,
@@ -21,7 +20,6 @@ export const WebSettingCreate = () => {
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
-
       const formData = new FormData();
       websettingInputFieldData.forEach((key) => {
         formData.append(key?.name, data[key?.name]);
