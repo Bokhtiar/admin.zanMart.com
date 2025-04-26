@@ -7,9 +7,15 @@ import { Link } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { FaAngleDoubleLeft, FaAngleDoubleRight, FaRegEdit } from "react-icons/fa";
+import {
+  FaAngleDoubleLeft,
+  FaAngleDoubleRight,
+  FaRegEdit,
+} from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
+import { useDeleteModal } from "../../../context/DeleteModalContext";
 const ProductVariant = () => {
+  const { openModal } = useDeleteModal();
   const [loading, setLoading] = useState(false);
   const [productVariantData, setproductVariantData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,8 +27,10 @@ const ProductVariant = () => {
     async (productVariant) => {
       try {
         setLoading(true);
-        const response = await NetworkServices.ProductVariant.index(currentPage);
-       
+        const response = await NetworkServices.ProductVariant.index(
+          currentPage
+        );
+
         if (response?.status === 200 || response?.status === 201) {
           setproductVariantData(response?.data?.data?.data);
           setCurrentPage(response?.data?.data?.current_page);
@@ -92,21 +100,31 @@ const ProductVariant = () => {
       cell: (row) => row?.discount_price,
     },
 
-
     {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-3">
           <Link to={`/dashboard/product-variant/edit/${row?.product_id}`}>
             <span className="">
-            <FaRegEdit />
+              <FaRegEdit />
             </span>
           </Link>
 
           <span>
             <span
               className="text-red-700 cursor-pointer"
-              onClick={() => destroy(row?.product_variant_id)}
+              onClick={() =>
+                openModal(
+                  () => destroy(row?.product_variant_id),
+                  <span>
+                    Are you sure you want to delete{" "}
+                    <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                      {row?.product?.title}
+                    </span>
+                    item?
+                  </span>
+                )
+              }
             >
               <RiDeleteBin6Line />
             </span>
@@ -120,11 +138,6 @@ const ProductVariant = () => {
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
         <h2 className=" font-semibold text-xl">ProductVariant List</h2>
-        {/* <Link to="/dashboard/product-variant/create"className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">
-        Add New  <span className="  material-symbols-outlined p-1">
-            add
-          </span>
-        </Link> */}
       </div>
 
       {loading ? (
@@ -176,20 +189,22 @@ const Pagination = ({
             setCurrentPage(1);
           }}
           disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!prevPageUrl
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600"
-            }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !prevPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           <FaAngleDoubleLeft />
         </button>
         <button
           onClick={handlePrev}
           disabled={!prevPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!prevPageUrl
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600"
-            }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !prevPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           <IoIosArrowBack />
         </button>
@@ -199,10 +214,11 @@ const Pagination = ({
         <button
           onClick={handleNext}
           disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!nextPageUrl
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600"
-            }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !nextPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           <IoIosArrowForward />
         </button>
@@ -211,10 +227,11 @@ const Pagination = ({
             setCurrentPage(lastPage);
           }}
           disabled={!nextPageUrl}
-          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${!nextPageUrl
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-blue-500 hover:bg-blue-600"
-            }`}
+          className={`px-2 py-2 rounded-lg font-medium text-white transition-all duration-300 ${
+            !nextPageUrl
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+          }`}
         >
           <FaAngleDoubleRight />
         </button>

@@ -133,18 +133,13 @@ const Category = () => {
       <div className="flex justify-between shadow-md p-2 my-3 rounded-md">
         <h2 className=" font-semibold text-xl">Category List</h2>
         <div className="flex items-center gap-3">
-          <button
+          { selectedIds?.length?<button
             onClick={() => addedHomePageCategory()}
-            className="bg-primary text-white btn btn-sm  "
+            className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary py-2 px-2 rounded-lg"
+     
           >
-            Add Homepage
-          </button>
-          <Link
-            to="/dashboard/category/homepage"
-            className="bg-primary text-white btn btn-sm  "
-          >
-            Show Homepage
-          </Link>
+            Add Home Category
+          </button>:"" }
           <Link
             to="/dashboard/category/create"
             className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"

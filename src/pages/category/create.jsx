@@ -5,7 +5,7 @@ import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect,  useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
-import { Checkbox, TextInput } from "../../components/input";
+import { Checkbox, SingleSelect, TextInput } from "../../components/input";
 import { SkeletonForm } from "../../components/loading/skeleton-table";
 import { FaCamera } from "react-icons/fa";
 import Select, { components } from 'react-select';
@@ -35,6 +35,7 @@ export const CategoryCreate = () => {
     handleSubmit,
     setValue,
     formState: { errors },
+    watch
   } = useForm({
     defaultValues: {
       status: 0,
@@ -132,21 +133,27 @@ export const CategoryCreate = () => {
       {loading ? (
         <SkeletonForm />
       ) : (
-        <section className="shadow-md my-5 p-2">
+        <section className="shadow-md mb-5  ">
           <form className="" onSubmit={handleSubmit(onSubmit)}>
             {/* category name */}
            
               <div className="mb-6 lg:mb-2  relative">
-                <label>Parent Category </label>
-                  
-                <SearchDropdownWithSingle
-                  showName="category_name"
-                   options={categoryList}
-                   handleChange={(e)=>{
-               
-                    setValue('parent_id', e?.category_id);
-                   }}
-                />
+               <SingleSelect
+                                   name="category_id"
+                                   control={control}
+                                   options={categoryList}
+                                   onSelected={(selected) =>
+                                     setValue("category_id", selected?.value || null)
+                                   }
+                                   placeholder={
+                                     categoryList.find(
+                                       (item) => item.value === watch("category_id")
+                                     )?.label ?? "Select Parent Category Id"
+                                   }
+                                   error={errors.category_id?.message}
+                                   label="Choose a Parent Category"
+                                   isClearable
+                                 />
               </div>
            
             <div className="mb-6 lg:mb-2">

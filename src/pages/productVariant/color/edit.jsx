@@ -58,7 +58,7 @@ export const ColorEdit = () => {
 
   return (
     <>
-      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
+      <section className="flex justify-between shadow-md p-4 rounded-md bg-white mb-3">
         <h2 className=" font-semibold text-xl">Color Update</h2>
         <Link to="/dashboard/color">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
@@ -67,7 +67,7 @@ export const ColorEdit = () => {
         </Link>
       </section>
       {data ? (
-        <section className="shadow-md my-5 p-4 px-6">
+        <section className="shadow-md my-3 p-4  ">
           <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
             <div>
               {/* Brand name */} 

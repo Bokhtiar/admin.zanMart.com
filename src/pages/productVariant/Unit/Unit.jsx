@@ -8,7 +8,9 @@ import VariantModal from "../Components/VariantModal";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { FaAngleDoubleLeft, FaAngleDoubleRight } from "react-icons/fa";
 import { SkeletonTable } from "../../../components/loading/skeleton-table";
+import { useDeleteModal } from "../../../context/DeleteModalContext";
 const Unit = () => {
+  const { openModal } = useDeleteModal();
   const [addedToggle, setAddedToggle] = useState(false);
   const [updateToggle, setUpdateToggle] = useState(false);
   const [unitValue, setunitValue] = useState([]);
@@ -59,7 +61,7 @@ const Unit = () => {
     });
   };
   //   delete unit
-  const handleDelete = async (id) => {
+  const destroy = async (id) => {
     deleteApi(`admin/unit/${id}`).then((res) => {
       if (res?.data?.success) {
         fetchApi("admin/unit").then((res) => {
@@ -103,8 +105,19 @@ const Unit = () => {
             <FaRegEdit />
           </button>
           <button
-            className=" text-red-700 px-4 py-2 rounded"
-            onClick={() => handleDelete(row?.unit_id)}
+            className=" text-red-700 px-4 py-2 rounded" 
+            onClick={() =>
+              openModal(
+                () => destroy(row?.unit_id),
+                <span>
+                  Are you sure you want to delete{" "}
+                  <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                    {row?.name}
+                  </span>
+                  item?
+                </span>
+              )
+            }
           >
             <RiDeleteBin6Line />
           </button>

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Checkbox, TextInput } from "../../components/input";
+import { Checkbox, SingleSelect, TextInput } from "../../components/input";
 import { Toastify } from "../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -37,6 +37,7 @@ export const CategoryEdit = () => {
     setValue,
     formState: { errors },
     control,
+    watch,
   } = useForm({
     defaultValues: {
       status: 0,
@@ -137,7 +138,7 @@ export const CategoryEdit = () => {
     setValue("name", data?.category?.category_name || "");
     setValue("parent_id", data?.category?.parent_id || "");
     setValue("is_color", data?.cateory?.is_color ? 1 : 0);
-    setValue("status", data?.category?.status  );
+    setValue("status", data?.category?.status);
   }, [data, setValue]);
 
   return (
@@ -151,23 +152,26 @@ export const CategoryEdit = () => {
         </Link>
       </section>
       {!loading ? (
-        <section className="shadow-md my-5 p-2">
+        <section className="shadow-md mb-5 ">
           <form className="p " onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <div className="mb-14">
-                <div className="mb-6 lg:mb-2  relative">
-                  <label>Parent Category </label>
-                  <SearchDropdownWithSingle
+              <div className=" ">
+                <div className=" lg:mb-2  relative"> 
+                  <SingleSelect
+                    name="category_id"
+                    control={control}
                     options={categoryList}
-                    // setValue={setValue}
+                    onSelected={(selected) =>
+                      setValue("category_id", selected?.value || null)
+                    }
                     placeholder={
                       categoryList.find(
-                        (item) => item?.category_id == data?.category?.parent_id
-                      )?.category_name ?? "Select your parent category"
+                        (item) => item.value === watch("category_id")
+                      )?.label ?? "Select Parent Category Id"
                     }
-                    handleChange={(e) => {
-                      setValue("parent_id", e?.category_id);
-                    }}
+                    error={errors.category_id?.message}
+                    label="Choose a Parent Category"
+                    isClearable
                   />
                 </div>
               </div>
@@ -211,7 +215,7 @@ export const CategoryEdit = () => {
              */}
             {/* banner image upload area  */}
             <div className="mb-6 lg:mb-2 w-full">
-              <p className="text-sm mb-1 text-gray-500">Banner Image</p>
+              <p className="text-sm mb-1 text-gray-500">Category Image</p>
               <div className="flex flex-col items-center">
                 <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
                   <input
@@ -288,7 +292,7 @@ export const CategoryEdit = () => {
             <Checkbox
               name="status"
               control={control}
-              label="Task Status"
+              label="Category Status"
               rules={{ required: "Status is required" }}
             />
             {/* submit button */}

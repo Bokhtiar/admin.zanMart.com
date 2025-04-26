@@ -44,7 +44,7 @@ export const ColorCreate = () => {
 
   return (
     <>
-      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
+      <section className="flex justify-between shadow-md p-4  rounded-md bg-white  ">
         <h2 className=" font-semibold text-xl">Color Create</h2>
         <Link to="/dashboard/category">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
@@ -53,8 +53,8 @@ export const ColorCreate = () => {
         </Link>
       </section>
 
-      <section className="shadow-md my-5 p-4 px-6">
-        <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
+      <section className="shadow-md my-2    ">
+        <form className=" " onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 lg:mb-2">
             <TextInput
               label="Color Name"

@@ -37,7 +37,7 @@ export const menuData = [
         path: "/dashboard/category",
       },
       {
-        title: "Best Selling",
+        title: "Home Category",
         icon: <FaUnity />,
         path: "/dashboard/category/homepage",
       },
