@@ -85,23 +85,21 @@ const AttributeCreate = () => {
           <section className="shadow-md my-5 p-4 px-6">
             <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6 lg:mb-2">
-                <div className="grid grid-cols-2 md:grid-cols-4 ">
-                  <SingleSelect
-                    name="unit_id"
-                    control={control}
-                    options={unitData}
-                    onSelected={(selected) =>
-                      setValue("unit_id", selected?.value || null)
-                    }
-                    placeholder={
-                      unitData.find((item) => item.value === watch("unit_id"))
-                        ?.label ?? "Select Parent Unit Id"
-                    }
-                    error={errors.unit_id?.message}
-                    label="Choose a Units ID"
-                    isClearable
-                  />
-                </div>
+                <SingleSelect
+                  name="unit_id"
+                  control={control}
+                  options={unitData}
+                  onSelected={(selected) =>
+                    setValue("unit_id", selected?.value || null)
+                  }
+                  placeholder={
+                    unitData.find((item) => item.value === watch("unit_id"))
+                      ?.label ?? "Select Parent Unit Id"
+                  }
+                  error={errors.unit_id?.message}
+                  label="Choose a Units ID"
+                  isClearable
+                />
               </div>
               <div className="mb-6 lg:mb-2">
                 <TextInput

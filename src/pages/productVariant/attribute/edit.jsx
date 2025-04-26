@@ -60,7 +60,7 @@ const AttributeEdit = () => {
   console.log(response?.data?.unit?.name);
       if (response.status === 200) {
        
-        // navigate("/dashboard/attribute");
+        navigate("/dashboard/attribute");
         return Toastify.Success(response.data.message);
       }
     } catch (error) {
@@ -107,7 +107,7 @@ const AttributeEdit = () => {
       ) : (
         <>
           {" "}
-          <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
+          <section className="flex justify-between shadow-md p-4  rounded-md bg-white mb-3">
             <h2 className=" font-semibold text-xl">attribute Update</h2>
             <Link to="/dashboard/attribute">
               <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
@@ -115,11 +115,10 @@ const AttributeEdit = () => {
               </span>
             </Link>
           </section>
-          <section className="shadow-md my-5 p-4 px-6">
-            <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
+          <section className="shadow-md  ">
+            <form className=" " onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6 lg:mb-2">
-                <p>Unit IDs</p>
-
+               
                 <SingleSelect
                   name="unit_id"
                   control={control}
