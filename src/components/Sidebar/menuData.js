@@ -24,13 +24,12 @@ export const menuData = [
     title: "Banner",
     icon: <RiGalleryFill />,
     path: "/dashboard/banner",
-   
   },
   {
     title: "Category",
     icon: <MdOutlineCategory />,
     // path: "/dashboard/category",
-    childrens:[
+    childrens: [
       {
         title: "Category",
         icon: <MdOutlineProductionQuantityLimits />,
@@ -41,33 +40,17 @@ export const menuData = [
         icon: <FaUnity />,
         path: "/dashboard/category/homepage",
       },
-    ]
+    ],
   },
   {
     title: "Brand",
     icon: <MdBrandingWatermark />,
     path: "/dashboard/brand",
   },
-  
+
   {
-    title:"Product",
-    icon:<MdOutlineProductionQuantityLimits />,
-    childrens:[
-      {
-        title: "Product",
-        icon: <MdOutlineProductionQuantityLimits />,
-        path: "/dashboard/product",
-      },
-      {
-        title: "Best Selling",
-        icon: <FaUnity />,
-        path: "/dashboard/product/best-selling",
-      },
-    ]
-  },
-  {
-    title: "Product Variant",
-    icon: <RiProductHuntLine />,
+    title: "Product",
+    icon: <MdOutlineProductionQuantityLimits />,
     childrens: [
       {
         title: "Color",
@@ -75,22 +58,33 @@ export const menuData = [
         path: "/dashboard/color",
       },
       {
+        title: "Attribute",
+        icon: <CgAttribution />,
+        path: "/dashboard/attribute",
+      },
+      {
         title: "Unit",
         icon: <FaUnity />,
         path: "/dashboard/unit",
       },
       {
-        title: "Attribute",
-        icon: <CgAttribution />,
-        path: "/dashboard/attribute",
+        title: "Product",
+        icon: <MdOutlineProductionQuantityLimits />,
+        path: "/dashboard/product",
       },
       {
         title: "Product Variant",
         icon: <RiProductHuntLine />,
         path: "/dashboard/product-variant",
       },
+      {
+        title: "Best Selling",
+        icon: <FaUnity />,
+        path: "/dashboard/product/best-selling",
+      },
     ],
   },
+
   {
     title: "WebSetting",
     icon: <MdSettingsAccessibility />,
