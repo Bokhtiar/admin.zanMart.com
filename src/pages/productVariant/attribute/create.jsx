@@ -73,7 +73,7 @@ const AttributeCreate = () => {
         <SkeletonForm />
       ) : (
         <>
-          <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
+          <section className="flex justify-between shadow-md p-4 rounded-md bg-white mb-3">
             <h2 className=" font-semibold text-xl">attribute Create</h2>
             <Link to="/dashboard/attribute">
               <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
@@ -82,8 +82,8 @@ const AttributeCreate = () => {
             </Link>
           </section>
 
-          <section className="shadow-md my-5 p-4 px-6">
-            <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
+          <section className="shadow-md    ">
+            <form className=" " onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6 lg:mb-2">
                 <SingleSelect
                   name="unit_id"
