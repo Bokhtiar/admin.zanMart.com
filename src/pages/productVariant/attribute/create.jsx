@@ -5,7 +5,7 @@ import { NetworkServices } from "../../../network/index";
 import { PrimaryButton } from "../../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../../utils/helper";
-import { Checkbox, TextInput } from "../../../components/input";
+import { Checkbox, SingleSelect, TextInput } from "../../../components/input";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
 
 const AttributeCreate = () => {
@@ -17,17 +17,17 @@ const AttributeCreate = () => {
   const {
     control,
     handleSubmit,
-
+    watch,
+    setValue,
     formState: { errors },
   } = useForm();
   /* submit reosurce */
   const onSubmit = async (data) => {
-
     try {
       setButtonLoading(true);
       const payload = {
         ...data,
-        unit_id: unitId,
+        unit_id: data?.unit_id,
       };
       const response = await NetworkServices.Attribute.store(payload);
       if (response && (response.status === 201 || response?.status === 200)) {
@@ -47,7 +47,15 @@ const AttributeCreate = () => {
       const response = await NetworkServices.Unit.index();
 
       if (response?.status === 200 || response?.status === 201) {
-        setUnitData(response?.data?.data?.data);
+        const result = response?.data?.data?.data;
+        const data = result.map((item) => {
+          return {
+            value: item?.unit_id,
+            label: item?.name,
+            ...item,
+          };
+        });
+        setUnitData(data);
         setLoading(false);
       }
     } catch (error) {
@@ -77,21 +85,22 @@ const AttributeCreate = () => {
           <section className="shadow-md my-5 p-4 px-6">
             <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6 lg:mb-2">
-                <p>Unit IDs</p>
                 <div className="grid grid-cols-2 md:grid-cols-4 ">
-                  {unitData.map((unit) => (
-                    <div key={unit?.unit_id}>
-                      <Checkbox
-                        name="checkbox"
-                        control={control}
-                        type="checkbox"
-                        placeholder="Enter attribute "
-                        checked={unit?.unit_id === unitId}
-                        onChange={() => setUnitId(unit?.unit_id)}
-                      />
-                      <span>{unit?.name}</span>
-                    </div>
-                  ))}
+                  <SingleSelect
+                    name="unit_id"
+                    control={control}
+                    options={unitData}
+                    onSelected={(selected) =>
+                      setValue("unit_id", selected?.value || null)
+                    }
+                    placeholder={
+                      unitData.find((item) => item.value === watch("unit_id"))
+                        ?.label ?? "Select Parent Unit Id"
+                    }
+                    error={errors.unit_id?.message}
+                    label="Choose a Units ID"
+                    isClearable
+                  />
                 </div>
               </div>
               <div className="mb-6 lg:mb-2">
