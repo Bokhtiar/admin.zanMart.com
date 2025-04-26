@@ -7,11 +7,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import { ImageUpload, TextInput } from "../../components/input";
 import { websettingInputFieldData } from "./data";
+import WebSettingEditSkeleton from "../../components/loading/web-skeleton-form";
 
 export const WebSettingEdit = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [buttonLoading, setButtonLoading] = useState(false);
   const [selectedunitIds, setSelectedunitIds] = useState([]);
   const [singleImage, setSingleImage] = useState(null);
@@ -50,8 +51,10 @@ export const WebSettingEdit = () => {
   };
   const fetchData = useCallback(async () => {
     try {
+
       const response = await NetworkServices.WebSetting.show(id);
       if (response.status === 200) {
+        setLoading(false)
         const result = response.data.data
         setData(response.data.data);
         websettingInputFieldData.forEach((key) => {
@@ -78,8 +81,8 @@ export const WebSettingEdit = () => {
           </span>
         </Link>
       </section>
-
-      <section className="shadow-md my-5 p-4 px-6">
+      {
+       loading? <WebSettingEditSkeleton/>:<section className="shadow-md my-5 p-4 px-6">
         <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="grid lg:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-4">
             {websettingInputFieldData.map((item, idx) => (
@@ -111,8 +114,7 @@ export const WebSettingEdit = () => {
                 )}
               </div>
             ))}
-          </div>
-
+          </div> 
           {/* submit button */}
           <div className="my-4 flex justify-center">
             <PrimaryButton
@@ -122,6 +124,8 @@ export const WebSettingEdit = () => {
           </div>
         </form>
       </section>
+      }
+      
     </>
   );
 };
