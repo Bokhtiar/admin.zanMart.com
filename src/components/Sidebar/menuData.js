@@ -29,7 +29,19 @@ export const menuData = [
   {
     title: "Category",
     icon: <MdOutlineCategory />,
-    path: "/dashboard/category",
+    // path: "/dashboard/category",
+    childrens:[
+      {
+        title: "Category",
+        icon: <MdOutlineProductionQuantityLimits />,
+        path: "/dashboard/category",
+      },
+      {
+        title: "Best Selling",
+        icon: <FaUnity />,
+        path: "/dashboard/category/homepage",
+      },
+    ]
   },
   {
     title: "Brand",

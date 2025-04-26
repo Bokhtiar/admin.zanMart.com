@@ -47,7 +47,18 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
     {
       title: "Category",
       icon: <MdOutlineCategory></MdOutlineCategory>,
-      path: "/dashboard/category",
+      childrens:[
+        {
+          title: "Category",
+          icon: <MdOutlineProductionQuantityLimits />,
+          path: "/dashboard/category",
+        },
+        {
+          title: "Homepage Category",
+          icon: <FaUnity />,
+          path: "/dashboard/category/homepage",
+        },
+      ]
     },
 
     {
@@ -149,9 +160,13 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
                     {/* Title */}
                     <div className="hidden group-hover:block truncate w-full">
-                      {item.title}  
+                      {item.title}
                     </div>
-                    { item?.childrens&&<div className="px-5"><IoIosArrowDown /></div>}
+                    {item?.childrens && (
+                      <div className="px-5">
+                        <IoIosArrowDown />
+                      </div>
+                    )}
                   </Link>
 
                   {/* Submenu Items */}
@@ -179,7 +194,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
                             {/* Submenu Title */}
                             <div className="truncate w-full">
-                              {subItem.title} 
+                              {subItem.title}
                             </div>
                           </Link>
                         );
