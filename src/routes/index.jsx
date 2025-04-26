@@ -36,6 +36,7 @@ import { BannerEdit } from "../pages/Banner/edit";
 import BannerWayProduct from "../pages/Banner/banner-way-product";
 import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
 import Dashboard from "../pages/Dashboard/Dashboard";
+import ProductBestSelling from "../pages/products/best-selling";
  
 const appRoutes = [
   {
@@ -65,6 +66,7 @@ const appRoutes = [
       { path: "product", element: <Product></Product> },
       { path: "product/create", element: <ProductCreate /> },
       { path: "product/edit/:id", element: <ProductEdit /> },
+      { path: "product/best-selling", element: <ProductBestSelling /> },
       { path: "inventory", element: <Inventory></Inventory> },
       { path: "orders", element: <Orders></Orders> },
       { path: "product-variant", element: <ProductVariant /> },

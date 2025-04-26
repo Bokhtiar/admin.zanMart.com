@@ -3,7 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
 import "react-quill/dist/quill.snow.css";
 import {
@@ -42,7 +42,7 @@ export const ProductEdit = () => {
   const fetchData = useCallback(
     async (product) => {
       try {
-        // setLoading(true);
+        setLoading(true);
         const response = await NetworkServices.Product.show(id);
         if (response?.status === 200 || response?.status === 201) {
           setProduct(response?.data?.data);
@@ -117,41 +117,39 @@ export const ProductEdit = () => {
     fetchBrandList();
     fetchDataForUnit();
   }, []);
-  /* submit reosurce */
-
+  /* submit reosurce */ 
   const onSubmit = async (data) => {
     try {
       setButtonLoading(true);
       const formData = new FormData();
-      formData.append("title", data?.title); // Other form fields
-      formData.append("description", data?.description); // Other form fields
-      formData.append("sell_price", data?.sell_price); // Other form fields
-      formData.append("category_id", data?.category_id); // Other form fields
-      formData.append("rating", data?.rating); // Other form fields
-      formData.append("tax_price", data?.tax_price); // Other form fields
-      formData.append("buy_price", data?.buy_price); // Other form fields
-      formData.append("stock_qty", data?.stock_qty); // Other form fields
-      formData.append("flat_discount", data?.flat_discount); // Other form fields
-      formData.append("status", data?.status); // Other form fields
+      formData.append("title", data?.title); 
+      formData.append("description", data?.description); 
+      formData.append("sell_price", data?.sell_price); 
+      formData.append("category_id", data?.category_id); 
+      formData.append("rating", data?.rating); 
+      formData.append("tax_price", data?.tax_price); 
+      formData.append("buy_price", data?.buy_price); 
+      formData.append("stock_qty", data?.stock_qty);  
+      formData.append("flat_discount", data?.flat_discount);  
+      formData.append("status", data?.status);  
       formData.append(
         "low_stock_quantity_warning",
         data?.low_stock_quantity_warning
-      ); 
-      data?.is_refundable_product_day &&
-      formData.append(
-        "is_refundable_product_day",
-        data?.is_refundable_product_day
       );
-      data?.brand_id && formData.append("brand_id", data?.brand_id); 
+      data?.is_refundable_product_day &&
+        formData.append(
+          "is_refundable_product_day",
+          data?.is_refundable_product_day
+        );
+      data?.brand_id && formData.append("brand_id", data?.brand_id);
       data?.singleImage &&
         formData.append("thumbnail_image", data?.singleImage);
       formData.append("_method", "PUT"); //
       multiImages &&
         multiImages.forEach((image, index) => {
-          formData.append(`gallery_image[${index}]`, image); // Append multiple images
+          formData.append(`gallery_image[${index}]`, image);  
         });
       const response = await NetworkServices.Product.update(id, formData);
-
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/product");
         setButtonLoading(false);
@@ -162,21 +160,21 @@ export const ProductEdit = () => {
       networkErrorHandeller(error);
     }
   };
-  // product field for update value added 
+  // product field for update value added
   useEffect(() => {
-    setValue("description", product?.description);  
-    setValue("title", product?.title); 
-    setValue("sell_price", product?.sell_price);  
-    setValue("category_id", product?.category_id);   
-    setValue("rating", product?.rating); 
-    setValue("tax_price", product?.tax_price);  
-    setValue("buy_price", product?.buy_price);  
-    setValue("stock_qty", product?.stock_qty);  
-    setValue("flat_discount", product?.flat_discount);  
-    setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning);  
+    setValue("description", product?.description);
+    setValue("title", product?.title);
+    setValue("sell_price", product?.sell_price);
+    setValue("category_id", product?.category_id);
+    setValue("rating", product?.rating);
+    setValue("tax_price", product?.tax_price);
+    setValue("buy_price", product?.buy_price);
+    setValue("stock_qty", product?.stock_qty);
+    setValue("flat_discount", product?.flat_discount);
+    setValue("low_stock_quantity_warning", product?.low_stock_quantity_warning);
     setValue("thumbnail_image", product?.thumbnail_image);
     setValue("brand_id", product?.brand_id);
-    setValue("is_refundable_product_day", product?.is_refundable_product_day );
+    setValue("is_refundable_product_day", product?.is_refundable_product_day);
     setValue("status", product?.status);
   }, [product]);
   //   set decription
@@ -249,9 +247,8 @@ export const ProductEdit = () => {
                     setValue("brand_id", selected?.value || null)
                   }
                   placeholder={
-                    brandList.find(
-                      (item) => item.value === watch("brand_id")
-                    )?.label ?? "Select Brand Id"
+                    brandList.find((item) => item.value === watch("brand_id"))
+                      ?.label ?? "Select Brand Id"
                   }
                   error={errors.brand_id?.message}
                   label="Choose a Brand"

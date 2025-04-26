@@ -36,13 +36,23 @@ export const menuData = [
     icon: <MdBrandingWatermark />,
     path: "/dashboard/brand",
   },
+  
   {
-    title: "Product",
-    icon: <MdOutlineProductionQuantityLimits />,
-    path: "/dashboard/product",
-     
+    title:"Product",
+    icon:<MdOutlineProductionQuantityLimits />,
+    childrens:[
+      {
+        title: "Product",
+        icon: <MdOutlineProductionQuantityLimits />,
+        path: "/dashboard/product",
+      },
+      {
+        title: "Best Selling",
+        icon: <FaUnity />,
+        path: "/dashboard/product/best-selling",
+      },
+    ]
   },
-
   {
     title: "Product Variant",
     icon: <RiProductHuntLine />,

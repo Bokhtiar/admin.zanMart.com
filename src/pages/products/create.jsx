@@ -38,13 +38,7 @@ export const ProductCreate = () => {
       status: 0,
     },
   });
-  //   single image set in state
-  const handleSingleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSingleImage(file);
-    }
-  };
+
   //   multi state set in multisetate
   const handleMultiImageChange = (e) => {
     const files = Array.from(e.target.files);

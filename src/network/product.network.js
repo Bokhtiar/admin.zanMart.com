@@ -24,7 +24,13 @@ export const update = async(id, data) => {
 export const destroy = async (id) => {
     return await privateRequest.delete(`/admin/product/${id}`)
 }
-
+// update best selling product 
+export const bestSellingProduct = async(ids)=>{
+    return await privateRequest.post(`/admin/assign/best-selling-product`,{products:ids})
+}
+export const removeBestSellingProduct = async(ids)=>{
+    return await privateRequest.post(`/admin/remove-assign/best-selling-product`,{products:ids})
+}
 /** category list */
 export const categoryList = async () => {
     return await privateRequest.get(`/admin/product/`);

@@ -17,6 +17,7 @@ import logo from "../../assets/image/logo.png";
 import { IoColorPaletteOutline } from "react-icons/io5";
 import { FaFirstOrder, FaUnity } from "react-icons/fa6";
 import { CgAttribution } from "react-icons/cg";
+import { IoIosArrowDown } from "react-icons/io";
 
 const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -26,8 +27,6 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
   const toggleMenu = (title) => {
     setOpenMenu(openMenu === title ? null : title);
   };
-
- 
 
   const menuData = [
     {
@@ -58,10 +57,19 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
     },
     {
       title: "Product",
-      icon: (
-        <MdOutlineProductionQuantityLimits></MdOutlineProductionQuantityLimits>
-      ),
-      path: "/dashboard/product",
+      icon: <MdOutlineProductionQuantityLimits />,
+      childrens: [
+        {
+          title: "Product",
+          icon: <MdOutlineProductionQuantityLimits />,
+          path: "/dashboard/product",
+        },
+        {
+          title: "Best Selling",
+          icon: <FaUnity />,
+          path: "/dashboard/product/best-selling",
+        },
+      ],
     },
     {
       title: "Product Variant",
@@ -141,8 +149,9 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
                     {/* Title */}
                     <div className="hidden group-hover:block truncate w-full">
-                      {item.title}
+                      {item.title}  
                     </div>
+                    { item?.childrens&&<div className="px-5"><IoIosArrowDown /></div>}
                   </Link>
 
                   {/* Submenu Items */}
@@ -170,7 +179,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
 
                             {/* Submenu Title */}
                             <div className="truncate w-full">
-                              {subItem.title}
+                              {subItem.title} 
                             </div>
                           </Link>
                         );
@@ -219,10 +228,7 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
               const isActive = location.pathname === item.path; // Check active menu
 
               return (
-                <div
-                  key={index}
-                  className="mb-1 relative overflow-auto gap-4"
-                >
+                <div key={index} className="mb-1 relative overflow-auto gap-4">
                   {/* Parent Menu Item */}
                   {isActive && (
                     <span className="absolute left-0 top-0 h-full w-1 bg-[#0d6efd] z-50"></span>
