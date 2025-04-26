@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { Checkbox, TextInput } from "../../../components/input";
+import { Checkbox, SingleSelect, TextInput } from "../../../components/input";
 import { Toastify } from "../../../components/toastify";
 import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -16,20 +16,22 @@ const AttributeEdit = () => {
   const [loading, setLoading] = useState(false);
   const [unitId, setUnitId] = useState(null);
 
- 
-
   const [unitData, setUnitData] = useState([]);
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
+    watch,
   } = useForm();
 
   /* reosure show */
   const fetchData = useCallback(async () => {
     try {
       const response = await NetworkServices.Attribute.show(id);
-      if (response.status === 200) {
+      console.log(response.data?.data?.unit);
+      if (response.status === 200) { 
+        setValue("unit_id", response?.data?.data?.unit?.unit_id);
         setData(response.data.data);
       }
     } catch (error) {
@@ -51,13 +53,14 @@ const AttributeEdit = () => {
     try {
       const payload = {
         ...dat,
-        unit_id: unitId ? unitId : data?.unit_id,
+        unit_id: dat?.unit_id,
       };
 
       const response = await NetworkServices.Attribute.update(id, payload);
-
+  console.log(response?.data?.unit?.name);
       if (response.status === 200) {
-        navigate("/dashboard/attribute");
+       
+        // navigate("/dashboard/attribute");
         return Toastify.Success(response.data.message);
       }
     } catch (error) {
@@ -77,7 +80,15 @@ const AttributeEdit = () => {
       const response = await NetworkServices.Unit.index();
 
       if (response?.status === 200 || response?.status === 201) {
-        setUnitData(response?.data?.data?.data);
+        const result = response?.data?.data?.data;
+        const data = result.map((item) => {
+          return {
+            value: item?.unit_id,
+            label: item?.name,
+            ...item,
+          };
+        });
+        setUnitData(data);
         setLoading(false);
       }
     } catch (error) {
@@ -108,21 +119,22 @@ const AttributeEdit = () => {
             <form className="px-4" onSubmit={handleSubmit(onSubmit)}>
               <div className="mb-6 lg:mb-2">
                 <p>Unit IDs</p>
-                <div className="grid grid-cols-2 md:grid-cols-4 ">
-                  {unitData.map((unit) => (
-                    <div key={unit?.unit_id}>
-                      <Checkbox
-                        name="checkbox"
-                        control={control}
-                        type="checkbox"
-                        placeholder="Enter attribute"
-                        checked={unit?.unit_id === unitId} 
-                        onChange={() => setUnitId(unit?.unit_id)} 
-                      />
-                      <span>{unit?.name}</span>
-                    </div>
-                  ))}
-                </div>
+
+                <SingleSelect
+                  name="unit_id"
+                  control={control}
+                  options={unitData}
+                  onSelected={(selected) =>
+                    setValue("unit_id", selected?.value || null)
+                  }
+                  placeholder={
+                    unitData.find((item) => item.value === watch("unit_id"))
+                      ?.label ?? "Select Parent Unit Id"
+                  }
+                  error={errors.unit_id?.message}
+                  label="Choose a Units ID"
+                  isClearable
+                />
               </div>
               <div>
                 {/* Brand name */}
