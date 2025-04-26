@@ -1,120 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { RxDashboard } from "react-icons/rx";
-import {
-  RiGalleryFill,
-  RiMenuFold4Fill,
-  RiProductHuntLine,
-} from "react-icons/ri";
-import {
-  MdBrandingWatermark,
-  MdOutlineCategory,
-  MdOutlineProductionQuantityLimits,
-  MdSettingsAccessibility,
-} from "react-icons/md";
-// import logo from "../../assets/logo/Zanicon.jpg";
+import { RiMenuFold4Fill } from "react-icons/ri";
 import logo from "../../assets/image/logo.png";
-import { IoColorPaletteOutline } from "react-icons/io5";
-import { FaFirstOrder, FaUnity } from "react-icons/fa6";
-import { CgAttribution } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
-
+import { menuData } from "./menuData";
 const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
   const [openMenu, setOpenMenu] = useState(null);
-
   const location = useLocation();
-
   const toggleMenu = (title) => {
     setOpenMenu(openMenu === title ? null : title);
   };
-
-  const menuData = [
-    {
-      title: "Dashboard",
-      icon: <RxDashboard></RxDashboard>,
-      path: "/dashboard",
-    },
-    {
-      title: "Order",
-      icon: <FaFirstOrder />,
-      path: "/dashboard/order",
-    },
-    {
-      title: "Banner",
-      icon: <RiGalleryFill></RiGalleryFill>,
-      path: "/dashboard/banner",
-    },
-    {
-      title: "Category",
-      icon: <MdOutlineCategory></MdOutlineCategory>,
-      childrens:[
-        {
-          title: "Category",
-          icon: <MdOutlineProductionQuantityLimits />,
-          path: "/dashboard/category",
-        },
-        {
-          title: "Homepage Category",
-          icon: <FaUnity />,
-          path: "/dashboard/category/homepage",
-        },
-      ]
-    },
-
-    {
-      title: "Brand",
-      icon: <MdBrandingWatermark></MdBrandingWatermark>,
-      path: "/dashboard/brand",
-    },
-    {
-      title: "Product",
-      icon: <MdOutlineProductionQuantityLimits />,
-      childrens: [
-        {
-          title: "Product",
-          icon: <MdOutlineProductionQuantityLimits />,
-          path: "/dashboard/product",
-        },
-        {
-          title: "Best Selling",
-          icon: <FaUnity />,
-          path: "/dashboard/product/best-selling",
-        },
-      ],
-    },
-    {
-      title: "Product Variant",
-      icon: <RiProductHuntLine></RiProductHuntLine>,
-      childrens: [
-        {
-          title: "Color",
-          icon: <IoColorPaletteOutline></IoColorPaletteOutline>,
-          path: "/dashboard/color",
-        },
-        {
-          title: "Unit",
-          icon: <FaUnity></FaUnity>,
-          path: "/dashboard/unit",
-        },
-        {
-          title: "Attribute",
-          icon: <CgAttribution></CgAttribution>,
-          path: "/dashboard/attribute",
-        },
-        {
-          title: "Product Variant",
-          icon: <RiProductHuntLine></RiProductHuntLine>,
-          path: "/dashboard/product-variant",
-        },
-      ],
-    },
-    {
-      title: "WebSetting",
-      icon: <MdSettingsAccessibility></MdSettingsAccessibility>,
-      path: "/dashboard/web-setting",
-    },
-  ];
-
   return (
     <>
       {menuStyle === "hover" && (
@@ -313,5 +208,4 @@ const Sidebar = ({ toggleSidebar, menuOpen, menuStyle }) => {
     </>
   );
 };
-
 export default Sidebar;
