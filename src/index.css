@@ -29,6 +29,9 @@ body {
 
   transition: background-color 0.3s ease, color 0.3s ease;
 }
+body.dark{
+  background-color: red;
+}
 .sidebar{
     width: 260px;
     flex-shrink: 0;

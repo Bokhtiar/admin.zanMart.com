@@ -1,70 +1,71 @@
-import { RxDashboard } from "react-icons/rx";
-import { IoColorPaletteOutline } from "react-icons/io5";
-import { RiGalleryFill, RiProductHuntLine } from "react-icons/ri";
-import { FaFirstOrder, FaUnity } from "react-icons/fa";
-import { CgAttribution } from "react-icons/cg";
+import { RiImageEditFill } from "react-icons/ri";
+import { FaShoppingCart, FaTrademark, FaCrown, FaBoxes } from "react-icons/fa";
 import {
   MdOutlineProductionQuantityLimits,
-  MdBrandingWatermark,
-  MdSettingsAccessibility,
-  MdOutlineCategory,
+  MdDashboard,
+  MdFormatListBulleted,
 } from "react-icons/md";
+import { BiCategory } from "react-icons/bi";
+import { AiFillHome } from "react-icons/ai";
+import { BsPaletteFill } from "react-icons/bs";
+import { HiOutlineScale } from "react-icons/hi";
+import { FiSettings, FiBox } from "react-icons/fi";
 export const menuData = [
   {
     title: "Dashboard",
-    icon: <RxDashboard />,
+    icon: <MdDashboard />,
     path: "/dashboard",
   },
   {
     title: "Order",
-    icon: <FaFirstOrder />,
+    icon: <FaShoppingCart />,
     path: "/dashboard/order",
   },
   {
     title: "Banner",
-    icon: <RiGalleryFill />,
+    icon: <RiImageEditFill />,
     path: "/dashboard/banner",
   },
   {
     title: "Category",
-    icon: <MdOutlineCategory />,
+    icon: <BiCategory />,
     // path: "/dashboard/category",
     childrens: [
       {
         title: "Category",
-        icon: <MdOutlineProductionQuantityLimits />,
+        icon: <BiCategory />,
         path: "/dashboard/category",
       },
       {
         title: "Home Category",
-        icon: <FaUnity />,
+        icon: <AiFillHome />,
         path: "/dashboard/category/homepage",
       },
     ],
   },
   {
     title: "Brand",
-    icon: <MdBrandingWatermark />,
+    icon: <FaTrademark />,
     path: "/dashboard/brand",
   },
 
   {
     title: "Product",
-    icon: <MdOutlineProductionQuantityLimits />,
+    icon: <FiBox />,
     childrens: [
       {
         title: "Color",
-        icon: <IoColorPaletteOutline />,
+        icon: <BsPaletteFill />,
         path: "/dashboard/color",
       },
       {
         title: "Attribute",
-        icon: <CgAttribution />,
+        icon: <MdFormatListBulleted />,
         path: "/dashboard/attribute",
       },
       {
         title: "Unit",
-        icon: <FaUnity />,
+        icon: <HiOutlineScale />,
         path: "/dashboard/unit",
       },
       {
@@ -74,12 +75,12 @@ export const menuData = [
       },
       {
         title: "Product Variant",
-        icon: <RiProductHuntLine />,
+        icon: <FaBoxes />,
         path: "/dashboard/product-variant",
       },
       {
         title: "Best Selling",
-        icon: <FaUnity />,
+        icon: <FaCrown />,
         path: "/dashboard/product/best-selling",
       },
     ],
@@ -87,7 +88,7 @@ export const menuData = [
 
   {
     title: "WebSetting",
-    icon: <MdSettingsAccessibility />,
+    icon: <FiSettings />,
     path: "/dashboard/web-setting",
   },
 ];
