@@ -5,10 +5,8 @@ import { networkErrorHandeller } from "../../utils/helper";
 import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link, useNavigate } from "react-router-dom";
 import { Toastify } from "../../components/toastify";
-import { FiSend } from "react-icons/fi"; 
-import { 
-  FaRegEdit,
-} from "react-icons/fa";
+import { FiSend } from "react-icons/fi";
+import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useDeleteModal } from "../../context/DeleteModalContext";
 const Product = () => {
@@ -60,12 +58,14 @@ const Product = () => {
       networkErrorHandeller(error);
     }
   };
-  // update best selling product 
+  // update best selling product
   const [bestProductId, setBestProductId] = useState([]);
   const updateBestSellingProduct = async () => {
     try {
-      const response = await NetworkServices.Product.bestSellingProduct(bestProductId);
-      if (response.status === 200 || response?.status === 201) { 
+      const response = await NetworkServices.Product.bestSellingProduct(
+        bestProductId
+      );
+      if (response.status === 200 || response?.status === 201) {
         navigate("/dashboard/product/best-selling");
         return Toastify.Info("Best Selling Product Added");
       }
@@ -73,7 +73,7 @@ const Product = () => {
       networkErrorHandeller(error);
     }
   };
-  // selected row id find 
+  // selected row id find
   const handleSelectedRowsChange = async (state) => {
     // Extract only the category_id from selected rows
     const ids = state.selectedRows.map((row) => row?.product_id);
@@ -158,19 +158,35 @@ const Product = () => {
       ),
     },
   ];
+  const handleData = async (id) => {
+    try {
+      const response = await NetworkServices.Product.show(id);
+      return <div>welcobaco</div>;
+    } catch (error) {}
+  };
+
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
-      <h2 className=" font-semibold text-xl">Product List</h2>
-       <div className="flex gap-4">
-       { bestProductId?.length ? <button onClick={()=>updateBestSellingProduct()} className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg">Add Best Selling </button>:""}
-        <Link
-          to="/dashboard/product/create"
-          className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
-        >
-          Add New <span className="  material-symbols-outlined p-1">add</span>
-        </Link>
-       </div>
+        <h2 className=" font-semibold text-xl">Product List</h2>
+        <div className="flex gap-4">
+          {bestProductId?.length ? (
+            <button
+              onClick={() => updateBestSellingProduct()}
+              className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
+            >
+              Add Best Selling{" "}
+            </button>
+          ) : (
+            ""
+          )}
+          <Link
+            to="/dashboard/product/create"
+            className="flex hover:bg-primary hover:text-white items-center gap-2 border-primary border text-primary  py-1 px-2  rounded-lg"
+          >
+            Add New <span className="  material-symbols-outlined p-1">add</span>
+          </Link>
+        </div>
       </div>
 
       {loading ? (
@@ -183,6 +199,22 @@ const Product = () => {
             data={productData}
             selectableRows
             onSelectedRowsChange={handleSelectedRowsChange}
+            expandableRows
+            expandableRowsComponent={({ data }) => (
+              <div >
+                {console.log(data)}
+                {data?.product_variants.map((item, index) => (
+                  <div key={index} className="flex justify-around bg-blue-100 text-black py-2">
+                    <span>price: {item?.price}</span>
+                    <span>color: {item?.color?.name}</span>
+                    <span>unit: {item?.unit?.name}</span>
+                    <span>attribute: {item?.attribute?.name}</span>
+                    <span>available_quantity: {item?.available_quantity}</span>
+                    <span>discount price: {item?.discount_price}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           />
         </>
       )}
