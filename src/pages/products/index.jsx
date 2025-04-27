@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {   useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { NetworkServices } from "../../network";
 import { networkErrorHandeller } from "../../utils/helper";
@@ -15,9 +15,7 @@ const Product = () => {
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1);
-  const [nextPageUrl, setNextPageUrl] = useState(null);
-  const [prevPageUrl, setPrevPageUrl] = useState(null);
+  const [lastPage, setLastPage] = useState(1); 
   const [perPage, setPerPage] = useState(10);
   // fetch product data
   const fetchData = async (page = 1, per_page) => {
@@ -27,11 +25,8 @@ const Product = () => {
       console.log(response.data);
 
       if (response?.status === 200 || response?.status === 201) {
-        setProductData(response?.data?.data?.data);
-        // setCurrentPage(response?.data?.data?.current_page)
-        setLastPage(response?.data?.data?.last_page);
-        setNextPageUrl(response?.data?.data?.next_page_url);
-        setPrevPageUrl(response?.data?.data?.prev_page_url);
+        setProductData(response?.data?.data?.data); 
+        setLastPage(response?.data?.data?.last_page); 
       }
       setLoading(false);
     } catch (error) {
@@ -77,6 +72,21 @@ const Product = () => {
     setBestProductId(ids);
   };
 
+  // pagination for current data set 
+  const handlePageChange = (page) => {
+    console.log(page);
+    if (!loading) {
+      setCurrentPage(page);
+    }
+
+    // fetchData(page);
+  };
+  // page per product show 
+  const handleRowsPerPageChange = (newPerPage) => {
+    console.log("Rows per page changed to:", newPerPage);
+    setPerPage(newPerPage); 
+  };
+  // table column use here 
   const columns = [
     {
       name: "Product ID",
@@ -155,24 +165,6 @@ const Product = () => {
       ),
     },
   ];
-  const handlePageChange = (page) => {
-    console.log(page);
-    if (!loading) {
-      setCurrentPage(page);
-    }
-
-    // fetchData(page);
-  };
-  const handleRowsPerPageChange = (newPerPage) => {
-    console.log("Rows per page changed to:", newPerPage);
-    setPerPage(newPerPage);
-    // fetchData(1, newPerPage); // Fetch data again with the new rows per page
-  };
-  const paginatedData = productData
-    .slice
-    // (currentPage - 1) * rowsPerPage,
-    // currentPage * rowsPerPage
-    ();
   return (
     <section>
       <div className="flex justify-between shadow-md p-4 px-6 rounded-md">
