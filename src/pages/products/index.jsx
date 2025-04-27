@@ -17,10 +17,14 @@ const Product = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [lastPage, setLastPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
+  const [countLoading, setCountLoading] = useState(1);
   // fetch product data
   const fetchData = async (page = 1, per_page) => {
     try {
-      setLoading(true);
+      if (countLoading === 1) {
+        setLoading(true);
+      }
+      setCountLoading(2);
       const response = await NetworkServices.Product.index(page, per_page); // Only use page from param
       console.log(response.data);
 
@@ -208,7 +212,11 @@ const Product = () => {
             expandableRows
             expandableRowsComponent={({ data }) => (
               <div>
-                <ProductVariantShow data={data} />
+                <ProductVariantShow
+                  data={data}
+                  openModal={openModal}
+                  fetchData={fetchData}
+                />
               </div>
             )}
           />
@@ -220,7 +228,19 @@ const Product = () => {
 
 export default Product;
 
-const ProductVariantShow = ({ data }) => {
+const ProductVariantShow = ({ data, openModal, fetchData }) => {
+  const destroy = async (id) => {
+    try {
+      const response = await NetworkServices.ProductVariant.destroy(id);
+      if (response.status === 200 || response?.status === 201) {
+        fetchData();
+        return Toastify.Info("productVariant Deleted");
+      }
+    } catch (error) {
+      networkErrorHandeller(error);
+    }
+  };
+
   return (
     <div className="p-4 bg-white rounded-lg shadow-md space-y-4">
       {/* If no product variants */}
@@ -264,13 +284,36 @@ const ProductVariantShow = ({ data }) => {
                 <span className="text-gray-500">Discount Price: </span>
                 {item?.discount_price}
               </div>
-              <div className="text-gray-700 font-medium"> 
-                <Link to={`/dashboard/product-variant/edit/${data?.product_id}`}>
+              <div className="text-gray-700 font-medium flex gap-4">
+                <Link
+                  to={`/dashboard/product-variant/edit/${data?.product_id}`}
+                >
                   <span className="">
                     <FaRegEdit />
                   </span>
                 </Link>
+                <span>
+                  <span
+                    className="text-red-700 cursor-pointer"
+                    // onClick={()=>destroyss(item?.product_variant_id)}
+                    onClick={() =>
+                      openModal(
+                        () => destroy(item?.product_variant_id),
+                        <span>
+                          Are you sure you want to delete{" "}
+                          <span className="bg-blue-500 text-white font-semibold px-2 py-1 rounded">
+                            {data?.title}
+                          </span>{" "}
+                          item?
+                        </span>
+                      )
+                    }
+                  >
+                    <RiDeleteBin6Line />
+                  </span>
+                </span>
               </div>
+               
             </div>
           ))}
         </>
