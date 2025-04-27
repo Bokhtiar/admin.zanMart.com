@@ -3,34 +3,32 @@ import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
 import { SkeletonForm } from "../../../components/loading/skeleton-table";
-import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
 import { useFieldArray, useForm } from "react-hook-form";
 import { SingleSelect, TextInput } from "../../../components/input";
 import { networkErrorHandeller } from "../../../utils/helper";
 
 const ProductForm = () => {
   const { id } = useParams();
-  const [products, setProducts] = useState([]);
+  const navigate = useNavigate();
   const [colors, setColors] = useState([]);
   const [attributes, setAttributes] = useState([]);
-
   const [unit, setUnit] = useState([]);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [addedVariant, setAddedVariant] = useState([]);
-
+  // react hook form declaration
   const {
     control,
     handleSubmit,
-    watch,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
       variant: [{ price: "" }],
     },
   });
-
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "variant",
+  });
+  // color fetch for set product vairant
   const fetchColor = useCallback(async () => {
     // setLoading(true);
     try {
@@ -58,30 +56,9 @@ const ProductForm = () => {
   useEffect(() => {
     fetchColor();
   }, [fetchColor]);
-
-  const fetchProducts = useCallback(async () => {
-    try {
-      const ProductResponse = await NetworkServices.Product.index();
-      if (ProductResponse.status === 200) {
-        const result = ProductResponse?.data?.data?.data;
-        const data = result.map((data) => ({
-          label: data?.slug,
-          value: data?.product_id,
-          ...data,
-        }));
-        setProducts(data);
-      }
-    } catch (error) {
-      Toastify.Error(error);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchProducts();
-  }, [fetchProducts]);
-
+  //  unit fetch
   const fetchUnit = useCallback(async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       const unitResponse = await NetworkServices.Unit.index(); // Fetch colors from API
 
@@ -108,9 +85,9 @@ const ProductForm = () => {
   useEffect(() => {
     fetchUnit();
   }, [fetchUnit]);
-
+  //  attribute fetch here
   const fetchAttribute = useCallback(async () => {
-    // setLoading(true);
+    setLoading(true);
     try {
       const attributeResponse = await NetworkServices.Attribute.index(); // Fetch colors from API
 
@@ -136,28 +113,6 @@ const ProductForm = () => {
   useEffect(() => {
     fetchAttribute();
   }, [fetchAttribute]);
-
-  const handelAllVariant = () => {
-    // reset({
-    //   quantity:"",
-    //   color:""
-    // })
-    const data = {
-      product_id: id,
-      color_id: Number(watch("color")?.color_id),
-      attribute_id: Number(watch("attributes")?.attribute_id),
-      unit_id: Number(watch("unit")?.unit_id),
-      product_qty: Number(watch("quantity")),
-      weight: Number(watch("weight")),
-      price: Number(watch("price")),
-      // flat_discount: Number(e?.flat_discount),
-      discount_price: Number(watch("flat_discount")),
-      available_quantity: Number(watch("available_quantity")),
-    };
-    console.log(data);
-    setAddedVariant((prev) => [...prev, data]);
-    // setdd(!ddd);
-  };
 
   // submit here   code
   const onSubmit = async (e) => {
@@ -185,10 +140,6 @@ const ProductForm = () => {
     }
   };
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "variant",
-  });
   //  random color call for every form to see detairmind easily
   const callColor = (index) => {
     const randomColor = [
@@ -379,13 +330,13 @@ const ProductForm = () => {
                 Add
               </span> */}
                 </div>
-                <button
+               { fields?.length!==1&& <button
                   type="button"
                   onClick={() => remove(index)}
                   className="bg-red-500 text-white px-3 py-1 rounded mt-2"
                 >
                   Remove
-                </button>
+                </button>}
               </div>
             ))}
 
