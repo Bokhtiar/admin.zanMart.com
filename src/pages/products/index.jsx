@@ -1,4 +1,4 @@
-import React, {   useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { NetworkServices } from "../../network";
 import { networkErrorHandeller } from "../../utils/helper";
@@ -15,7 +15,7 @@ const Product = () => {
   const [loading, setLoading] = useState(false);
   const [productData, setProductData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [lastPage, setLastPage] = useState(1); 
+  const [lastPage, setLastPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   // fetch product data
   const fetchData = async (page = 1, per_page) => {
@@ -25,8 +25,8 @@ const Product = () => {
       console.log(response.data);
 
       if (response?.status === 200 || response?.status === 201) {
-        setProductData(response?.data?.data?.data); 
-        setLastPage(response?.data?.data?.last_page); 
+        setProductData(response?.data?.data?.data);
+        setLastPage(response?.data?.data?.last_page);
       }
       setLoading(false);
     } catch (error) {
@@ -72,7 +72,7 @@ const Product = () => {
     setBestProductId(ids);
   };
 
-  // pagination for current data set 
+  // pagination for current data set
   const handlePageChange = (page) => {
     console.log(page);
     if (!loading) {
@@ -81,12 +81,12 @@ const Product = () => {
 
     // fetchData(page);
   };
-  // page per product show 
+  // page per product show
   const handleRowsPerPageChange = (newPerPage) => {
     console.log("Rows per page changed to:", newPerPage);
-    setPerPage(newPerPage); 
+    setPerPage(newPerPage);
   };
-  // table column use here 
+  // table column use here
   const columns = [
     {
       name: "Product ID",
@@ -263,6 +263,13 @@ const ProductVariantShow = ({ data }) => {
               <div className="text-gray-700 font-medium">
                 <span className="text-gray-500">Discount Price: </span>
                 {item?.discount_price}
+              </div>
+              <div className="text-gray-700 font-medium"> 
+                <Link to={`/dashboard/product-variant/edit/${data?.product_id}`}>
+                  <span className="">
+                    <FaRegEdit />
+                  </span>
+                </Link>
               </div>
             </div>
           ))}

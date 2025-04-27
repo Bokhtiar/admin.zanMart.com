@@ -321,15 +321,6 @@ const ProductForm = () => {
                     />
                   </div>
                 </div>
-                {/* Submit Button */}
-                <div className="flex gap-4">
-                  {/* <span
-                onClick={handelAllVariant}
-                className="cursor-pointer flex justify-center w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add
-              </span> */}
-                </div>
                { fields?.length!==1&& <button
                   type="button"
                   onClick={() => remove(index)}
@@ -341,13 +332,15 @@ const ProductForm = () => {
             ))}
 
             <div className="flex gap-4">
+              {/* add more button  */}
               <button
                 type="button"
-                onClick={() => append({ product: "", product1: "" })}
+                onClick={() => append({ price: ""  })}
                 className="bg-green-500 text-white px-4 py-2 rounded"
               >
                 Add More
               </button>
+              {/* submit button  */}
               <button
                 type="submit"
                 className="bg-blue-500 text-white px-4 py-2 rounded"
