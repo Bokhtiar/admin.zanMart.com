@@ -221,6 +221,7 @@ export const SingleSelect = (props) => {
     // console.log("value",value)
   
     const handleSelect = (event) => {
+       
       onChange(event);
       props.onSelected?.(event);
     };

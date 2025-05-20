@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState } from "react";
+import { FaPlus } from "react-icons/fa";
 import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
@@ -6,7 +7,6 @@ import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { useFieldArray, useForm } from "react-hook-form";
 import { SingleSelect, TextInput } from "../../../components/input";
 import { networkErrorHandeller } from "../../../utils/helper";
-import { FaPlus } from "react-icons/fa";
 import useFetch from "../../../hooks/api/useFetch";
 import usePost from "../../../hooks/api/usePost";
 import VariantModal from "../Components/VariantModal";
@@ -14,7 +14,13 @@ import { PrimaryButton } from "../../../components/button";
 import { attributeField, colorField, unitField } from "./data";
 const ProductForm = () => {
   const { id } = useParams();
-  const navigate = useNavigate();   
+  const navigate = useNavigate();
+  const [match_unitId, setIds] = useState("");
+  const [colorModal, setColorModal] = useState(false);
+  const [dynamicAttributeName, setDynamicAttributeName] = useState({
+    key: "",
+    value: [],
+  });
   // react hook form declaration
   const {
     control,
@@ -29,12 +35,24 @@ const ProductForm = () => {
     control,
     name: "variant",
   });
-     // color fetch for set product vairant
-    const {data:colors,loading:colorLoading, refetch: fetchColor} = useFetch("admin/color");
-     // unit fetch 
-    const {data:units,loading:unitLoading, refetch: fetchUnit} = useFetch("admin/unit"); 
-     // attribute fetch 
-    const {data:attributes,loading:attributeLoading, refetch: fetchAttribute} = useFetch("admin/attribute"); 
+  // color fetch for set product vairant
+  const {
+    data: colors,
+    loading: colorLoading,
+    refetch: fetchColor,
+  } = useFetch("admin/color");
+  // unit fetch
+  const {
+    data: units,
+    loading: unitLoading,
+    refetch: fetchUnit,
+  } = useFetch("admin/unit");
+  // attribute fetch
+  const {
+    data: attributes,
+    loading: attributeLoading,
+    refetch: fetchAttribute,
+  } = useFetch("admin/attribute");
   // submit here   code
   const onSubmit = async (e) => {
     try {
@@ -79,7 +97,7 @@ const ProductForm = () => {
       return randomColor[randomNumber - 1];
     }
     return randomColor[index];
-  }; 
+  };
   // added  attribute function
   const {
     control: newControl,
@@ -87,19 +105,15 @@ const ProductForm = () => {
     formState: { errors: colorError },
     reset,
   } = useForm();
-  const [colorModal, setColorModal] = useState(false);
-  const [dynamicAttributeName, setDynamicAttributeName] = useState({
-    key: "",
-    value: [],
-  });
-  // post attribute 
+
+  // post attribute
   const { data: colorData, loading: ColorLoading, error, postData } = usePost();
   const colorSubmit = async (data) => {
     let payload = { ...data };
     if (data?.unit_id) {
-      payload.unit_id = data.unit_id?.unit_id; 
-    } 
-    const res = await postData(dynamicAttributeName?.key, payload); 
+      payload.unit_id = data.unit_id?.unit_id;
+    }
+    const res = await postData(dynamicAttributeName?.key, payload);
     if (res) {
       if (dynamicAttributeName?.key === "admin/color") {
         fetchColor();
@@ -115,20 +129,24 @@ const ProductForm = () => {
       return Toastify.Success(res?.message);
     }
   };
-  // valu label added in unit color attribute section 
-const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
-  return data.map(item=>{
-    return{
-      ...item,
-      value:item?.[value],
-      label:item?.[label]
-    }
-  })
-}
- 
+  // valu label added in unit color attribute section
+  const selectValueLabelFieldAddedFunction = (
+    data = [],
+    label = "",
+    value = ""
+  ) => {
+    return data.map((item) => {
+      return {
+        ...item,
+        value: item?.[value],
+        label: item?.[label],
+      };
+    });
+  };
+
   return (
     <>
-      {(unitLoading||attributeLoading||colorLoading) ? (
+      {(unitLoading || attributeLoading || colorLoading) && false ? (
         <SkeletonForm />
       ) : (
         <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -149,6 +167,24 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                   <div className=" ">
                     {dynamicAttributeName?.value.map((item, idx) => (
                       <div key={idx} className="pt-1">
+                        {item?.type == "select" && (
+                          <SingleSelect
+                            label=" Select Attributes"
+                            name={item?.name}
+                            error={
+                              errors[item?.name] && errors[item?.name].message
+                            }
+                            control={newControl}
+                            isClearable={true}
+                            placeholder={item?.placeholder}
+                            options={selectValueLabelFieldAddedFunction(
+                              units?.data?.data,
+                              "name",
+                              "unit_id"
+                            )}
+                            rules={{ required: item?.rules }}
+                          />
+                        )}
                         {["text", "number"].includes(item?.type) && (
                           <TextInput
                             label={item?.label}
@@ -162,20 +198,6 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                             rules={{ required: item?.rules }}
                             min={item?.min}
                             max={item?.max}
-                          />
-                        )}
-                        {item?.type == "select" && (
-                          <SingleSelect
-                            label=" Select Attributes"
-                            name={item?.name}
-                            error={
-                              errors[item?.name] && errors[item?.name].message
-                            }
-                            control={newControl}
-                            isClearable={true}
-                            placeholder={item?.placeholder}
-                            options={attributes}
-                            rules={{ required: item?.rules }}
                           />
                         )}
                       </div>
@@ -214,7 +236,11 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                       }
                       isClearable={true}
                       placeholder="Select Color"
-                      options={  selectValueLabelFieldAddedFunction(colors?.data?.data,"name","color_id")}
+                      options={selectValueLabelFieldAddedFunction(
+                        colors?.data?.data,
+                        "name",
+                        "color_id"
+                      )}
                       rules={{ required: "Color is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
@@ -245,10 +271,16 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                       }
                       isClearable={true}
                       placeholder="Select unit"
-                      options={  selectValueLabelFieldAddedFunction(units?.data?.data,"name","unit_id")}
+                      options={selectValueLabelFieldAddedFunction(
+                        units?.data?.data,
+                        "name",
+                        "unit_id"
+                      )}
                       rules={{ required: "unit is required" }}
                       // onSearch={fetchunit}
-                      // onSelectId={(id) => setSelectedColor(id)}
+                      onSelected={(id) => {
+                        setIds(id?.unit_id);
+                      }}
                     />
                     <span
                       className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
@@ -278,7 +310,13 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                       control={control}
                       isClearable={true}
                       placeholder="Select Attributes"
-                      options={  selectValueLabelFieldAddedFunction(attributes?.data?.data,"name","attribute_id")}
+                      options={selectValueLabelFieldAddedFunction(
+                        attributes?.data?.data.filter(
+                          (item) => item?.unit?.unit_id === match_unitId
+                        ),
+                        "name",
+                        "attribute_id"
+                      )}
                       rules={{ required: "Attributes is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
@@ -344,7 +382,6 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                       rules={{ required: "Quantity is required" }}
                     />
                   </div>
-
                   {/* Price Input */}
                   <div className="flex-1">
                     <TextInput
@@ -387,7 +424,6 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
                 )}
               </div>
             ))}
-
             <div className="flex gap-4">
               {/* add more button  */}
               <button
@@ -411,5 +447,4 @@ const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
     </>
   );
 };
-
 export default ProductForm;
