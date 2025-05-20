@@ -73,11 +73,11 @@ export const menuData = [
         icon: <MdOutlineProductionQuantityLimits />,
         path: "/dashboard/product",
       },
-      {
-        title: "Product Variant",
-        icon: <FaBoxes />,
-        path: "/dashboard/product-variant",
-      },
+      // {
+      //   title: "Product Variant",
+      //   icon: <FaBoxes />,
+      //   path: "/dashboard/product-variant",
+      // },
       {
         title: "Best Selling",
         icon: <FaCrown />,
