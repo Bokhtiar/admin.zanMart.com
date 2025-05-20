@@ -11,13 +11,10 @@ import useFetch from "../../../hooks/api/useFetch";
 import usePost from "../../../hooks/api/usePost";
 import VariantModal from "../Components/VariantModal";
 import { PrimaryButton } from "../../../components/button";
+import { attributeField, colorField, unitField } from "./data";
 const ProductForm = () => {
   const { id } = useParams();
-  const navigate = useNavigate();
-  const [colors, setColors] = useState([]);
-  const [attributes, setAttributes] = useState([]);
-  const [unit, setUnit] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();   
   // react hook form declaration
   const {
     control,
@@ -32,92 +29,12 @@ const ProductForm = () => {
     control,
     name: "variant",
   });
-  // color fetch for set product vairant
-  const fetchColor = useCallback(async () => {
-    // setLoading(true);
-    try {
-      const colorResponse = await NetworkServices.Color.index(); // Fetch colors from API
-
-      if (colorResponse && colorResponse.status === 200) {
-        const result = colorResponse.data.data.data.map((item) => {
-          return {
-            label: item.name,
-            value: item.color_id,
-            ...item,
-          };
-        });
-
-        setColors(result); // Set the result to state
-      }
-    } catch (error) {
-      console.error("Fetch Category Error:", error); // Handle errors
-    }
-
-    setLoading(false); // End loading (handled in both success and error)
-  }, []);
-
-  // Fetch color data when the component mounts
-  useEffect(() => {
-    fetchColor();
-  }, [fetchColor]);
-  //  unit fetch
-  const fetchUnit = useCallback(async () => {
-    setLoading(true);
-    try {
-      const unitResponse = await NetworkServices.Unit.index(); // Fetch colors from API
-
-      if (unitResponse && unitResponse.status === 200) {
-        console.log(unitResponse);
-        const result = unitResponse.data?.data?.data?.map((item) => {
-          return {
-            label: item.name,
-            value: item.unit_id,
-            ...item,
-          };
-        });
-
-        setUnit(result); // Set the result to state
-      }
-    } catch (error) {
-      console.error("Fetch Category Error:", error); // Handle errors
-    }
-
-    setLoading(false); // End loading (handled in both success and error)
-  }, []);
-
-  // Fetch color data when the component mounts
-  useEffect(() => {
-    fetchUnit();
-  }, [fetchUnit]);
-  //  attribute fetch here
-  const fetchAttribute = useCallback(async () => {
-    setLoading(true);
-    try {
-      const attributeResponse = await NetworkServices.Attribute.index(); // Fetch colors from API
-
-      if (attributeResponse && attributeResponse.status === 200) {
-        const result = attributeResponse.data?.data?.data?.map((item) => {
-          return {
-            label: item.name,
-            value: item.attribute_id,
-            ...item,
-          };
-        });
-
-        setAttributes(result); // Set the result to state
-      }
-    } catch (error) {
-      console.error("Fetch Category Error:", error); // Handle errors
-    }
-
-    setLoading(false); // End loading (handled in both success and error)
-  }, []);
-
-  // Fetch color data when the component mounts
-  useEffect(() => {
-    fetchAttribute();
-  }, [fetchAttribute]);
-
+     // color fetch for set product vairant
+    const {data:colors,loading:colorLoading, refetch: fetchColor} = useFetch("admin/color");
+     // unit fetch 
+    const {data:units,loading:unitLoading, refetch: fetchUnit} = useFetch("admin/unit"); 
+     // attribute fetch 
+    const {data:attributes,loading:attributeLoading, refetch: fetchAttribute} = useFetch("admin/attribute"); 
   // submit here   code
   const onSubmit = async (e) => {
     try {
@@ -162,9 +79,8 @@ const ProductForm = () => {
       return randomColor[randomNumber - 1];
     }
     return randomColor[index];
-  };
-  const l = false;
-  // added color
+  }; 
+  // added  attribute function
   const {
     control: newControl,
     handleSubmit: newColorAdded,
@@ -172,21 +88,47 @@ const ProductForm = () => {
     reset,
   } = useForm();
   const [colorModal, setColorModal] = useState(false);
+  const [dynamicAttributeName, setDynamicAttributeName] = useState({
+    key: "",
+    value: [],
+  });
+  // post attribute 
   const { data: colorData, loading: ColorLoading, error, postData } = usePost();
   const colorSubmit = async (data) => {
-    const payload = { name: data?.name };
-    const res = await postData("admin/color", payload);
+    let payload = { ...data };
+    if (data?.unit_id) {
+      payload.unit_id = data.unit_id?.unit_id; 
+    } 
+    const res = await postData(dynamicAttributeName?.key, payload); 
     if (res) {
-      fetchColor();
+      if (dynamicAttributeName?.key === "admin/color") {
+        fetchColor();
+      }
+      if (dynamicAttributeName?.key === "admin/unit") {
+        fetchUnit();
+      }
+      if (dynamicAttributeName?.key === "admin/attribute") {
+        fetchAttribute();
+      }
       setColorModal(false);
       reset();
-      return Toastify.Success("Color Created.");
+      return Toastify.Success(res?.message);
     }
   };
-
+  // valu label added in unit color attribute section 
+const selectValueLabelFieldAddedFunction = (data=[],label="",value="")=>{
+  return data.map(item=>{
+    return{
+      ...item,
+      value:item?.[value],
+      label:item?.[label]
+    }
+  })
+}
+ 
   return (
     <>
-      {l ? (
+      {(unitLoading||attributeLoading||colorLoading) ? (
         <SkeletonForm />
       ) : (
         <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -205,15 +147,39 @@ const ProductForm = () => {
               <section className="     ">
                 <form className=" " onSubmit={newColorAdded(colorSubmit)}>
                   <div className=" ">
-                    <TextInput
-                      label="Color Name"
-                      name="name"
-                      type="text"
-                      placeholder="Enter Color name"
-                      control={newControl}
-                      error={errors.name && errors.name.message}
-                      rules={{ required: "Color Name is required" }}
-                    />
+                    {dynamicAttributeName?.value.map((item, idx) => (
+                      <div key={idx} className="pt-1">
+                        {["text", "number"].includes(item?.type) && (
+                          <TextInput
+                            label={item?.label}
+                            name={item?.name}
+                            type={item?.type}
+                            placeholder={item?.placeholder}
+                            control={newControl}
+                            error={
+                              errors[item?.name] && errors[item?.name].message
+                            }
+                            rules={{ required: item?.rules }}
+                            min={item?.min}
+                            max={item?.max}
+                          />
+                        )}
+                        {item?.type == "select" && (
+                          <SingleSelect
+                            label=" Select Attributes"
+                            name={item?.name}
+                            error={
+                              errors[item?.name] && errors[item?.name].message
+                            }
+                            control={newControl}
+                            isClearable={true}
+                            placeholder={item?.placeholder}
+                            options={attributes}
+                            rules={{ required: item?.rules }}
+                          />
+                        )}
+                      </div>
+                    ))}
                     {/* <input type="color" name="color" {...register('name')} /> */}
                   </div>
 
@@ -221,7 +187,7 @@ const ProductForm = () => {
                   <div className=" mt-2 flex justify-center">
                     <PrimaryButton
                       loading={ColorLoading}
-                      name="Color create"
+                      name="Create"
                     ></PrimaryButton>
                   </div>
                 </form>
@@ -248,21 +214,27 @@ const ProductForm = () => {
                       }
                       isClearable={true}
                       placeholder="Select Color"
-                      options={colors}
+                      options={  selectValueLabelFieldAddedFunction(colors?.data?.data,"name","color_id")}
                       rules={{ required: "Color is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
                     <span
                       className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
-                      onClick={() => setColorModal(true)}
+                      onClick={() => {
+                        setDynamicAttributeName({
+                          key: "admin/color",
+                          value: colorField,
+                        });
+                        setColorModal(true);
+                      }}
                     >
                       <FaPlus className="text-2xl" />
                     </span>
                   </div>
 
                   {/* Unit Select Dropdown */}
-                  <div className="flex-1">
+                  <div className="w-full flex-1 relative">
                     <SingleSelect
                       label=" Select Unit"
                       control={control}
@@ -273,17 +245,29 @@ const ProductForm = () => {
                       }
                       isClearable={true}
                       placeholder="Select unit"
-                      options={unit}
+                      options={  selectValueLabelFieldAddedFunction(units?.data?.data,"name","unit_id")}
                       rules={{ required: "unit is required" }}
                       // onSearch={fetchunit}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
+                    <span
+                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      onClick={() => {
+                        setDynamicAttributeName({
+                          key: "admin/unit",
+                          value: unitField,
+                        });
+                        setColorModal(true);
+                      }}
+                    >
+                      <FaPlus className="text-2xl" />
+                    </span>
                   </div>
                 </div>
                 {/* Row for Unit and Quantity */}
                 <div className="flex flex-col mb-4 gap-4 md:flex-row">
                   {/* Attribute Select Dropdown */}
-                  <div className="flex-1">
+                  <div className="w-full flex-1 relative">
                     <SingleSelect
                       label=" Select Attributes"
                       name={`variant.${index}.attributes`}
@@ -294,12 +278,25 @@ const ProductForm = () => {
                       control={control}
                       isClearable={true}
                       placeholder="Select Attributes"
-                      options={attributes}
+                      options={  selectValueLabelFieldAddedFunction(attributes?.data?.data,"name","attribute_id")}
                       rules={{ required: "Attributes is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
+                    <span
+                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      onClick={() => {
+                        setDynamicAttributeName({
+                          key: "admin/attribute",
+                          value: attributeField,
+                        });
+                        setColorModal(true);
+                      }}
+                    >
+                      <FaPlus className="text-2xl" />
+                    </span>
                   </div>
+
                   {/* Quantity Input */}
                   <div className="flex-1">
                     <TextInput
