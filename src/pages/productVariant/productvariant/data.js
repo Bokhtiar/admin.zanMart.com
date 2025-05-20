@@ -7,7 +7,7 @@ export const colorField = [
     rules: "Color Name is required",
   },
   
-]
+];
  
 export const unitField = [
   {
@@ -17,7 +17,7 @@ export const unitField = [
     placeholder: "Enter Unit name",
     rules: "Unit Name is required",
   }, 
-]
+];
 export const attributeField = [
   {
     label: "Unit Name",
@@ -32,7 +32,6 @@ export const attributeField = [
     type: "text",
     placeholder: "Enter Attribute name",
     rules: "Unit Attribute is required",
-  }, 
-
-]
+  },  
+];
     

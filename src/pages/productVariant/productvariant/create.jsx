@@ -246,7 +246,7 @@ const ProductForm = () => {
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
                     <span
-                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      className="text-white bg-green-500 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
                       onClick={() => {
                         setDynamicAttributeName({
                           key: "admin/color",
@@ -283,7 +283,7 @@ const ProductForm = () => {
                       }}
                     />
                     <span
-                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      className="text-white bg-green-500 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
                       onClick={() => {
                         setDynamicAttributeName({
                           key: "admin/unit",
@@ -322,7 +322,7 @@ const ProductForm = () => {
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
                     <span
-                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      className="text-white bg-green-500 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
                       onClick={() => {
                         setDynamicAttributeName({
                           key: "admin/attribute",
