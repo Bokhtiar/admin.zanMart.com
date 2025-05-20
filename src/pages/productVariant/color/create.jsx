@@ -5,21 +5,16 @@ import { NetworkServices } from "../../../network/index";
 import { PrimaryButton } from "../../../components/button";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { networkErrorHandeller } from "../../../utils/helper";
-import {
-  
-  TextInput,
-} from "../../../components/input";
- 
+import { TextInput } from "../../../components/input";
+
 export const ColorCreate = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [buttonLoading, setButtonLoading] = useState(false);
- 
- 
+
   const {
     control,
-    handleSubmit,
-               register,
+    handleSubmit, 
     formState: { errors },
   } = useForm();
   /* submit reosurce */
@@ -28,11 +23,11 @@ export const ColorCreate = () => {
       setButtonLoading(true);
       const payload = {
         ...data,
-      };   
-     
+      };
+
       const response = await NetworkServices.Color.store(payload);
       if (response && (response.status === 201 || response?.status === 200)) {
-        navigate('/dashboard/Color')
+        navigate("/dashboard/Color");
         setButtonLoading(false);
         return Toastify.Success("Color Created.");
       }

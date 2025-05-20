@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Toastify } from "../../../components/toastify";
@@ -6,7 +6,11 @@ import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { useFieldArray, useForm } from "react-hook-form";
 import { SingleSelect, TextInput } from "../../../components/input";
 import { networkErrorHandeller } from "../../../utils/helper";
-
+import { FaPlus } from "react-icons/fa";
+import useFetch from "../../../hooks/api/useFetch";
+import usePost from "../../../hooks/api/usePost";
+import VariantModal from "../Components/VariantModal";
+import { PrimaryButton } from "../../../components/button";
 const ProductForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -159,9 +163,30 @@ const ProductForm = () => {
     }
     return randomColor[index];
   };
+  const l = false;
+  // added color
+  const {
+    control: newControl,
+    handleSubmit: newColorAdded,
+    formState: { errors: colorError },
+    reset,
+  } = useForm();
+  const [colorModal, setColorModal] = useState(false);
+  const { data: colorData, loading: ColorLoading, error, postData } = usePost();
+  const colorSubmit = async (data) => {
+    const payload = { name: data?.name };
+    const res = await postData("admin/color", payload);
+    if (res) {
+      fetchColor();
+      setColorModal(false);
+      reset();
+      return Toastify.Success("Color Created.");
+    }
+  };
+
   return (
     <>
-      {loading ? (
+      {l ? (
         <SkeletonForm />
       ) : (
         <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
@@ -175,7 +200,34 @@ const ProductForm = () => {
               </span>
             </Link>
           </div>
+          {colorModal && (
+            <VariantModal setOpen={setColorModal}>
+              <section className="     ">
+                <form className=" " onSubmit={newColorAdded(colorSubmit)}>
+                  <div className=" ">
+                    <TextInput
+                      label="Color Name"
+                      name="name"
+                      type="text"
+                      placeholder="Enter Color name"
+                      control={newControl}
+                      error={errors.name && errors.name.message}
+                      rules={{ required: "Color Name is required" }}
+                    />
+                    {/* <input type="color" name="color" {...register('name')} /> */}
+                  </div>
 
+                  {/* submit button */}
+                  <div className=" mt-2 flex justify-center">
+                    <PrimaryButton
+                      loading={ColorLoading}
+                      name="Color create"
+                    ></PrimaryButton>
+                  </div>
+                </form>
+              </section>
+            </VariantModal>
+          )}
           <form onSubmit={handleSubmit(onSubmit)} className="p-4  ">
             {fields.map((field, index) => (
               <div
@@ -185,7 +237,7 @@ const ProductForm = () => {
                 {/* Row for Color and Attribute */}
                 <div className="md:space-y-0  space-y-2  flex flex-col mb-4 gap-4 md:flex-row">
                   {/* Color Select Dropdown */}
-                  <div className="flex-1">
+                  <div className="w-full flex-1 relative">
                     <SingleSelect
                       label="Select Color"
                       name={`variant.${index}.color`}
@@ -201,6 +253,12 @@ const ProductForm = () => {
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
+                    <span
+                      className="bg-green-900 rounded-r-md absolute top-[25px] px-4 py-3 right-0 cursor-pointer"
+                      onClick={() => setColorModal(true)}
+                    >
+                      <FaPlus className="text-2xl" />
+                    </span>
                   </div>
 
                   {/* Unit Select Dropdown */}
@@ -321,13 +379,15 @@ const ProductForm = () => {
                     />
                   </div>
                 </div>
-               { fields?.length!==1&& <button
-                  type="button"
-                  onClick={() => remove(index)}
-                  className="bg-red-500 text-white px-3 py-1 rounded mt-2"
-                >
-                  Remove
-                </button>}
+                {fields?.length !== 1 && (
+                  <button
+                    type="button"
+                    onClick={() => remove(index)}
+                    className="bg-red-500 text-white px-3 py-1 rounded mt-2"
+                  >
+                    Remove
+                  </button>
+                )}
               </div>
             ))}
 
@@ -335,7 +395,7 @@ const ProductForm = () => {
               {/* add more button  */}
               <button
                 type="button"
-                onClick={() => append({ price: ""  })}
+                onClick={() => append({ price: "" })}
                 className="bg-green-500 text-white px-4 py-2 rounded"
               >
                 Add More
