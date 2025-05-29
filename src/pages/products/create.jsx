@@ -55,6 +55,7 @@ export const ProductCreate = () => {
       const formData = new FormData();
       formData.append("title", data?.title); // Other form fields
       formData.append("description", data?.description); // Other form fields
+      formData.append("short_description", data?.short_description); // Other form fields
       formData.append("sell_price", data?.sell_price); // Other form fields
       formData.append("category_id", data?.category_id); // Other form fields
       formData.append("rating", data?.rating); // Other form fields
@@ -94,6 +95,9 @@ export const ProductCreate = () => {
   // description handler react quill
   const handleQuillChange = (content) => {
     setValue("description", content); // Update form state
+  };
+  const handleQuillChange1 = (content) => {
+    setValue("short_description", content); // Update form state
   };
 
   // fetch category list
@@ -222,6 +226,25 @@ export const ProductCreate = () => {
               </div>
             </div>
 
+            {/* short description field  */}
+
+            <div className="mb-6 lg:mb-2">
+              <p className="text-sm mb-1 text-gray-500">
+                Product Short Description 
+              </p>
+              <div className="quill-wrapper   rounded-lg border border-gray-300 overflow-hidden">
+                <ReactQuill
+                  onChange={handleQuillChange1}
+                  placeholder="Write your description..."
+                  className="w-full overflow-y-auto h-32 bg-white rounded-md"
+                />
+                {errors?.description && (
+                  <p className="text-red-500 mt-1">
+                    {errors.description.message}
+                  </p>
+                )}
+              </div>
+            </div>
             {/* description field  */}
 
             <div className="mb-6 lg:mb-2">
