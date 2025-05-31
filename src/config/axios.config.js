@@ -8,6 +8,7 @@ const publicRequest = axios.create({
 
 const privateRequest = axios.create({
     baseURL: process.env.REACT_APP_API_ENDPOINT,
+    
 }); 
 
 /* Public request config */
