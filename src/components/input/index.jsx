@@ -211,7 +211,7 @@ export const SingleSelect = (props) => {
   const {
     field: { onChange, onBlur, value },
   } = useController({
-    name: props.name,
+    name: props?.name,
     control: props.control,
     rules: { ...props.rules },
     defaultValue: props.defaultvalue,
@@ -239,17 +239,17 @@ export const SingleSelect = (props) => {
 
   return (
     <div className="">
-      {props.error ? (
-        <p className="text-sm mb-1 text-danger text-red-500">{props.error}</p>
+      {props?.error ? (
+        <p className="text-sm mb-1 text-danger text-red-500">{props?.error}</p>
       ) : (
-        <p className="text-sm mb-1 text-gray-500 ">{props.label}</p>
+        <p className="text-sm mb-1 text-gray-500 ">{props?.label}</p>
       )}
       <Select
         classNamePrefix={`custom-select cursor-pointer`}
         onBlur={onBlur} // notify when input is touched/blur
         value={value} // input value
-        name={props.name} // send down the input name
-        styles={customStyles(props.error, theme)}
+        name={props?.name} // send down the input name
+        styles={customStyles(props?.error, theme)}
         components={{
           DropdownIndicator: () => null,
           IndicatorSeparator: () => null,
@@ -257,10 +257,10 @@ export const SingleSelect = (props) => {
         options={props.options}
         onChange={handleSelect}
         isClearable={props.isClearable}
-        defaultValue={props.defaultvalue ? { ...props.defaultvalue } : null}
+        defaultValue={props.defaultvalue ? { ...props?.defaultvalue } : null}
         placeholder={props.placeholder}
         // disabled={props.disabled}
-        isDisabled={props.disabled}
+        isDisabled={props?.disabled}
       />
     </div>
   );
@@ -285,9 +285,9 @@ export const MultiSelect = (props) => {
   return (
     <div>
       {props.error ? (
-        <p className="text-sm mb-1 text-danger">{props.error}</p>
+        <p className="text-sm mb-1 text-danger">{props?.error}</p>
       ) : (
-        <p className="text-sm mb-1 text-gray-500">{props.label}</p>
+        <p className="text-sm mb-1 text-gray-500">{props?.label}</p>
       )}
 
       <Select
@@ -298,18 +298,18 @@ export const MultiSelect = (props) => {
         options={props.options}
         onChange={handleSelect}
         classNamePrefix={`custom-select`}
-        styles={customStyles(props.error)}
+        styles={customStyles(props?.error)}
         components={{
           DropdownIndicator: () => null,
           IndicatorSeparator: () => null,
         }}
-        isClearable={props.isClearable}
-        placeholder={props.placeholder}
+        isClearable={props?.isClearable}
+        placeholder={props?.placeholder}
         defaultValue={
-          props.defaultvalue
+          props?.defaultvalue
             ? props.defaultvalue.map((item) => ({
-                value: item.value,
-                label: item.label,
+                value: item?.value,
+                label: item?.label,
               }))
             : null
         }

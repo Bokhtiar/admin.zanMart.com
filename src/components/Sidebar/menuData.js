@@ -91,4 +91,26 @@ export const menuData = [
     icon: <FiSettings />,
     path: "/dashboard/web-setting",
   },
+  {
+    title: "Address",
+    icon: <BiCategory />,
+    // path: "/dashboard/category",
+    childrens: [
+      {
+        title: "Division",
+        icon: <BiCategory />,
+        path: "/dashboard/division",
+      },
+      {
+        title: "District",
+        icon: <AiFillHome />,
+        path: "/dashboard/district",
+      },
+      {
+        title: "Upozila",
+        icon: <AiFillHome />,
+        path: "/dashboard/upozila",
+      },
+    ],
+  },
 ];

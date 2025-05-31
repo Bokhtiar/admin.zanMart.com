@@ -8,6 +8,9 @@ import * as WebSetting from "../network/websetting.network";
 import * as Banner from "../network/banner.network";
 import * as Attribute from "../network/attribute.network";
 import * as ProductVariant from "../network/productVariant.network";
+import * as Division from "../network/division.network";
+import * as District from "../network/district.network";
+import * as upazila from "../network/upazila.network";
  
 export const NetworkServices = {
   Brand,
@@ -19,5 +22,8 @@ export const NetworkServices = {
   Authentication,
   Banner,
   Attribute,
-  ProductVariant
+  ProductVariant,
+  Division,
+  District,
+  upazila
 };
