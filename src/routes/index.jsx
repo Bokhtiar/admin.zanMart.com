@@ -1,4 +1,4 @@
-import { getToken } from "../utils/helper";
+
 import { Navigate } from "react-router-dom";
 import { DashboardLayout } from "../layouts/dashboard.layout";
 // import Dashboard from "../pages/Dashboard/Dashboard";
@@ -28,8 +28,8 @@ import EditProductVariant from "../pages/productVariant/productvariant/edit";
 import CategoryHomepage from "../pages/category/category-to-homepage";
 import { ProductEdit } from "../pages/products/edit";
 import OrderDetails from "../pages/Orders/order-detail";
-import OrderTracking from "../pages/Orders/order-tracking"; 
-import Form from "../pages/form"; 
+import OrderTracking from "../pages/Orders/order-tracking";
+import Form from "../pages/form";
 import Banner from "../pages/Banner/Index";
 import { BannerCreate } from "../pages/Banner/create";
 import { BannerEdit } from "../pages/Banner/edit";
@@ -37,7 +37,15 @@ import BannerWayProduct from "../pages/Banner/banner-way-product";
 import BannerWayProductCreate from "../pages/Banner/banner-way-product/create";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import ProductBestSelling from "../pages/products/best-selling";
- 
+import Division from "../pages/address/division";
+import { getToken } from "../utils/helper";
+import CreateDivision from "../pages/address/division/create";
+import CreateDistrict from "../pages/address/district/create";
+// import CreateZone from "../pages/address/zone/create";
+import District from "../pages/address/district";
+import Upozila from "../pages/address/upozila";
+import CreateUpozila from "../pages/address/upozila/create";
+
 const appRoutes = [
   {
     path: "dashboard",
@@ -52,7 +60,7 @@ const appRoutes = [
       },
       {
         path: "form",
-        element: <Form/>,
+        element: <Form />,
       },
       {
         path: "order/order-details/:id",
@@ -62,7 +70,7 @@ const appRoutes = [
         path: "order/order-tracking/:id",
         element: <OrderTracking />,
       },
-      // order route end 
+      // order route end
       { path: "product", element: <Product></Product> },
       { path: "product/create", element: <ProductCreate /> },
       { path: "product/edit/:id", element: <ProductEdit /> },
@@ -73,7 +81,7 @@ const appRoutes = [
       { path: "product-variant/create/:id", element: <ProductVariantCreate /> },
       { path: "product-variant/edit/:id", element: <EditProductVariant /> },
       { path: "banner", element: <Banner /> },
-      { path: "banner/create", element: <BannerCreate/> },
+      { path: "banner/create", element: <BannerCreate /> },
       { path: "banner/edit/:id", element: <BannerEdit /> },
       { path: "banner/banner-product/:id", element: <BannerWayProduct /> },
       { path: "banner/featured/:id", element: <BannerWayProductCreate /> },
@@ -94,6 +102,18 @@ const appRoutes = [
       { path: "web-setting/create", element: <WebSettingCreate /> },
       { path: "web-setting/edit/:id", element: <WebSettingEdit /> },
       { path: "unit", element: <Unit /> },
+      // assress
+      { path: "division", element: <Division/> },
+      { path: "division/create", element: <CreateDivision /> },
+      { path: "division/edit/:id", element: <ProductEdit /> },
+      // District
+      { path: "district", element: <District/> },
+      { path: "district/create", element: <CreateDistrict /> },
+      { path: "district/edit/:id", element: <ProductEdit /> },
+      // upozila
+      { path: "upozila", element: <Upozila/> },
+      { path: "upozila/create", element: <CreateUpozila /> },
+      { path: "upozila/edit/:id", element: <ProductEdit /> }, 
     ],
   },
 ];

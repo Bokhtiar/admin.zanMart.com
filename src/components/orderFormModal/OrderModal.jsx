@@ -233,7 +233,7 @@ const OrderModal = ({ id, handleOpenOrderModal, setIsModalOpen, orderDetails }) 
   const postOrder = useCallback(async (payload) => {
     try {
       setLoading(true);
-      const response = await axios.post("http://192.168.68.107:8000/api/percel", payload, {
+      const response = await axios.post("https://purple-mongoose-717018.hostingersite.com/api/percel", payload, {
         headers: {
           "Api-Key": 'wbggkfhdbwvwjkxlmdcbv1kre1pfu6rj',
           "Secret-Key": '7faevclzxeglxmaz8iip7uq7',
