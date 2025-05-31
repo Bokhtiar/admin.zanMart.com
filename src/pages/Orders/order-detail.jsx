@@ -4,6 +4,7 @@ import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
 import OrderModal from "../../components/orderFormModal/OrderModal";
+import axios from "axios";
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
@@ -21,13 +22,29 @@ const OrderDetails = () => {
       });
   }, [id]);
 
-  const handleStatusChange = (event) => {
-    const selectedStatus = event.target.value;
-    setStatus(selectedStatus);
-    if (selectedStatus === "Processing") {
-      setIsModalOpen(true); // Open modal if Processing is selected
-    }
-  };
+const handleStatusChange = async (event) => {
+  const selectedStatus = event.target.value;
+  setStatus(selectedStatus);
+  console.log("Selected status:", selectedStatus);
+
+  if (selectedStatus === "shipped") {
+    setIsModalOpen(true); 
+    return; // Open modal for "shipped" status
+  }
+
+  try {
+    const res = await privateRequest.post(
+      `admin/order/status/update/${id}`,
+      {
+        order_status: selectedStatus, _method:'PUT'// ✅ correct syntax
+      }
+    );
+    console.log("Status update response:", res.data);
+  } catch (error) {
+    console.error("Error updating order status:", error);
+  }
+};
+
 
   //   formate date code here
   const formatDate = (dateString) => {
@@ -60,15 +77,19 @@ setIsModalOpen(!isModalOpen)
               All Item
             </p> 
             <select
-                value={status}
-                onChange={handleStatusChange}
-                className="bg-primary text-white rounded-lg px-5"
-              >
-                <option value="">Select Status</option>
-                <option value="Processing">Processing</option>
-                <option value="Shipped">Shipped</option>
-                <option value="Delivered">Delivered</option>
-              </select>
+  value={status || orderDetails?.["order Details"]?.order_status || ""}
+  onChange={handleStatusChange}
+  className="bg-primary text-white rounded-lg px-5 py-2"
+>
+  <option disabled value="">
+    Select status
+  </option>
+  <option value="processing">Processing</option>
+  <option value="shipped">Shipped</option>
+  <option value="delivered">Delivered</option>
+  <option value="cancelled">Cancelled</option>
+</select>
+
             </div>
             {orderDetails?.["order item"]?.map((item, index) => (
               <div
@@ -213,7 +234,7 @@ setIsModalOpen(!isModalOpen)
         </section>
       </div>
       {
-        isModalOpen && <OrderModal setIsModalOpen={setIsModalOpen} hendleOpnenOrderModal={hendleOpnenOrderModal}/>
+        isModalOpen && <OrderModal id={id} orderDetails={orderDetails?.["order Details"]} setIsModalOpen={setIsModalOpen} handleOpenOrderModal={hendleOpnenOrderModal} handleStatusChange={handleStatusChange}/>
       }
     </div>
   );
