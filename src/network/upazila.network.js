@@ -4,6 +4,9 @@ import { privateRequest } from '../config/axios.config'
 export const index = async (page, perPage) => {
     return await privateRequest.get(`/admin/upazila?page=${page}&page_size=${perPage}`);
 };
+export const indexall = async () => {
+    return await privateRequest.get(`/admin/district-dropdown`);
+};
 
 /* resource store */
 export const store = async(data) => {

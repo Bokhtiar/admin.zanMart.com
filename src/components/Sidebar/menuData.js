@@ -4,12 +4,16 @@ import {
   MdOutlineProductionQuantityLimits,
   MdDashboard,
   MdFormatListBulleted,
+  MdPlace,
+  MdOutlineMapsHomeWork,
 } from "react-icons/md";
 import { BiCategory } from "react-icons/bi";
 import { AiFillHome } from "react-icons/ai";
 import { BsPaletteFill } from "react-icons/bs";
 import { HiOutlineScale } from "react-icons/hi";
 import { FiSettings, FiBox } from "react-icons/fi";
+import { SiPrivatedivision } from "react-icons/si";
+
 export const menuData = [
   {
     title: "Dashboard",
@@ -98,17 +102,17 @@ export const menuData = [
     childrens: [
       {
         title: "Division",
-        icon: <BiCategory />,
+        icon: <SiPrivatedivision />,
         path: "/dashboard/division",
       },
       {
         title: "District",
-        icon: <AiFillHome />,
+        icon: <MdPlace />,
         path: "/dashboard/district",
       },
       {
-        title: "Upozila",
-        icon: <AiFillHome />,
+        title: "Upazila",
+        icon: <MdOutlineMapsHomeWork />,
         path: "/dashboard/upozila",
       },
     ],

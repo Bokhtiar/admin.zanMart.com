@@ -30,14 +30,14 @@ const CreateUpozila = () => {
   };
     if (data) {
     // console.log(data)
-    navigate(`/dashboard/division`);  
+    navigate(`/dashboard/upozila`);  
   }
   
   if (loading) return;
 
   return (
     <div>
-      <CreateForm onSubmit={handleSubmit(onSubmit)} control={control} errors={errors} btnName="Create Zone"
+      <CreateForm onSubmit={handleSubmit(onSubmit)} control={control} errors={errors} btnName="Create Upazila"
               id="district_id"
         idData={districtData?.data?.map((item) => {
           return {
