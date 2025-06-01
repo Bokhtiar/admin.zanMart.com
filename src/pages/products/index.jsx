@@ -286,7 +286,7 @@ const ProductVariantShow = ({ data, openModal, fetchData }) => {
               </div>
               <div className="text-gray-700 font-medium flex gap-4">
                 <Link
-                  to={`/dashboard/product-variant/edit/${data?.product_id}`}
+                  to={`/dashboard/product-variant/edit/${data?.product_id}?product_variant_id=${item?.product_variant_id}`}
                 >
                   <span className="">
                     <FaRegEdit />

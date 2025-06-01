@@ -185,7 +185,7 @@ export const ProductEdit = () => {
   return (
     <>
       <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3">
-        <h2 className=" font-semibold text-xl">Product Create</h2>
+        <h2 className=" font-semibold text-xl">Product update</h2>
         <Link to="/dashboard/product">
           <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
             list
@@ -316,7 +316,7 @@ export const ProductEdit = () => {
             <div className="my-4 flex justify-center">
               <PrimaryButton
                 loading={buttonLoading}
-                name="Product create"
+                name="Product update"
               ></PrimaryButton>
             </div>
           </form>

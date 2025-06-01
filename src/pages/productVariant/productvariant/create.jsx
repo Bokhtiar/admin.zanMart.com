@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -22,13 +22,21 @@ const ProductForm = () => {
     value: [],
   });
   // react hook form declaration
+   const {
+    data: product,
+    loading: productLoading,
+    refetch: fetchproduct,
+  } = useFetch("admin/product/" + id);
+console.log(product?.data?.sell_price,product?.data?.flat_discount)
   const {
     control,
     handleSubmit,
+     reset:resetFrom,
     formState: { errors },
+   
   } = useForm({
     defaultValues: {
-      variant: [{ price: "" }],
+      variant: [{ weight: "" ,price:product?.data?.sell_price, flat_discount:product?.data?.flat_discount  }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -53,7 +61,7 @@ const ProductForm = () => {
     loading: attributeLoading,
     refetch: fetchAttribute,
   } = useFetch("admin/attribute");
-  // submit here   code
+ 
   const onSubmit = async (e) => {
     try {
       const updateValue = e.variant.map((e) => {
@@ -104,6 +112,7 @@ const ProductForm = () => {
     handleSubmit: newColorAdded,
     formState: { errors: colorError },
     reset,
+    setValue
   } = useForm();
 
   // post attribute
@@ -144,6 +153,17 @@ const ProductForm = () => {
     });
   };
 
+useEffect(() => {
+  if (product?.data) {
+    resetFrom({
+      variant: [{
+        weight: "",
+        price: product.data.sell_price ?? "",
+        flat_discount: product.data.flat_discount ?? ""
+      }]
+    });
+  }
+}, [product?.data, resetFrom]);
   return (
     <>
       {(unitLoading || attributeLoading || colorLoading) && false ? (
@@ -384,6 +404,7 @@ const ProductForm = () => {
                   </div>
                   {/* Price Input */}
                   <div className="flex-1">
+                   
                     <TextInput
                       name={`variant.${index}.price`}
                       error={
@@ -398,13 +419,16 @@ const ProductForm = () => {
                     />
                   </div>
                   {/* flat discount  */}
+                
                   <div className="flex-1">
+                    
                     <TextInput
                       name={`variant.${index}.flat_discount`}
                       error={
                         errors?.variant?.[index]?.flat_discount &&
                         errors?.variant?.[index]?.flat_discount?.message
                       }
+                      // defaultvalue={product?.data?.flat_discount}
                       control={control}
                       label=" Flat Discount "
                       type="number"
@@ -426,6 +450,7 @@ const ProductForm = () => {
             ))}
             <div className="flex gap-4">
               {/* add more button  */}
+      
               <button
                 type="button"
                 onClick={() => append({ price: "" })}
