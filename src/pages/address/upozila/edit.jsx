@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { NetworkServices } from "../../../network";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { Toastify } from "../../../components/toastify";
@@ -14,8 +14,8 @@ const EditUpazila = () => {
   const [district, setDistrict] = useState([]);
   const [districts, setDistricts] = useState([]);
 
-  console.log("districts",districts)
-  console.log("division",district)
+  console.log("districts", districts);
+  console.log("division", district);
 
   const {
     control,
@@ -28,13 +28,12 @@ const EditUpazila = () => {
       status: 0,
     },
   });
- 
 
   const fetchDivisionName = useCallback(async () => {
     setLoading(true);
     try {
       const response = await NetworkServices.upazila.indexall();
-        console.log("response",response)
+      console.log("response", response);
 
       if (response && response.status === 200) {
         const result = response?.data?.data?.map((item, index) => {
@@ -61,11 +60,11 @@ const EditUpazila = () => {
     setLoading(true);
     try {
       const response = await NetworkServices.upazila.show(id);
-    //   console.log("response", response);
+      //   console.log("response", response);
 
       if (response && response.status === 200) {
         const divisionName = response?.data?.data;
-        setDistrict(divisionName)
+        setDistrict(divisionName);
         // console.log("divisionName", divisionName);
 
         setValue("name", divisionName?.name);
@@ -105,18 +104,25 @@ const EditUpazila = () => {
 
   return (
     <div>
+      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3 mt-3">
+        <h2 className=" font-semibold text-xl">Upazila Update</h2>
+        <Link to="/dashboard/upozila">
+          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+            list
+          </span>
+        </Link>
+      </section>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <SingleSelect
           name={id}
           control={control}
           options={districts}
-          
           onSelected={(selected) =>
             setValue("district_id", selected?.id || null)
           }
           placeholder={
-            districts.find((item) => item?.id == district.district_id)
-              ?.name ?? "select parent Category"
+            districts.find((item) => item?.id == district.district_id)?.name ??
+            "select parent Category"
           }
           error={errors?.[id]?.message}
           label="Select Division"

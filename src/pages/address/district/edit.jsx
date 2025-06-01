@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { NetworkServices } from "../../../network";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { Toastify } from "../../../components/toastify";
@@ -14,8 +14,8 @@ const EditDistrict = () => {
   const [division, setDevision] = useState([]);
   const [divisions, setDevisions] = useState([]);
 
-  console.log("divisions",divisions)
-  console.log("division",division)
+  console.log("divisions", divisions);
+  console.log("division", division);
 
   const {
     control,
@@ -61,11 +61,11 @@ const EditDistrict = () => {
     setLoading(true);
     try {
       const response = await NetworkServices.District.show(id);
-    //   console.log("response", response);
+      //   console.log("response", response);
 
       if (response && response.status === 200) {
         const divisionName = response?.data?.data;
-        setDevision(divisionName)
+        setDevision(divisionName);
         // console.log("divisionName", divisionName);
 
         setValue("name", divisionName?.name);
@@ -102,21 +102,28 @@ const EditDistrict = () => {
       networkErrorHandeller(error);
     }
   };
-console.log("division:", division);
+  console.log("division:", division);
   return (
     <div>
+      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3 mt-3">
+        <h2 className=" font-semibold text-xl">District Update</h2>
+        <Link to="/dashboard/district">
+          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+            list
+          </span>
+        </Link>
+      </section>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <SingleSelect
           name={id}
           control={control}
           options={divisions}
-          
           onSelected={(selected) =>
             setValue("division_id", selected?.id || null)
           }
           placeholder={
-            divisions.find((item) => item?.id == division.division_id)
-              ?.name ?? "select parent Category"
+            divisions.find((item) => item?.id == division.division_id)?.name ??
+            "select parent Category"
           }
           error={errors?.[id]?.message}
           label="Select Division"

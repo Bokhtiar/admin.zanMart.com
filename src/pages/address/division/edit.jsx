@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { NetworkServices } from "../../../network";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { Toastify } from "../../../components/toastify";
@@ -11,7 +11,7 @@ const EditDivision = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { id } = useParams();
-  
+
   const {
     control,
     handleSubmit,
@@ -23,7 +23,6 @@ const EditDivision = () => {
       status: 0,
     },
   });
-  
 
   const fetchDivision = async (id) => {
     setLoading(true);
@@ -33,7 +32,7 @@ const EditDivision = () => {
 
       if (response && response.status === 200) {
         const divisionName = response?.data?.data;
-        
+
         setValue("name", divisionName?.name);
         setValue("bn_name", divisionName?.bn_name);
       }
@@ -51,7 +50,6 @@ const EditDivision = () => {
   }, [id]);
 
   const onFormSubmit = async (data) => {
-    
     try {
       setLoading(true);
       const payload = {
@@ -71,6 +69,14 @@ const EditDivision = () => {
 
   return (
     <div>
+      <section className="flex justify-between shadow-md p-4 px-6 rounded-md bg-white mb-3 mt-3">
+        <h2 className=" font-semibold text-xl">Division Update</h2>
+        <Link to="/dashboard/division">
+          <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
+            list
+          </span>
+        </Link>
+      </section>
       <form onSubmit={handleSubmit(onFormSubmit)}>
         <TextInput
           label="Name"
@@ -91,10 +97,7 @@ const EditDivision = () => {
           rules={{ required: "Bn Name is required" }}
         />
         <div className="my-4 pb-4 flex justify-center">
-          <PrimaryButton
-            loading={loading}
-            name="Edit Division"
-          ></PrimaryButton>
+          <PrimaryButton loading={loading} name="Edit Division"></PrimaryButton>
         </div>
       </form>
     </div>
