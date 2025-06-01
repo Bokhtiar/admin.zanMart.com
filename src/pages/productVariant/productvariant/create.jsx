@@ -27,7 +27,7 @@ const ProductForm = () => {
     loading: productLoading,
     refetch: fetchproduct,
   } = useFetch("admin/product/" + id);
-console.log(product?.data?.sell_price,product?.data?.flat_discount)
+
   const {
     control,
     handleSubmit,
@@ -36,7 +36,7 @@ console.log(product?.data?.sell_price,product?.data?.flat_discount)
    
   } = useForm({
     defaultValues: {
-      variant: [{ weight: "" ,price:product?.data?.sell_price, flat_discount:product?.data?.flat_discount  }],
+      variant: [{ weight: "" ,price:product?.data?.sell_price, flat_discount:product?.data?.flat_discount,quantity: product?.data?.product_qty,available_quantity: product?.data?.available_quantity }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -159,7 +159,9 @@ useEffect(() => {
       variant: [{
         weight: "",
         price: product.data.sell_price ?? "",
-        flat_discount: product.data.flat_discount ?? ""
+        flat_discount: product.data.flat_discount ?? "",
+        quantity: product?.data?.stock_qty,
+        available_quantity: product?.data?.available_quantity
       }]
     });
   }
@@ -261,7 +263,7 @@ useEffect(() => {
                         "name",
                         "color_id"
                       )}
-                      rules={{ required: "Color is required" }}
+                      // rules={{ required: "Color is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
@@ -296,7 +298,7 @@ useEffect(() => {
                         "name",
                         "unit_id"
                       )}
-                      rules={{ required: "unit is required" }}
+                      // rules={{ required: "unit is required" }}
                       // onSearch={fetchunit}
                       onSelected={(id) => {
                         setIds(id?.unit_id);
@@ -337,7 +339,7 @@ useEffect(() => {
                         "name",
                         "attribute_id"
                       )}
-                      rules={{ required: "Attributes is required" }}
+                      // rules={{ required: "Attributes is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
@@ -399,7 +401,7 @@ useEffect(() => {
                       label=" Product Weight "
                       type="number"
                       placeholder="Enter weight"
-                      rules={{ required: "Quantity is required" }}
+                      // rules={{ required: "Quantity is required" }}
                     />
                   </div>
                   {/* Price Input */}
