@@ -1,17 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-// import { NetworkServices } from "../../network";
-// import { networkErrorHandeller } from "../../utils/helper";
-// import { SkeletonTable } from "../../components/loading/skeleton-table";
+
 import { Link } from "react-router-dom";
 // import { Toastify } from "../../components/toastify";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import {
-  FaAngleDoubleLeft,
-  FaAngleDoubleRight,
-  FaRegEdit,
-} from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
+
 import { NetworkServices } from "../../../network";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { Toastify } from "../../../components/toastify";
@@ -22,9 +14,7 @@ const District = () => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  // const [lastPage, setLastPage] = useState(1);
-  // const [nextPageUrl, setNextPageUrl] = useState(null);
-  // const [prevPageUrl, setPrevPageUrl] = useState(null);
+
   const [perPage, setPerPage] = useState(10);
   const [totalRows, setTotalRows] = useState(0);
 
@@ -39,10 +29,7 @@ const District = () => {
         const response = await NetworkServices.District.index(currentPage,perPage);
         if (response?.status === 200 || response?.status === 201) {
           setData(response?.data?.data?.data);
-          // setCurrentPage(response?.data?.data?.current_page);
-          // setLastPage(response?.data?.data?.last_page);
-          // setNextPageUrl(response?.data?.data?.next_page_url);
-          // setPrevPageUrl(response?.data?.data?.prev_page_url);
+
           setLoading(false);
           setTotalRows(response?.data?.data?.total || 0);
         }
@@ -138,13 +125,7 @@ const District = () => {
             onChangeRowsPerPage={handleRowsPerPageChange}
             paginationDefaultPage={currentPage}
           />
-          {/* <Pagination
-            nextPageUrl={nextPageUrl}
-            setCurrentPage={setCurrentPage}
-            prevPageUrl={prevPageUrl}
-            lastPage={lastPage}
-            currentPage={currentPage}
-          /> */}
+
         </>
       )}
     </section>
@@ -153,7 +134,7 @@ const District = () => {
 
 export default District;
 
-// const Pagination = ({
+
 //   nextPageUrl,
 //   setCurrentPage,
 //   prevPageUrl,

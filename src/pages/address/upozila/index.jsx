@@ -88,7 +88,7 @@ const Upozila = () => {
       name: "Action",
       cell: (row) => (
         <div className="flex gap-1">
-          <Link to={`/dashboard/division/edit/${row?.id}`}>
+          <Link to={`/dashboard/upozila/edit/${row?.id}`}>
             <span className="bg-primary text-white btn btn-sm  ">Edit</span>
           </Link>
 

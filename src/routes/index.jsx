@@ -45,6 +45,9 @@ import CreateDistrict from "../pages/address/district/create";
 import District from "../pages/address/district";
 import Upozila from "../pages/address/upozila";
 import CreateUpozila from "../pages/address/upozila/create";
+import EditDivision from "../pages/address/division/edit";
+import EditDistrict from "../pages/address/district/edit";
+import EditUpazila from "../pages/address/upozila/edit";
 
 const appRoutes = [
   {
@@ -105,15 +108,15 @@ const appRoutes = [
       // assress
       { path: "division", element: <Division/> },
       { path: "division/create", element: <CreateDivision /> },
-      { path: "division/edit/:id", element: <ProductEdit /> },
+      { path: "division/edit/:id", element: <EditDivision /> },
       // District
       { path: "district", element: <District/> },
       { path: "district/create", element: <CreateDistrict /> },
-      { path: "district/edit/:id", element: <ProductEdit /> },
+      { path: "district/edit/:id", element: <EditDistrict /> },
       // upozila
       { path: "upozila", element: <Upozila/> },
       { path: "upozila/create", element: <CreateUpozila /> },
-      { path: "upozila/edit/:id", element: <ProductEdit /> }, 
+      { path: "upozila/edit/:id", element: <EditUpazila /> }, 
     ],
   },
 ];
