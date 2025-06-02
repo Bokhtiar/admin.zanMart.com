@@ -4,14 +4,6 @@ import DataTable from "react-data-table-component";
 // import { networkErrorHandeller } from "../../utils/helper";
 // import { SkeletonTable } from "../../components/loading/skeleton-table";
 import { Link } from "react-router-dom";
-// import { Toastify } from "../../components/toastify";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import {
-  FaAngleDoubleLeft,
-  FaAngleDoubleRight,
-  FaRegEdit,
-} from "react-icons/fa";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import { NetworkServices } from "../../../network";
 import { networkErrorHandeller } from "../../../utils/helper";
 import { Toastify } from "../../../components/toastify";
