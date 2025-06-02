@@ -5,12 +5,12 @@ import { NetworkServices } from "../../network/index";
 import { PrimaryButton } from "../../components/button";
 import { useCallback, useEffect, useState } from "react";
 import { networkErrorHandeller } from "../../utils/helper";
-import { FaCamera } from "react-icons/fa"; 
-import { Checkbox } from "../../components/input";
+import { FaCamera } from "react-icons/fa";
+import { Checkbox, TextInput } from "../../components/input";
 
 export const BannerEdit = () => {
   const navigate = useNavigate();
-  const [data, setData] = useState({ name: "",image:"" });
+  const [data, setData] = useState({ name: "", image: "" });
   const { id } = useParams();
   const [buttonLoading, setButtonLoading] = useState(false);
   const [singleImage, setSingleImage] = useState(null);
@@ -34,31 +34,41 @@ export const BannerEdit = () => {
       networkErrorHandeller(error);
     }
   }, [id]);
-  // fetch banner single data 
+  // fetch banner single data
   useEffect(() => {
     fetchData();
   }, []);
-  // here i decalre react hook forms 
+  // here i decalre react hook forms
+
+
+
+
   const {
     handleSubmit,
-    register, 
+    register,
     setValue,
+    watch,
     formState: { errors },
-    control
-  } = useForm( );
-  
+    control,
+  } = useForm();
+
+
   /* submit reosurce */
   const onSubmit = async (bannerFormData) => {
     try {
-      setButtonLoading(true); 
+      setButtonLoading(true);
       const formData = new FormData();
       formData.append("name", bannerFormData?.name);
-      formData.append("image", updateBannerImage?updateBannerImage:data?.image);
-      formData.append('status',bannerFormData?.status)
-      formData.append("_method", "PUT");  
-      const response = await NetworkServices.Banner.update(id, formData); 
+     updateBannerImage && formData.append(
+        "image",
+        updateBannerImage 
+      );
+      formData.append("status", bannerFormData?.status);
+      formData.append("is_campaign", bannerFormData?.is_campaign);
+      formData.append("_method", "PUT");
+      const response = await NetworkServices.Banner.update(id, formData);
       if (response && (response.status === 201 || response?.status === 200)) {
-        navigate("/dashboard/banner"); 
+        navigate("/dashboard/banner");
         setButtonLoading(false);
         return Toastify.Success(response?.data?.message);
       }
@@ -67,11 +77,12 @@ export const BannerEdit = () => {
       networkErrorHandeller(error);
     }
   };
-  // value set for update in form 
-  useEffect(()=>{
-    setValue("name",data?.name||'');
-    setValue('status',data?.status)
-  },[data,setValue])
+  // value set for update in form
+  useEffect(() => {
+    setValue("name", data?.name || "");
+    setValue("status", data?.status);
+    setValue("is_campaign", data?.is_campaign);
+  }, [data, setValue]);
   return (
     <>
       <section className="flex justify-between shadow-md p-2   rounded-md  my-3">
@@ -86,40 +97,39 @@ export const BannerEdit = () => {
       <section className="shadow-md my-2 ">
         <form className="" onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-6 lg:mb-2">
-      
-          {errors?.name ? (
-          <span className="text-red-500 text-sm">{errors?.name?.message}</span>
-        ): <span className="  text-sm">Banner Title</span>}
-        <input
-          type="text"
-          value={data?.name||''}
-          {...register("name", {
-            required: {
-              value: true,
-              message: "Banner Title is required",
-            },
-            validate: (value) => value.trim() !== '' || "Title is required", // Optional validation to ensure non-empty
-          })}
-          onChange={(e)=>{
-            setData({
-              ...data,
-              name:e.target.value,
-            })
-          }}
-          placeholder="Enter your name"
-          className={`  w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${
-            errors?.name ? 'border-red-500' : 'border-gray-300'
-          } rounded-md`}
-        />
-        
+            {errors?.name ? (
+              <span className="text-red-500 text-sm">
+                {errors?.name?.message}
+              </span>
+            ) : (
+              <span className="  text-sm">Banner Title</span>
+            )}
+            <input
+              type="text"
+              value={data?.name || ""}
+              {...register("name", {
+                required: {
+                  value: true,
+                  message: "Banner Title is required",
+                },
+                validate: (value) => value.trim() !== "" || "Title is required", // Optional validation to ensure non-empty
+              })}
+              onChange={(e) => {
+                setData({
+                  ...data,
+                  name: e.target.value,
+                });
+              }}
+              placeholder="Enter your name"
+              className={`  w-full text-sm bg-white disabled:bg-gray-300 rounded-md outline-none p-[14px] border disabled:border-gray-300 ${
+                errors?.name ? "border-red-500" : "border-gray-300"
+              } rounded-md`}
+            />
           </div>
           {/* banner image upload area  */}
           <div className="mb-6 lg:mb-2 w-full">
-          <p className="text-sm mb-1 text-gray-500">
-                Banner Image 
-              </p>
+            <p className="text-sm mb-1 text-gray-500">Banner Image</p>
             <div className="flex flex-col items-center">
-             
               <label className="relative flex items-center justify-center w-full  h-48 md:h-72  border-2 border-dashed border-gray-300 cursor-pointer bg-gray-100 rounded-md">
                 <input
                   type="file"
@@ -157,19 +167,26 @@ export const BannerEdit = () => {
                 </button>
               )}
             </div>
-            <br/>
+            <br />
             <Checkbox
-            name="status"
-            control={control}
-            label="Task Status"
-            rules={{ required: "Status is required" }}
-          />
+              name="status"
+              control={control}
+              label="Task Status"
+              rules={{ required: "Status is required" }}
+            />
+            <Checkbox
+              name="is_campaign"
+              control={control}
+              label="Is Campain"
+              rules={{ required: "Status is required" }}
+            />
+
           </div>
           {/* submit button */}
           <div className="my-4 flex justify-center">
             <PrimaryButton
               loading={buttonLoading}
-              name="Banner create"
+              name="Banner Update"
             ></PrimaryButton>
           </div>
         </form>

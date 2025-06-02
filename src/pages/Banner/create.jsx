@@ -26,22 +26,24 @@ export const BannerCreate = () => {
     handleSubmit,
     formState: { errors },
     watch,
+    setValue,
   } = useForm({
     defaultValues: {
       status: 0,
     },
   });
- 
+
   /* submit reosurce */
   const onSubmit = async (data) => {
+    console.log("data", data);
     try {
- 
       setButtonLoading(true);
       const formData = new FormData();
       formData.append("name", data.name);
       formData.append("image", singleImage);
       formData.append("status", data?.status);
-  
+      formData.append("is_campaign", data?.status);
+
       const response = await NetworkServices.Banner.store(formData);
       if (response && (response.status === 201 || response?.status === 200)) {
         navigate("/dashboard/banner");
@@ -112,6 +114,13 @@ export const BannerCreate = () => {
             label="Task Status"
             rules={{ required: "Status is required" }}
           />
+          <Checkbox
+            name="is_campaign"
+            control={control}
+            label="Is Campain"
+            rules={{ required: "Status is required" }}
+          />
+
           {/* submit button */}
           <div className="my-4 pb-4 flex justify-center">
             <PrimaryButton
