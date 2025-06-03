@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
 import OrderModal from "../../components/orderFormModal/OrderModal";
 import axios from "axios";
 import DetailsSkeleton from "../../components/loading/DetailsSkeleton";
+import { InvoiceContent } from "../../components/invoice/Invoice";
+import { useReactToPrint } from "react-to-print";
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
@@ -27,8 +29,6 @@ const OrderDetails = () => {
         setLoading(false);
       });
   }, [id]);
-
-  console.log("orderDetails", orderDetails);
 
   const handleStatusChange = async (event) => {
     const selectedStatus = event.target.value;
@@ -116,57 +116,7 @@ const OrderDetails = () => {
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
-            {/* {orderDetails?.["order item"]?.map((item, index) => (
-              <div
-                className={` flex justify-between items-center hover:bg-[#F7FAFC] rounded-lg p-4 ${
-                  index % 2 === 0 ? "bg-[#F7FAFC]" : ""
-                }`}
-              >
-                <div className="flex gap-4 items-center">
-                  <img
-                    className="w-16 h-16 border rounded-lg"
-                    src={`${process.env.REACT_APP_BASE_API}${item?.product?.thumbnail_image}`}
-                    alt="loading"
-                  />
-                  <div>
-                    <p>Product Name</p>
-                    <p className="text-base font-bold text-gray-600">
-                      {" "}
-                      {item?.product?.title}
-                    </p>
-                  </div>
-                  <div>
-                    <p>Attribute</p>
-                    <p className="text-base font-bold text-gray-600">
-                      {" "}
-                      {orderDetails?.["order item"]?.[0]?.attribute?.name}
 
-                    </p>
-                  </div>
-                  <div>
-                    <p>Color</p>
-                    <p className="text-base font-bold text-gray-600">
-                      {" "}
-                       {orderDetails?.["order item"]?.[0]?.color?.name}
-                    </p>
-                  </div>
-                
-                <div>
-                  <p>quantity</p>
-                  <p className="text-base font-bold text-gray-600">
-                    {" "}
-                    {item?.qty}
-                  </p>
-                </div>
-                <div>
-                  <p>price</p>
-                  <p className="text-base font-bold text-gray-600">
-                    {item?.sell_price * item?.qty}
-                  </p>
-                </div>
-                </div>
-              </div>
-            ))} */}
             {orderDetails?.["order item"]?.map((item, index) => (
               <div
                 key={index}
@@ -251,6 +201,12 @@ const OrderDetails = () => {
               </div>
             </div>
           </section>
+          <button
+            onClick={() => window.print()}
+            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          >
+            Print Invoice
+          </button>
         </div>
         {/* order divided second part  */}
         <section className="w-4/12 space-y-4">
