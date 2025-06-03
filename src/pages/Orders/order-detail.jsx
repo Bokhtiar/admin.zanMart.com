@@ -72,7 +72,9 @@ const OrderDetails = () => {
       0
     );
 
-    let deliveryPrice = Number(orderDetails?.["order Details"]?.shipment?.delivery_charge || 0);
+    let deliveryPrice = Number(
+      orderDetails?.["order Details"]?.shipment?.delivery_charge || 0
+    );
     return {
       subtotal,
       taxPrice,
@@ -84,12 +86,9 @@ const OrderDetails = () => {
     setIsModalOpen(!isModalOpen);
   };
   // console.log(orderDetails?.["order Details"]?.shipping_address.district?.name)
-if (loading) {
-  return (
-   <DetailsSkeleton/>
-  );
-}
-
+  if (loading) {
+    return <DetailsSkeleton />;
+  }
 
   return (
     <div>
@@ -117,7 +116,7 @@ if (loading) {
                 <option value="cancelled">Cancelled</option>
               </select>
             </div>
-            {orderDetails?.["order item"]?.map((item, index) => (
+            {/* {orderDetails?.["order item"]?.map((item, index) => (
               <div
                 className={` flex justify-between items-center hover:bg-[#F7FAFC] rounded-lg p-4 ${
                   index % 2 === 0 ? "bg-[#F7FAFC]" : ""
@@ -136,7 +135,22 @@ if (loading) {
                       {item?.product?.title}
                     </p>
                   </div>
-                </div>
+                  <div>
+                    <p>Attribute</p>
+                    <p className="text-base font-bold text-gray-600">
+                      {" "}
+                      {orderDetails?.["order item"]?.[0]?.attribute?.name}
+
+                    </p>
+                  </div>
+                  <div>
+                    <p>Color</p>
+                    <p className="text-base font-bold text-gray-600">
+                      {" "}
+                       {orderDetails?.["order item"]?.[0]?.color?.name}
+                    </p>
+                  </div>
+                
                 <div>
                   <p>quantity</p>
                   <p className="text-base font-bold text-gray-600">
@@ -146,6 +160,56 @@ if (loading) {
                 </div>
                 <div>
                   <p>price</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.sell_price * item?.qty}
+                  </p>
+                </div>
+                </div>
+              </div>
+            ))} */}
+            {orderDetails?.["order item"]?.map((item, index) => (
+              <div
+                key={index}
+                className={`flex justify-between items-center hover:bg-[#F7FAFC] rounded-lg p-4 gap-5 ${
+                  index % 2 === 0 ? "bg-[#F7FAFC]" : ""
+                }`}
+              >
+                <img
+                  className="w-16 h-16 border rounded-lg flex-shrink-0"
+                  src={`${process.env.REACT_APP_BASE_API}${item?.product?.thumbnail_image}`}
+                  alt={item?.product?.title || "Product"}
+                />
+
+                <div className="w-[300px] ">
+                  <p>Product Name</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.product?.title}
+                  </p>
+                </div>
+
+                <div className="w-[120px]">
+                  <p>Attribute</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.attribute?.name}
+                  </p>
+                </div>
+
+                <div className="w-[100px]">
+                  <p>Color</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.color?.name}
+                  </p>
+                </div>
+
+                <div className="w-[80px]">
+                  <p>Quantity</p>
+                  <p className="text-base font-bold text-gray-600">
+                    {item?.qty}
+                  </p>
+                </div>
+
+                <div className="w-[100px]">
+                  <p>Price</p>
                   <p className="text-base font-bold text-gray-600">
                     {item?.sell_price * item?.qty}
                   </p>
@@ -182,7 +246,7 @@ if (loading) {
               <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
                 <p className="w-3/4 text-black">Total price:</p>
                 <p className="1/4 text-red-500">
-                  ${orderAllPrice()?.totalPrice}
+                  ${Math.ceil(orderAllPrice()?.totalPrice ?? 0)}
                 </p>
               </div>
             </div>
@@ -204,9 +268,15 @@ if (loading) {
               <div className=" text-base text-black ">
                 <p>{orderDetails?.["order Details"]?.order_id}</p>
                 <p>{formatDate(orderDetails?.["order Details"]?.updated_at)}</p>
-                <p> {formatTime(orderDetails?.["order Details"]?.updated_at)}</p>
+                <p>
+                  {" "}
+                  {formatTime(orderDetails?.["order Details"]?.updated_at)}
+                </p>
                 <p className="text-red-600">
-                  ${orderDetails?.["order Details"]?.total_amount}
+                  $
+                  {Math.ceil(
+                    orderDetails?.["order Details"]?.total_amount ?? 0
+                  )}
                 </p>
               </div>
             </div>
@@ -225,7 +295,8 @@ if (loading) {
                   {orderDetails?.["order Details"]?.shipping_address?.phone}
                 </p>
                 <p className="">
-                  {orderDetails?.["order Details"]?.shipping_address?.email || "null" } 
+                  {orderDetails?.["order Details"]?.shipping_address?.email ||
+                    "null"}
                 </p>
               </div>
             </div>

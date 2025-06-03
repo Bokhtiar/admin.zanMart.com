@@ -1,8 +1,9 @@
 import { privateRequest } from '../config/axios.config'
 
 /* list of resource */
-export const index = async () => {
-    return await privateRequest.get(`/admin/district`);
+export const index = async (queryParams) => {
+    return await privateRequest.get(`/admin/district?${queryParams}`);
+    
 };
 
 /* resource store */
