@@ -5,67 +5,92 @@ import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
 import OrderModal from "../../components/orderFormModal/OrderModal";
 import axios from "axios";
+import DetailsSkeleton from "../../components/loading/DetailsSkeleton";
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [status, setStatus] = useState(""); // Track selected status
+  const [value, setValue] = useState("pending");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     privateRequest
       .get(`/admin/order/${id}`)
       .then((response) => {
         setOrderDetails(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
+        setLoading(false);
       });
   }, [id]);
 
-const handleStatusChange = async (event) => {
-  const selectedStatus = event.target.value;
-  setStatus(selectedStatus);
-  console.log("Selected status:", selectedStatus);
+  console.log("orderDetails", orderDetails);
 
-  if (selectedStatus === "shipped") {
-    setIsModalOpen(true); 
-    return; // Open modal for "shipped" status
-  }
+  const handleStatusChange = async (event) => {
+    const selectedStatus = event.target.value;
+    setStatus(selectedStatus);
+    console.log("Selected status:", selectedStatus);
 
-  try {
-    const res = await privateRequest.post(
-      `admin/order/status/update/${id}`,
-      {
-        order_status: selectedStatus, _method:'PUT'// ✅ correct syntax
-      }
-    );
-    console.log("Status update response:", res.data);
-  } catch (error) {
-    console.error("Error updating order status:", error);
-  }
-};
+    if (selectedStatus === "shipped") {
+      setIsModalOpen(true);
+      return; // Open modal for "shipped" status
+    }
 
+    try {
+      const res = await privateRequest.post(`admin/order/status/update/${id}`, {
+        order_status: selectedStatus,
+        _method: "PUT", // ✅ correct syntax
+      });
+      console.log("Status update response:", res.data);
+    } catch (error) {
+      console.error("Error updating order status:", error);
+    }
+  };
 
   //   formate date code here
   const formatDate = (dateString) => {
     const formattedDate = moment(dateString).format("DD MMM YYYY");
     return formattedDate;
   };
-  const orderAllPrice =  () => {
-    let subtotal =  orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.sell_price)*curr?.qty, 0);
-    let taxPrice = orderDetails?.["order item"]?.reduce((acc, curr) => Number(acc) + Number(curr?.product?.tax_price) , 0);
-    return{
+  const formatTime = (timestamp) => {
+    if (!timestamp) return "";
+    const date = new Date(timestamp);
+    const options = { hour: "numeric", minute: "2-digit", hour12: true };
+    return date.toLocaleTimeString("en-US", options);
+  };
+  const orderAllPrice = () => {
+    let subtotal = orderDetails?.["order item"]?.reduce(
+      (acc, curr) => Number(acc) + Number(curr?.sell_price) * curr?.qty,
+      0
+    );
+    let taxPrice = orderDetails?.["order item"]?.reduce(
+      (acc, curr) => Number(acc) + Number(curr?.product?.tax_price),
+      0
+    );
+
+    let deliveryPrice = Number(orderDetails?.["order Details"]?.shipment?.delivery_charge || 0);
+    return {
       subtotal,
-    taxPrice,
-    totalPrice: subtotal + taxPrice,
-    }
-  }
-const hendleOpnenOrderModal=()=>{
-setIsModalOpen(!isModalOpen)
- 
+      taxPrice,
+      deliveryPrice,
+      totalPrice: subtotal + taxPrice + deliveryPrice,
+    };
+  };
+  const hendleOpnenOrderModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+  // console.log(orderDetails?.["order Details"]?.shipping_address.district?.name)
+if (loading) {
+  return (
+   <DetailsSkeleton/>
+  );
 }
 
-   
+
   return (
     <div>
       <div className="flex gap-5 ">
@@ -73,23 +98,24 @@ setIsModalOpen(!isModalOpen)
           {/* order product show section  */}
           <section className="rounded-lg p-4 shadow-sm bg-blue-50 space-y-3">
             <div className="flex justify-between">
-            <p className="bg-[#F7FAFC] p-4 rounded-lg font-bold text-base text-gray-500">
-              All Item
-            </p> 
-            <select
-  value={status || orderDetails?.["order Details"]?.order_status || ""}
-  onChange={handleStatusChange}
-  className="bg-primary text-white rounded-lg px-5 py-2"
->
-  <option disabled value="">
-    Select status
-  </option>
-  <option value="processing">Processing</option>
-  <option value="shipped">Shipped</option>
-  <option value="delivered">Delivered</option>
-  <option value="cancelled">Cancelled</option>
-</select>
-
+              <p className="bg-[#F7FAFC] p-4 rounded-lg font-bold text-base text-gray-500">
+                All Item
+              </p>
+              <select
+                value={
+                  status || orderDetails?.["order Details"]?.order_status || ""
+                }
+                onChange={handleStatusChange}
+                className="bg-primary text-white rounded-lg px-5 py-2"
+              >
+                <option disabled value="">
+                  Select status
+                </option>
+                <option value="processing">Processing</option>
+                <option value="shipped">Shipped</option>
+                <option value="delivered">Delivered</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
             </div>
             {orderDetails?.["order item"]?.map((item, index) => (
               <div
@@ -146,18 +172,17 @@ setIsModalOpen(!isModalOpen)
 
               <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
                 <p className="w-3/4">Tax (GST):</p>
-                <p className="1/4">${
-                  orderAllPrice()?.taxPrice
-                }</p>
+                <p className="1/4">${orderAllPrice()?.taxPrice}</p>
+              </div>
+              <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
+                <p className="w-3/4">Delivery Charge:</p>
+                <p className="1/4">${orderAllPrice()?.deliveryPrice}</p>
               </div>
 
               <div className=" border-b-2 w-full flex py-4 font-bold  hover:bg-[#F7FAFC]">
                 <p className="w-3/4 text-black">Total price:</p>
-                <p className="1/4 text-red-500"> 
-                $
-                {
-                  orderAllPrice()?.totalPrice
-                }
+                <p className="1/4 text-red-500">
+                  ${orderAllPrice()?.totalPrice}
                 </p>
               </div>
             </div>
@@ -173,13 +198,34 @@ setIsModalOpen(!isModalOpen)
               <div className="text-gray-600 text-base">
                 <p>Order ID</p>
                 <p>Date</p>
+                <p>Time</p>
                 <p>Total</p>
               </div>
-              <div className="font-bold text-base text-black ">
-                <p>order me</p>
+              <div className=" text-base text-black ">
+                <p>{orderDetails?.["order Details"]?.order_id}</p>
                 <p>{formatDate(orderDetails?.["order Details"]?.updated_at)}</p>
+                <p> {formatTime(orderDetails?.["order Details"]?.updated_at)}</p>
                 <p className="text-red-600">
                   ${orderDetails?.["order Details"]?.total_amount}
+                </p>
+              </div>
+            </div>
+          </section>
+          {/* shipping user   */}
+          <section className="rounded-lg p-4 shadow-sm bg-blue-50">
+            <div className="grid grid-cols-2">
+              <div className="text-gray-600 text-base">
+                <p>User Name</p>
+                <p>Phone</p>
+                <p>Email</p>
+              </div>
+              <div className=" text-base text-black ">
+                <p>{orderDetails?.["order Details"]?.shipping_address?.name}</p>
+                <p>
+                  {orderDetails?.["order Details"]?.shipping_address?.phone}
+                </p>
+                <p className="">
+                  {orderDetails?.["order Details"]?.shipping_address?.email || "null" } 
                 </p>
               </div>
             </div>
@@ -215,8 +261,26 @@ setIsModalOpen(!isModalOpen)
               Payment Method
             </h2>
             <p className="text-gray-600 overflow-auto">
-              {orderDetails?.["order Details"]?.payment_status}
+              {orderDetails?.["order Details"]?.payment?.payment_status}
             </p>
+          </section>
+          {/* payment status  */}
+          <section className="rounded-lg p-4 shadow-sm bg-blue-50">
+            <h2 className="font-bold text-base text-black pb-2">
+              Payment Status
+            </h2>
+            <div className="flex justify-between items-center">
+              <select
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                className="px-4 py-2 focus:outline-none"
+              >
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+              </select>
+
+              <p>{value}</p>
+            </div>
           </section>
           {/* tracking order and expected date of delivery  */}
           <section className="rounded-lg p-4 shadow-sm bg-blue-50">
@@ -224,18 +288,35 @@ setIsModalOpen(!isModalOpen)
               Expected Date Of Delivery
             </h2>
             <p className="text-green-600 overflow-auto font-bold text-base">
-              {formatDate(orderDetails?.["order Details"]?.updated_at)}
+              {/* {orderDetails?.["order Details"]?.shipping_address.district?.name} */}
+              <p>
+                Estimated Delivery Time:{" "}
+                {orderDetails?.[
+                  "order Details"
+                ]?.shipping_address?.district?.name?.toLowerCase() === "dhaka"
+                  ? "1-3 days"
+                  : "3-7 days"}
+              </p>
             </p>
-            <Link to={`/dashboard/order/order-tracking/${id}`} className="border border-blue-600 rounded-lg text-blue-600 hover:text-white hover:bg-blue-600 font-semibold text-base w-full flex justify-center items-center gap-2 py-3 mt-3">
+            <Link
+              to={`/dashboard/order/order-tracking/${id}`}
+              className="border border-blue-600 rounded-lg text-blue-600 hover:text-white hover:bg-blue-600 font-semibold text-base w-full flex justify-center items-center gap-2 py-3 mt-3"
+            >
               {" "}
               <FaCarSide /> Track Order
             </Link>
           </section>
         </section>
       </div>
-      {
-        isModalOpen && <OrderModal id={id} orderDetails={orderDetails?.["order Details"]} setIsModalOpen={setIsModalOpen} handleOpenOrderModal={hendleOpnenOrderModal} handleStatusChange={handleStatusChange}/>
-      }
+      {isModalOpen && (
+        <OrderModal
+          id={id}
+          orderDetails={orderDetails?.["order Details"]}
+          setIsModalOpen={setIsModalOpen}
+          handleOpenOrderModal={hendleOpnenOrderModal}
+          handleStatusChange={handleStatusChange}
+        />
+      )}
     </div>
   );
 };

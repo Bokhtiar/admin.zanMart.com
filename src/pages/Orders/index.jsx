@@ -19,6 +19,7 @@ const Orders = () => {
       setNewOrders(result);
     });
   }, []);
+  
   // table column code here
   const colums = [
     { name: "Order ID", selector: (row) => row.order_id, sortable: true },
@@ -57,7 +58,7 @@ const Orders = () => {
       }
     },
     // { name: "Tracking", selector: (row) => row.order_status, sortable: true },
-    { name: "Tramsection ID", selector: (row) => row.tran_id, sortable: true },
+    { name: "Name", selector: (row) => row?.shipping_address?.name, sortable: true },
     { name: "Action", selector: (row) => row.tran_id, sortable: true 
 
       ,
