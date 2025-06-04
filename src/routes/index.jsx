@@ -48,6 +48,7 @@ import CreateUpozila from "../pages/address/upozila/create";
 import EditDivision from "../pages/address/division/edit";
 import EditDistrict from "../pages/address/district/edit";
 import EditUpazila from "../pages/address/upozila/edit";
+import Invoice from "../components/invoice/Invoice";
 
 const appRoutes = [
   {
@@ -117,6 +118,8 @@ const appRoutes = [
       { path: "upozila", element: <Upozila/> },
       { path: "upozila/create", element: <CreateUpozila /> },
       { path: "upozila/edit/:id", element: <EditUpazila /> }, 
+      // invoice
+      { path: "order/order-details/:id/invoice", element: <Invoice /> }, 
     ],
   },
 ];

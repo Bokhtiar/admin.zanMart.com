@@ -4,10 +4,9 @@ import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
 import { FaCarSide } from "react-icons/fa";
 import OrderModal from "../../components/orderFormModal/OrderModal";
-import axios from "axios";
+
 import DetailsSkeleton from "../../components/loading/DetailsSkeleton";
-import { InvoiceContent } from "../../components/invoice/Invoice";
-import { useReactToPrint } from "react-to-print";
+
 const OrderDetails = () => {
   const { id } = useParams();
   const [orderDetails, setOrderDetails] = useState(null);
@@ -201,12 +200,17 @@ const OrderDetails = () => {
               </div>
             </div>
           </section>
-          <button
-            onClick={() => window.print()}
-            className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          {/* <Link to="/invoice">
+            <button className="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Get Invoice
+            </button>
+          </Link> */}
+          <Link
+            to="invoice"
+            className="inline-block px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700"
           >
-            Print Invoice
-          </button>
+            Get Invoice
+          </Link>
         </div>
         {/* order divided second part  */}
         <section className="w-4/12 space-y-4">

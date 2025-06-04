@@ -1,68 +1,236 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from "react";
+import { useParams } from "react-router-dom";
+import { privateRequest } from "../../config/axios.config";
+import moment from "moment";
 
-export const OrderDetails = () => {
+const Invoice = () => {
+  const { id } = useParams();
+  const invoiceRef = useRef();
+  const [orderDetails, setOrderDetails] = useState(null);
+   const [loading, setLoading] = useState(false);
+
+   console.log("orderDetails",orderDetails)
+
   useEffect(() => {
-    window.print();
-  }, []);
+    setLoading(true);
+    privateRequest
+      .get(`/admin/order/${id}`)
+      .then((response) => {
+        setOrderDetails(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error(error);
+        setLoading(false);
+      });
+  }, [id]);
+
+    const orderAllPrice = () => {
+    let subtotal = orderDetails?.["order item"]?.reduce(
+      (acc, curr) => Number(acc) + Number(curr?.sell_price) * curr?.qty,
+      0
+    );
+    let taxPrice = orderDetails?.["order item"]?.reduce(
+      (acc, curr) => Number(acc) + Number(curr?.product?.tax_price),
+      0
+    );
+
+    let deliveryPrice = Number(
+      orderDetails?.["order Details"]?.shipment?.delivery_charge || 0
+    );
+    return {
+      subtotal,
+      taxPrice,
+      deliveryPrice,
+      totalPrice: subtotal + taxPrice + deliveryPrice,
+    };
+  };
+
+  //   formate date code here
+  const formatDate = (dateString) => {
+    const formattedDate = moment(dateString).format("DD MMM YYYY");
+    return formattedDate;
+  };
+  // const formatTime = (timestamp) => {
+  //   if (!timestamp) return "";
+  //   const date = new Date(timestamp);
+  //   const options = { hour: "numeric", minute: "2-digit", hour12: true };
+  //   return date.toLocaleTimeString("en-US", options);
+  // };
+  if (loading) return <p>Loading...</p>;
+  if (!orderDetails) return <p>No data found</p>;
+
+  const order = orderDetails["order Details"];
+  const items = orderDetails["order item"];
+
+  console.log("order",order)
+  console.log("items",items)
+
+  const handlePrint = () => {
+    const printContents = invoiceRef.current.innerHTML;
+    const printWindow = window.open("", "", "width=900,height=700");
+
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Invoice</title>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+          @media print {
+            body {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+        </style>
+      </head>
+      <body class="bg-white p-6">
+        <div id="invoice">${printContents}</div>
+        <script>
+          window.onload = function () {
+            setTimeout(function () {
+              window.print();
+              window.close();
+            }, 500);
+          };
+        </script>
+      </body>
+    </html>
+  `);
+    printWindow.document.close();
+  };
+
 
   return (
-    <div className="max-w-3xl mx-auto p-8 border border-gray-200 shadow-md">
-      <h1 className="text-3xl font-bold text-center mb-6">Order Invoice</h1>
+    <>
+      {/* Invoice Content to Print */}
+      <div
+        ref={invoiceRef}
+        className="max-w-3xl mx-auto bg-white p-8 shadow-md font-sans text-sm"
+      >
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-800">INVOICE</h1>
+          <div className="text-right text-gray-600">
+            <p>NO. {order.orderId}</p>
+            <p className="text-sm">Date: {formatDate(orderDetails?.["order Details"]?.updated_at)}</p>
+          </div>
+        </div>
 
-      {/* Company Details */}
-      <div className="mb-6">
-        <p><strong>Store Name:</strong> Zan Vision</p>
-        <p><strong>Email:</strong> support@zanvision.com</p>
-        <p><strong>Phone:</strong> +8801XXXXXXXXX</p>
+        {/* Addresses */}
+        <div className="grid grid-cols-2 gap-8 text-gray-700 mb-6">
+          <div>
+            <h2 className="font-bold">Billed to:</h2>
+            <p>{order?.shipping_address?.name}</p>
+            <p>{order?.shipping_address?.phone}</p>
+            <p>{order?.shipping_address?.email ||"null"}</p>
+          </div>
+          <div>
+            <h2 className="font-bold">From:</h2>
+            {/* <p>{order.from.name}</p>
+            <p>{order.from.address}</p>
+            <p>{order.from.phone}</p> */}
+            <p>pppp</p>
+            <p>pppp</p>
+            <p>pppp</p>
+     
+          </div>
+        </div>
+
+        {/* Items Table */}
+        <div className="border border-gray-200 rounded-md">
+          <table className="min-w-full text-left text-gray-800">
+            <thead className="bg-gray-100 text-sm uppercase">
+              <tr>
+                <th className="py-2 px-4 border-b">Item</th>
+                <th className="py-2 px-4 border-b text-center">Quantity</th>
+                <th className="py-2 px-4 border-b text-center">Price</th>
+                <th className="py-2 px-4 border-b text-center">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.map((item, index) => (
+                <tr key={index}>
+                  <td className="py-2 px-4 border-b">{item?.product?.title}</td>
+                  <td className="py-2 px-4 border-b text-center">
+                    {item?.qty}
+                  </td>
+                  <td className="py-2 px-4 border-b text-center">
+                    
+                   {item?.sell_price }
+                  </td>
+                  <td className="py-2 px-4 border-b text-center">
+                    {item?.sell_price * item?.qty}
+                  </td>
+                </tr>
+              ))}
+              <tr>
+                <td colSpan="3" className=" px-4 text-right font-semibold">
+                  Delivery Fee
+                </td>
+                <td className="py-1 px-4 text-center">
+                  ${orderAllPrice()?.deliveryPrice}
+                </td>
+              </tr>
+              <tr>
+                <td colSpan="3" className=" px-4 text-right font-semibold">
+                  Tax (GST):
+                </td>
+                <td className="py-1 px-4 text-center">
+                  ${orderAllPrice()?.taxPrice}
+                </td>
+              </tr>
+              <tr>
+                <td
+                  colSpan="3"
+                  className=" px-4 text-right font-bold text-lg"
+                >
+                  Total
+                </td>
+                <td className="py-1 px-4 text-center font-bold text-lg">
+                   ${Math.ceil(orderAllPrice()?.totalPrice ?? 0)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/* Payment & Note */}
+        <div className="mt-6 text-gray-700">
+          <p>
+            <span className="font-semibold">Payment method:</span>{" "}
+            {order.paymentMethod}
+          </p>
+          <p>
+            <span className="font-semibold">Payment status:</span>{" "}
+            {order.paymentStatus}
+          </p>
+          <p>
+            <span className="font-semibold">Order status:</span>{" "}
+            {order.orderStatus}
+          </p>
+          <p className="mt-2">
+            <span className="font-semibold">Note:</span> {order.note}
+          </p>
+        </div>
+
+        {/* Footer Graphic */}
+        <div className="mt-10">
+          <div className="w-full h-20 bg-gradient-to-r from-gray-300 to-gray-500 rounded-t-3xl"></div>
+        </div>
       </div>
 
-      {/* Customer Details */}
-      <div className="mb-6">
-        <p><strong>Customer:</strong> John Doe</p>
-        <p><strong>Address:</strong> 123 Main Street, Dhaka, BD</p>
-        <p><strong>Order Date:</strong> June 3, 2025</p>
-        <p><strong>Order ID:</strong> #INV-102938</p>
+      {/* Print Button */}
+      <div className="text-center mt-6">
+        <button
+          onClick={handlePrint}
+          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Print Invoice
+        </button>
       </div>
-
-      {/* Table */}
-      <table className="w-full border border-gray-300 mb-8">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="text-left px-4 py-2 border">Product</th>
-            <th className="text-left px-4 py-2 border">Qty</th>
-            <th className="text-left px-4 py-2 border">Price</th>
-            <th className="text-left px-4 py-2 border">Subtotal</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td className="px-4 py-2 border">Bluetooth Headphone</td>
-            <td className="px-4 py-2 border">2</td>
-            <td className="px-4 py-2 border">$30.00</td>
-            <td className="px-4 py-2 border">$60.00</td>
-          </tr>
-          <tr>
-            <td className="px-4 py-2 border">Wireless Mouse</td>
-            <td className="px-4 py-2 border">1</td>
-            <td className="px-4 py-2 border">$20.00</td>
-            <td className="px-4 py-2 border">$20.00</td>
-          </tr>
-        </tbody>
-      </table>
-
-      {/* Totals */}
-      <div className="text-right space-y-1">
-        <p><strong>Subtotal:</strong> $80.00</p>
-        <p><strong>Shipping:</strong> $5.00</p>
-        <p><strong>Total:</strong> $85.00</p>
-      </div>
-
-      {/* Thank You */}
-      <div className="mt-10 text-center">
-        <p>Thank you for your purchase!</p>
-      </div>
-    </div>
+    </>
   );
 };
 
-export default OrderDetails;
+export default Invoice;
