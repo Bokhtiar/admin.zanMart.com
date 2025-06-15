@@ -1,385 +1,248 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useForm } from "react-hook-form";
+import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { NetworkServices } from "../../../network";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { Toastify } from "../../../components/toastify";
-import { SkeletonForm } from "../../../components/loading/skeleton-table";
 import { networkErrorHandeller } from "../../../utils/helper";
-import { SearchDropdownWithSingle } from "../../../components/input/selectsearch";
-import { TextInput } from "../../../components/input";
+import { Toastify } from "../../../components/toastify";
+import { SkeletonTable } from "../../../components/loading/skeleton-table";
+import { SingleSelect, TextInput } from "../../../components/input";
+import useFetch from "../../../hooks/api/useFetch";
 const ProductVariantEdit = () => {
   const { id } = useParams();
-  const [products, setProducts] = useState([]);
-  const [colors, setColors] = useState([]);
-  const [attributes, setAttributes] = useState([]);
-  const [unit, setUnit] = useState([]);
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState("");
-  const [selectedColor, setSelectedColor] = useState("");
-  const [selectedAttribute, setSelectedAttribute] = useState("");
-  const [selectedUnit, setSelectedUnit] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [weight, setWeight] = useState("");
-  const [price, setPrice] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [searchParams] = useSearchParams();
+const productVariantId = searchParams.get("product_variant_id");
+
+  const [colors, setColors] = useState([]);
+  const [unitList, setUnitList] = useState([]);
   const [allAttributes, setAllAttributes] = useState([]);
+  const [filteredAttributes, setFilteredAttributes] = useState([]);
   const [productVariantData, setProductVariantData] = useState({});
-  const [flatDiscount, setFlatDiscount] = useState("");
-  // Fetch products, colors, attri=butes, and units from the APIs
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const colorResponse = await NetworkServices.Color.index();
-        const attributeResponse = await NetworkServices.Attribute.index();
-        const unitResponse = await NetworkServices.Unit.index();
-        if (
-          colorResponse?.status === 200 &&
-          attributeResponse?.status === 200 &&
-          unitResponse?.status === 200
-        ) {
-          setColors(colorResponse?.data?.data?.data);
-          setAllAttributes(attributeResponse?.data?.data?.data);
-          setUnit(unitResponse?.data?.data?.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        networkErrorHandeller(error);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const [loading, setLoading] = useState(false);
 
-  //   submit product variant as edit
-  const handleSubmit = async (e) => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    reset,
+    formState: { errors }
+  } = useForm();
+
+  const watchUnit = watch("unit_id");
+
+
+
+
+
+  useEffect(() => {
+  const productVariantId = searchParams.get("product_variant_id");
+
+  const fetchAllData = async () => {
+    setLoading(true);
     try {
-      e.preventDefault();
-      // You can send this formData to your API
-      const payload = [
-        {
-          product_id: Number(productVariantData?.product_id),
-          color_id:
-            Number(selectedColor) || Number(productVariantData?.color_id),
-          attribute_id:
-            Number(selectedAttribute) ||
-            Number(productVariantData?.attribute_id),
-          unit_id: Number(selectedUnit) || Number(productVariantData?.unit_id),
-          product_qty:
-            Number(quantity) || Number(productVariantData?.product_qty),
-          weight: Number(weight) || Number(productVariantData?.weight),
-          price: Number(price) || Number(productVariantData?.price),
-          discount_price:
-            Number(flatDiscount) || Number(productVariantData?.flat_discount),
-          product_variant_id: Number(id),
-        },
-      ];
-      const response = await NetworkServices.ProductVariant.update(id, payload);
-      if (response.status === 200 || response.status === 201) {
-        navigate("/dashboard/product-variant");
-        Toastify.Success("Product varaint create successfully.");
+      const [colorRes, attrRes, unitRes] = await Promise.all([
+        NetworkServices.Color.index(),
+        NetworkServices.Attribute.index(),
+        NetworkServices.Unit.index()
+      ]);
+
+      if (colorRes?.status === 200) setColors(colorRes.data?.data?.data || []);
+      if (attrRes?.status === 200) setAllAttributes(attrRes.data?.data?.data || []);
+      if (unitRes?.status === 200) setUnitList(unitRes.data?.data?.data || []);
+
+      // Only fetch variant if query param is available
+      if (productVariantId) {
+        const res = await NetworkServices.ProductVariant.show(productVariantId);
+        if (res?.status === 200) {
+          const data = res.data?.data;
+          setProductVariantData(data);
+
+          reset({
+            color_id: data?.color_id,
+            unit_id: data?.unit_id,
+            attribute_id: data?.attribute_id,
+            product_qty: data?.product_qty,
+            available_quantity: data?.available_quantity,
+            weight: data?.weight,
+            price: data?.price,
+            discount_price: data?.discount_price
+          });
+
+          const filtered = (attrRes.data?.data?.data || []).filter(
+            (attr) => attr.unit?.unit_id === data?.unit_id
+          );
+          setFilteredAttributes(filtered);
+        }
       }
-    } catch (error) {
-      Toastify.Error(error);
+    } catch (err) {
+      networkErrorHandeller(err);
+    }
+    setLoading(false);
+  };
+
+  fetchAllData();
+}, []);
+
+
+
+
+  useEffect(() => {
+    const filtered = allAttributes.filter(attr => attr.unit?.unit_id === Number(watchUnit));
+    setFilteredAttributes(filtered);
+  }, [watchUnit, allAttributes]);
+
+  const toSelectOptions = (list, valueKey, labelKey) =>
+    list.map(item => ({ value: item[valueKey], label: item[labelKey] }));
+
+  const onSubmit = async (formData) => {
+    try {
+      const payload = [{
+        product_id: Number(productVariantData?.product_id),
+        color_id: Number(formData.color_id),
+        unit_id: Number(formData.unit_id),
+        attribute_id: Number(formData.attribute_id),
+        product_qty: Number(formData.product_qty),
+        available_quantity: Number(formData.available_quantity),
+        weight: Number(formData.weight),
+        price: Number(formData.price),
+        discount_price: Number(formData.discount_price),
+        product_variant_id: Number(productVariantId),
+      }];
+
+      const res = await NetworkServices.ProductVariant.update(productVariantId, payload);
+      if (res?.status === 200 || res?.status === 201) {
+        Toastify.Success("Product variant updated successfully.");
+         navigate("/dashboard/product-variant");
+      }
+    } catch (err) {
+      Toastify.Error(err);
     }
   };
 
-  //  fetch product variant
-  const fetchProductVariants = useCallback(async () => {
-    try {
-      const response = await NetworkServices.ProductVariant.show(id);
-    
-      if (response.status === 200) {
-        // setAddedVariant(response?.data?.data)
-        setSelectedProduct(response?.data?.data?.product_id);
-        setProductVariantData(response?.data?.data);
-      }
-    } catch (error) {
-      Toastify.Error(error);
-    }
-  }, [id]);
-  useEffect(() => {
-    fetchProductVariants();
-  }, []);
-  //    global exist value check function
-  const defaultVariantFuntion = (key = [], filterName) => {
-    const result = key?.find(
-      (item) => item?.[filterName] === productVariantData?.[filterName]
-    );
-    return result;
-  };
-  //   find out attribute bye name
-  const handleUnitChangeForAttribute = (e) => {
-    setSelectedUnit(e.target.value);
-    setAttributes(
-      allAttributes.filter(
-        (attribute) => attribute?.unit?.unit_id === Number(e.target.value)
-      )
-    );
-  };
-  const fetchData = useCallback(
-    async (product) => {
-      try {
-        // setLoading(true);
-        const response = await NetworkServices.Product.show(id);
-     
-        if (response?.status === 200 || response?.status === 201) {
-          // setProduct(response?.data?.data);
-          //  setColors(response?.data?.data?.product_variants?.color?.color_id)
-          setLoading(false);
-        }
-      } catch (error) {
-        if (error) {
-          setLoading(false);
-          networkErrorHandeller(error);
-        }
-      }
-    },
-    [id]
-  );
-  useEffect(() => {
-    fetchData();
-  }, []);
-  return (
-    <>
-      {loading ? (
-        <SkeletonForm />
-      ) : (
-        <div className="p-6 bg-gray-100 rounded-md shadow-md mx-auto">
-          <div className="flex justify-between">
-            <h2 className="text-lg font-bold mb-4 text-gray-700">
-              Product Information
-            </h2>
-            <Link to={`/dashboard/product-variant/`}>
-              <span className="border border-green-500 rounded-full material-symbols-outlined p-1">
-                list
-              </span>
-            </Link>
-          </div>
+  return loading ? (
+    <SkeletonTable />
+  ) : (
+    <div className="p-6 bg-white shadow-md rounded-md">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-lg font-semibold text-gray-700">Edit Product Variant</h2>
+        <Link to="/dashboard/product-variant">
+          <span className="material-symbols-outlined border border-green-500 rounded-full p-1">list</span>
+        </Link>
+      </div>
 
-          <form onSubmit={handleSubmit}>
-            {/* Product Select Dropdown */}
-            <div className="mb-4 ">
-              {/* <SearchDropdownWithSingle
-                placeholder={
-                  products.find(
-                    (item) => item?.product_id == productVariantData?.product_id
-                  )?.title ?? "Select your  product"
-                }
-                options={products}
-                showName="title"
-              /> */}
-              <input
-                type="text"
-                id="quantity"
-                //   value={productVariantData?.product_qty||''}
-                defaultValue={productVariantData?.product?.title}
-                readOnly
-                className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter Quantity"
-              />
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Color */}
+        <SingleSelect
+          name="color_id"
+          control={control}
+          options={toSelectOptions(colors, "color_id", "name")}
+          onSelected={selected => setValue("color_id", selected?.value || null)}
+          placeholder={
+            toSelectOptions(colors, "color_id", "name").find(
+              item => item.value === watch("color_id")
+            )?.label ?? "Select Color"
+          }
+          error={errors.color_id?.message}
+          label="Choose a Color"
+          isClearable
+        />
 
-            {/* Row for Color and Attribute */}
-            <div className="flex mb-4 gap-4">
-              {/* Color Select Dropdown */}
-              <div className="flex-1">
-                <label
-                  htmlFor="color"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Color
-                </label>
-                <select
-                  id="color"
-                  value={selectedColor}
-                  onChange={(e) => setSelectedColor(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option
-                    value={defaultVariantFuntion(colors, "color_id")?.color_id}
-                  >
-                    {" "}
-                    {defaultVariantFuntion(colors, "color_id")?.name}{" "}
-                  </option>
-                  {colors?.map((color) => {
-                    return (
-                      defaultVariantFuntion(colors, "color_id")?.color_id !==
-                        color?.color_id && (
-                        <option key={color?.color_id} value={color?.color_id}>
-                          {color?.name}
-                        </option>
-                      )
-                    );
-                  })}
-                </select>
-              </div>
-              {/* Unit Select Dropdown */}
-              <div className="flex-1">
-                <label
-                  htmlFor="unit"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Unit
-                </label>
-                <select
-                  id="unit"
-                  value={selectedUnit}
-                  onChange={handleUnitChangeForAttribute}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option
-                    value={defaultVariantFuntion(unit, "unit_id")?.unit_id}
-                  >
-                    {defaultVariantFuntion(unit, "unit_id")?.name}
-                  </option>
-                  {unit?.map((itm) => {
-                    return (
-                      defaultVariantFuntion(unit, "unit_id")?.unit_id !==
-                        itm?.unit_id && (
-                        <option key={itm?.id} value={itm?.unit_id}>
-                          {itm?.name}
-                        </option>
-                      )
-                    );
-                  })}
-                </select>
-              </div>
-            </div>
+        {/* Unit */}
+        <SingleSelect
+          name="unit_id"
+          control={control}
+          options={toSelectOptions(unitList, "unit_id", "name")}
+          onSelected={selected => setValue("unit_id", selected?.value || null)}
+          placeholder={
+            toSelectOptions(unitList, "unit_id", "name").find(
+              item => item.value === watch("unit_id")
+            )?.label ?? "Select Unit"
+          }
+          error={errors.unit_id?.message}
+          label="Choose a Unit"
+          isClearable
+        />
 
-            {/* Row for Unit and Quantity */}
-            <div className="flex mb-4 gap-4">
-              {/* Attribute Select Dropdown */}
-              <div className="flex-1">
-                <label
-                  htmlFor="attribute"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Attribute
-                </label>
-                <select
-                  id="attribute"
-                  value={selectedAttribute}
-                  onChange={(e) => setSelectedAttribute(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  disabled={attributes?.length ? false : true}
-                >
-                  <option
-                    value={
-                      defaultVariantFuntion(allAttributes, "attribute_id")
-                        ?.attribute_id
-                    }
-                  >
-                    {defaultVariantFuntion(allAttributes, "attribute_id")?.name}
-                  </option>
-                  {attributes?.map((attribute) => {
-                    return (
-                      defaultVariantFuntion(allAttributes, "attribute_id")
-                        ?.attribute_id !== attribute?.attribute_id && (
-                        <option
-                          key={attribute?.id}
-                          value={attribute?.attribute_id}
-                        >
-                          {attribute?.name}
-                        </option>
-                      )
-                    );
-                  })}
-                </select>
-              </div>
-              {/* Quantity Input */}
-              <div className="flex-1">
-                <label
-                  htmlFor="quantity"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Product Quantity
-                </label>
-                <input
-                  type="number"
-                  id="quantity"
-                  //   value={productVariantData?.product_qty||''}
-                  defaultValue={productVariantData?.product_qty}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Quantity"
-                />
-              </div>
-            </div>
+        {/* Attribute */}
+        <SingleSelect
+          name="attribute_id"
+          control={control}
+          options={toSelectOptions(filteredAttributes, "attribute_id", "name")}
+          onSelected={selected => setValue("attribute_id", selected?.value || null)}
+          placeholder={
+            toSelectOptions(filteredAttributes, "attribute_id", "name").find(
+              item => item.value === watch("attribute_id")
+            )?.label ?? "Select Attribute"
+          }
+          error={errors.attribute_id?.message}
+          label="Choose an Attribute"
+          isClearable
+        />
 
-            {/* Row for Weight and Price */}
-            <div className="flex mb-4 gap-4">
-              {/* Weight Input */}
-              <div className="flex-1">
-                <label
-                  htmlFor="weight"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Weight (kg)
-                </label>
-                <input
-                  type="number"
-                  id="weight"
-                  defaultValue={productVariantData?.weight}
-                  //   value={weight}
-                  onChange={(e) => setWeight(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Weight"
-                />
-              </div>
+        {/* Quantity */}
+        <TextInput
+          label="Poduct Quantity"
+          name="product_qty"
+          type="number"
+          placeholder="Enter quantity"
+          control={control}
+          error={errors.product_qty?.message}
+          rules={{ required: "Quantity is required" }}
+        />
+        <TextInput
+          label="available Quantity"
+          name="available_quantity"
+          type="number"
+          placeholder="Enter quantity"
+          control={control}
+          error={errors.product_qty?.message}
+          rules={{ required: "Quantity is required" }}
+        />
 
-              {/* Price Input */}
-              <div className="flex-1">
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Price ($)
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  //   value={price}
+        {/* Weight */}
+        <TextInput
+          label="Weight"
+          name="weight"
+          type="number"
+          placeholder="Enter weight"
+          control={control}
+          error={errors.weight?.message}
+          rules={{ required: "Weight is required" }}
+        />
 
-                  defaultValue={productVariantData?.price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Price"
-                />
-              </div>
-              {/* Flat Discount Input */}
-              <div className="flex-1">
-                <label
-                  htmlFor="price"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Flat Discount ($)
-                </label>
-                <input
-                  type="number"
-                  id="price"
-                  //   value={price}
+        {/* Price */}
+        <TextInput
+          label="Price"
+          name="price"
+          type="number"
+          placeholder="Enter price"
+          control={control}
+          error={errors.price?.message}
+          rules={{ required: "Price is required" }}
+        />
 
-                  defaultValue={productVariantData?.discount_price}
-                  onChange={(e) => setFlatDiscount(e.target.value)}
-                  className="block w-full p-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter Price"
-                />
-              </div>
-            </div>
+        {/* Discount */}
+        <TextInput
+          label="Flat Discount"
+          name="discount_price"
+          type="number"
+          placeholder="Enter flat discount"
+          control={control}
+          error={errors.discount_price?.message}
+        />
 
-            {/* Submit Button */}
-            <div className="flex gap-4">
-              <button
-                type="submit"
-                className="w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+        <div className="md:col-span-2">
+          <button
+            type="submit"
+            className="w-full bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition"
+          >
+            Update Variant
+          </button>
         </div>
-      )}
-    </>
+      </form>
+    </div>
   );
 };
 

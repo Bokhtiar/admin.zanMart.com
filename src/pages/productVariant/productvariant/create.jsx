@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { NetworkServices } from "../../../network";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -22,13 +22,21 @@ const ProductForm = () => {
     value: [],
   });
   // react hook form declaration
+   const {
+    data: product,
+    loading: productLoading,
+    refetch: fetchproduct,
+  } = useFetch("admin/product/" + id);
+
   const {
     control,
     handleSubmit,
+     reset:resetFrom,
     formState: { errors },
+   
   } = useForm({
     defaultValues: {
-      variant: [{ price: "" }],
+      variant: [{ weight: "" ,price:product?.data?.sell_price, flat_discount:product?.data?.flat_discount,quantity: product?.data?.product_qty,available_quantity: product?.data?.available_quantity }],
     },
   });
   const { fields, append, remove } = useFieldArray({
@@ -53,7 +61,7 @@ const ProductForm = () => {
     loading: attributeLoading,
     refetch: fetchAttribute,
   } = useFetch("admin/attribute");
-  // submit here   code
+ 
   const onSubmit = async (e) => {
     try {
       const updateValue = e.variant.map((e) => {
@@ -104,6 +112,7 @@ const ProductForm = () => {
     handleSubmit: newColorAdded,
     formState: { errors: colorError },
     reset,
+    setValue
   } = useForm();
 
   // post attribute
@@ -144,6 +153,19 @@ const ProductForm = () => {
     });
   };
 
+useEffect(() => {
+  if (product?.data) {
+    resetFrom({
+      variant: [{
+        weight: "",
+        price: product.data.sell_price ?? "",
+        flat_discount: product.data.flat_discount ?? "",
+        quantity: product?.data?.stock_qty,
+        available_quantity: product?.data?.available_quantity
+      }]
+    });
+  }
+}, [product?.data, resetFrom]);
   return (
     <>
       {(unitLoading || attributeLoading || colorLoading) && false ? (
@@ -241,7 +263,7 @@ const ProductForm = () => {
                         "name",
                         "color_id"
                       )}
-                      rules={{ required: "Color is required" }}
+                      // rules={{ required: "Color is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
@@ -276,7 +298,7 @@ const ProductForm = () => {
                         "name",
                         "unit_id"
                       )}
-                      rules={{ required: "unit is required" }}
+                      // rules={{ required: "unit is required" }}
                       // onSearch={fetchunit}
                       onSelected={(id) => {
                         setIds(id?.unit_id);
@@ -317,7 +339,7 @@ const ProductForm = () => {
                         "name",
                         "attribute_id"
                       )}
-                      rules={{ required: "Attributes is required" }}
+                      // rules={{ required: "Attributes is required" }}
                       // onSearch={fetchColor}
                       // onSelectId={(id) => setSelectedColor(id)}
                     />
@@ -379,11 +401,12 @@ const ProductForm = () => {
                       label=" Product Weight "
                       type="number"
                       placeholder="Enter weight"
-                      rules={{ required: "Quantity is required" }}
+                      // rules={{ required: "Quantity is required" }}
                     />
                   </div>
                   {/* Price Input */}
                   <div className="flex-1">
+                   
                     <TextInput
                       name={`variant.${index}.price`}
                       error={
@@ -398,13 +421,16 @@ const ProductForm = () => {
                     />
                   </div>
                   {/* flat discount  */}
+                
                   <div className="flex-1">
+                    
                     <TextInput
                       name={`variant.${index}.flat_discount`}
                       error={
                         errors?.variant?.[index]?.flat_discount &&
                         errors?.variant?.[index]?.flat_discount?.message
                       }
+                      // defaultvalue={product?.data?.flat_discount}
                       control={control}
                       label=" Flat Discount "
                       type="number"
@@ -426,6 +452,7 @@ const ProductForm = () => {
             ))}
             <div className="flex gap-4">
               {/* add more button  */}
+      
               <button
                 type="button"
                 onClick={() => append({ price: "" })}

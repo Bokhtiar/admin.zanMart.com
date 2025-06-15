@@ -77,7 +77,7 @@ export const BannerCreate = () => {
               placeholder="Enter banner title"
               control={control}
               error={errors.name && errors.name.message}
-              rules={{ required: "Banner title is required" }}
+              // rules={{ required: "Banner title is required" }}
             />
           </div>
           <div className="mb-6 lg:mb-2 w-full ">
