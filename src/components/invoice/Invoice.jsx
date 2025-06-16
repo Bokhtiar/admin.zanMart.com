@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { privateRequest } from "../../config/axios.config";
 import moment from "moment";
+import logo from "../../assets/image/logo.png";
 
 const Invoice = () => {
   const { id } = useParams();
@@ -109,13 +110,15 @@ const Invoice = () => {
         className="max-w-3xl mx-auto bg-white p-8 shadow-md font-sans text-sm"
       >
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">INVOICE</h1>
+        <div className="flex justify-between items-center mb-3">
+          <img src={logo} alt="" className="w-14 h-14  " />
+          
           <div className="text-right text-gray-600">
             <p>NO. {order.orderId}</p>
             <p className="text-sm">Date: {formatDate(orderDetails?.["order Details"]?.updated_at)}</p>
           </div>
         </div>
+        <h1 className="text-4xl font-bold text-gray-800 pb-4">INVOICE</h1>
 
         {/* Addresses */}
         <div className="grid grid-cols-2 gap-8 text-gray-700 mb-6">
@@ -215,9 +218,7 @@ const Invoice = () => {
         </div>
 
         {/* Footer Graphic */}
-        <div className="mt-10">
-          <div className="w-full h-20 bg-gradient-to-r from-gray-300 to-gray-500 rounded-t-3xl"></div>
-        </div>
+
       </div>
 
       {/* Print Button */}
