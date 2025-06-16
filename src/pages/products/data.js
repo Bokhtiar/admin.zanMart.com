@@ -18,21 +18,21 @@ export const productField = [
     name: "buy_price",
     type: "number",
     placeholder: "Enter Buy Price",
-    rules: "Buy Price is required",
+    rules: "",
   },
   {
     label: "Flat Discount",
     name: "flat_discount",
     type: "number",
     placeholder: "Enter Product Flat Discount",
-    rules: "Product Flat Discount is required",
+    rules: "",
   },
   {
     label: "Product Rating",
     name: "rating",
     type: "number",
     placeholder: "Enter Product Rating",
-    rules: "Product Rating is required",
+    rules: "",
     min:1,
     max:5
   },
@@ -48,7 +48,7 @@ export const productField = [
     name: "stock_qty",
     type: "number",
     placeholder: "Enter Stock Quantity",
-    rules: "Stock Quantity is required",
+    rules: "",
   },
   {
     label: "Product Tax price",

@@ -42,7 +42,7 @@ export const BannerCreate = () => {
       formData.append("name", data.name);
       formData.append("image", singleImage);
       formData.append("status", data?.status);
-      formData.append("is_campaign", data?.status);
+      formData.append("is_campaign", data?.is_campaign);
 
       const response = await NetworkServices.Banner.store(formData);
       if (response && (response.status === 201 || response?.status === 200)) {
@@ -77,7 +77,7 @@ export const BannerCreate = () => {
               placeholder="Enter banner title"
               control={control}
               error={errors.name && errors.name.message}
-              rules={{ required: "Banner title is required" }}
+              // rules={{ required: "Banner title is required" }}
             />
           </div>
           <div className="mb-6 lg:mb-2 w-full ">
